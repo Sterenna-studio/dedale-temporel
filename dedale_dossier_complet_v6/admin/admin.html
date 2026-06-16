@@ -116,21 +116,72 @@
           grid-template-columns: 1fr;
         }
       }
+
+      /* Garde Supabase : le contenu admin reste masqué tant que le
+         superuser n'est pas vérifié (fail-closed). */
+      .admin-shell {
+        display: none;
+      }
+      html.dedale-authed .admin-shell {
+        display: block;
+      }
+      .access-gate {
+        max-width: 480px;
+        margin: 80px auto;
+        padding: 18px 22px;
+        text-align: center;
+        font-family: "Space Mono", monospace;
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        border: 1px solid #3b2a1b;
+        border-radius: 10px;
+        background: radial-gradient(circle at top, #2a2118 0, #14100b 60%);
+      }
+      html.dedale-authed .access-gate {
+        display: none;
+      }
     </style>
   </head>
     <body>
-    <script>
-      (function() {
-        try {
-          var allowed = sessionStorage.getItem("dedale_access_porte-admin");
-          if (allowed !== "1") {
-            // Si accès direct sans passer par le dédale, on renvoie à l'entrée du couloir
-            window.location.href = "../index.html";
+    <!-- Écran d'attente affiché tant que l'accès superuser n'est pas validé -->
+    <div class="access-gate" id="accessGate">
+      <p>Vérification de l'accès administrateur…</p>
+      <p style="font-size:0.72rem;">Couloir réservé aux superusers S.T.E.A.M.</p>
+    </div>
+
+    <!-- Garde d'accès Supabase : seuls les superusers (is_superuser / is_admin)
+         peuvent voir le panneau. Utilise le shared Nitro servi à /shared/. -->
+    <script type="module">
+      const gate = document.getElementById("accessGate");
+      const denyAndLeave = (msg) => {
+        if (gate) gate.innerHTML =
+          '<p>Accès refusé.</p><p style="font-size:0.72rem;">' +
+          (msg || "Réservé aux superusers.") + " Redirection…</p>";
+        setTimeout(() => { window.location.href = "../index.html"; }, 1800);
+      };
+
+      try {
+        const [{ supabase }, { getProfile }] = await Promise.all([
+          import("/shared/supabase-client.js"),
+          import("/shared/profile.js"),
+        ]);
+
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          denyAndLeave("Connexion requise.");
+        } else {
+          const profile = await getProfile();
+          const isSuper = !!(profile && (profile.is_superuser || profile.is_admin));
+          if (isSuper) {
+            document.documentElement.classList.add("dedale-authed");
+          } else {
+            denyAndLeave("Droits superuser requis.");
           }
-        } catch (e) {
-          window.location.href = "../index.html";
         }
-      })();
+      } catch (e) {
+        console.error("[dedale-admin] garde Supabase échoué:", e);
+        denyAndLeave("Erreur de vérification.");
+      }
     </script>
 
     <div class="admin-shell">
