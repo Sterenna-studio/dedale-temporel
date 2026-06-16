@@ -1,0 +1,10 @@
+{
+  "dedale_bg.mp3": "sounds/bg/dedale_bg.mp3",
+  "console_beep.wav": "sounds/ui/console_beep.wav",
+  "success.wav": "sounds/ui/success.wav",
+  "error.wav": "sounds/ui/error.wav",
+  "door_hover.wav": "sounds/doors/door_hover.wav",
+  "door_open.wav": "sounds/doors/door_open.wav",
+  "door_locked.wav": "sounds/doors/door_locked.wav",
+  "note_rustle.wav": "sounds/lore/note_rustle.wav"
+}

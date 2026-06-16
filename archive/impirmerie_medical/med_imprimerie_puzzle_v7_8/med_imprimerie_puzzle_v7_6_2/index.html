@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Imprimerie Médicale — Spécial Noël</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" />
+</head>
+<body class="theme-dark">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandTitle">Imprimerie Médicale</div>
+      <div class="brandSub">Spécial Noël — pièces mélangées par Hades Corps</div>
+    </div>
+
+    <div class="topControls">
+      <button id="btnTheme" class="btn">Style : Munich 1908</button>
+      <button id="btnMusic" class="btn">🔇 Musique</button>
+      <button id="btnReset" class="btn btnGhost">Réinitialiser</button>
+    </div>
+  
+    <div class="timerWrap" id="timerWrap" aria-hidden="true">
+      <div class="timerFrame">
+        <div class="timerSand" id="timerSand"></div>
+        <div class="timerGlass"></div>
+      </div>
+    </div>
+
+  </header>
+
+  <div id="startOverlay" class="startOverlay" aria-hidden="false">
+    <div class="startCard">
+      <div class="startTitle">MISSION : CHAÎNE D’IMPRESSION</div>
+      <div class="startText">
+        Les agents d’Hades Corp ont mélangé les pièces. Remets la chaîne en place avant que l’atelier ne soit “inspecté”.
+      </div>
+      <button id="btnStartMission" class="btn startBtn">Lancer la mission</button>
+    </div>
+  </div>
+
+
+  <main class="layout">
+    <section class="playAreaWrap">
+      <div id="playArea" class="playArea" aria-label="Aire de jeu"></div>
+      <div class="hintBar">
+        <div class="hint">Assemble les moitiés (mâle/femelle) pour reformer l’ordre d’impression. Sur mobile, l’assemblage se fait en largeur.</div>
+        <div id="status" class="status">Prêt.</div>
+      </div>
+    </section>
+
+    <aside class="sidePanel">
+      <div class="panelCard" id="compositionCard">
+        <div class="panelTitle">Panneau de composition</div>
+        <div class="panelSub">Tape la suite de symboles gravés sur la ligne complète.</div>
+
+        <div id="symbolPad" class="symbolPad" aria-label="Clavier de symboles"></div>
+
+        <div class="entryRow">
+          <div id="entry" class="entry" aria-label="Entrée"></div>
+          <button id="btnBack" class="btn btnSmall">⌫</button>
+          <button id="btnClear" class="btn btnSmall btnGhost">Effacer</button>
+        </div>
+
+        <div id="result" class="result" aria-live="polite"></div>
+      </div>
+
+      
+      <div class="panelCard" id="rulesCard">
+        <div class="panelTitle">Règles de l’atelier</div>
+        <div class="panelSub">Imprimerie médicale — début XXe. Les agents d’Hades Corp ont mélangé la chaîne.</div>
+        <ul class="rulesList">
+          <li>Assemble les <b>bonnes moitiés</b> pour reformer une page d’annonce.</li>
+          <li>Accroche ensuite les pages <b>dans le bon ordre</b> pour recréer la chaîne d’impression.</li>
+          <li>Quand la chaîne est complète, le panneau de composition s’illumine : <b>reproduis la suite de symboles gravés</b>.</li>
+          <li>Une erreur de combinaison efface la saisie (petit délai avant nouvel essai).</li>
+        </ul>
+        <div class="easter">
+          <b>Easter eggs :</b> surveille les annonces “trop belles pour être vraies”… Dr. M., hommes en noir, “cure de jouvence”.
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  
+  <div id="winModal" class="modal" aria-hidden="true">
+    <div class="modalBackdrop" data-close="1"></div>
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+      <div class="modalHeader">
+        <div id="winTitle" class="modalTitle">Chaîne restaurée</div>
+        <button id="btnCloseModal" class="btn small">✕</button>
+      </div>
+      <div class="modalBody">
+        <div class="modalCodeLabel">Code d’identification d’imprimerie</div>
+        <div id="winCode" class="modalCode">—</div>
+        <p class="modalText">
+          Le cylindre d’impression reprend son rythme. Une odeur d’encre et de papier chaud envahit l’atelier.
+        </p>
+        <div class="modalActions">
+          <a class="btn" id="btnDownloadPdf" href="assets/journal_imprimerie.pdf" download>📄 Télécharger le journal (PDF)</a>
+          <button class="btn ghost" id="btnCloseModal2">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="app.js"></script>
+</body>
+</html>

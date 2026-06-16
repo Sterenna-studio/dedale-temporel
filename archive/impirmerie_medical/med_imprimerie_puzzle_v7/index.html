@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Imprimerie Médicale — Spécial Noël</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" />
+</head>
+<body class="theme-dark">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandTitle">Imprimerie Médicale</div>
+      <div class="brandSub">Spécial Noël — pièces mélangées par Hades Corps</div>
+    </div>
+
+    <div class="topControls">
+      <button id="btnTheme" class="btn">Style : Munich 1908</button>
+      <button id="btnMusic" class="btn">🔇 Musique</button>
+      <button id="btnReset" class="btn btnGhost">Réinitialiser</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="playAreaWrap">
+      <div id="playArea" class="playArea" aria-label="Aire de jeu"></div>
+      <div class="hintBar">
+        <div class="hint">Assemble les moitiés (mâle/femelle) pour reformer l’ordre d’impression. Sur mobile, l’assemblage se fait en largeur.</div>
+        <div id="status" class="status">Prêt.</div>
+      </div>
+    </section>
+
+    <aside class="sidePanel">
+      <div class="panelCard">
+        <div class="panelTitle">Panneau de composition</div>
+        <div class="panelSub">Tape la suite de symboles gravés sur la ligne complète.</div>
+
+        <div id="symbolPad" class="symbolPad" aria-label="Clavier de symboles"></div>
+
+        <div class="entryRow">
+          <div id="entry" class="entry" aria-label="Entrée"></div>
+          <button id="btnBack" class="btn btnSmall">⌫</button>
+          <button id="btnClear" class="btn btnSmall btnGhost">Effacer</button>
+        </div>
+
+        <div id="result" class="result" aria-live="polite"></div>
+      </div>
+
+      <div class="panelCard">
+        <div class="panelTitle">Ligne</div>
+        <div class="panelSub">Complète la ligne pour déverrouiller l’identification.</div>
+        <div id="lineProgress" class="lineProgress">0 / 8</div>
+        <div id="lineSymbols" class="lineSymbols"></div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
