@@ -39,6 +39,59 @@
     return (config.doors || []).find((d) => d.id === id) || null;
   }
 
+  /* --- ÉTAT DU DÉDALE (fragments / sceau) --- */
+
+  const State = window.DedaleState || null;
+  // Portes grisées tant que le Briefing n'est pas reçu.
+  const FRAGMENT_DOORS = [
+    "porte-machine",
+    "porte-cartographie",
+    "porte-observatoire",
+    "porte-reliques",
+    "porte-archive",
+  ];
+  // Portes qui décernent un fragment à l'entrée (les autres le font dans la salle).
+  const DOOR_FRAGMENT = { "porte-machine": "Σ", "porte-reliques": "Δ" };
+  const CONDAMNEE_ID = "porte-condamnee-02";
+
+  function blockIfNoBriefing(doorCfg) {
+    if (!State || !doorCfg) return false;
+    if (FRAGMENT_DOORS.indexOf(doorCfg.id) === -1) return false;
+    if (State.briefingDone()) return false;
+    if (terminalOutput) {
+      terminalOutput.textContent =
+        "Le couloir reste sourd : commencez par la Salle de Briefing.";
+      terminalOutput.className = "terminal-output err";
+    }
+    triggerDoorShake();
+    playError();
+    return true;
+  }
+
+  function grantDoorFragment(doorCfg) {
+    if (State && doorCfg && DOOR_FRAGMENT[doorCfg.id]) {
+      State.grant(DOOR_FRAGMENT[doorCfg.id]);
+    }
+  }
+
+  function renderFragHud() {
+    const hud = document.getElementById("fragHud");
+    if (!hud || !State) return;
+    hud.innerHTML = "";
+    State.SYMS.forEach((sym) => {
+      const c = document.createElement("span");
+      c.className = "chip" + (State.has(sym) ? " has" : "");
+      c.textContent = sym;
+      hud.appendChild(c);
+    });
+    if (State.sceauDone()) {
+      const s = document.createElement("span");
+      s.className = "chip sceau";
+      s.textContent = "SCEAU";
+      hud.appendChild(s);
+    }
+  }
+
   /* AUDIO INIT + SFX */
 
   function initAudio() {
@@ -332,6 +385,8 @@
     const doorCfg = getDoorConfig(activeDoorId);
     if (!doorCfg) return;
 
+    if (blockIfNoBriefing(doorCfg)) return;
+
     const type = doorCfg.type || "temporal";
 
     if (isDoorCodeFree(doorCfg)) {
@@ -357,6 +412,7 @@
       }
 
       setAccessTokenForDoor(doorCfg.id);
+      grantDoorFragment(doorCfg);
       playDoorOpen();
       playSuccess();
 
@@ -398,9 +454,32 @@
 
     // Porte verrouillée
     if (type === "locked") {
+      // La Porte Condamnée se descelle si le Sceau Temporel est obtenu.
+      if (
+        doorCfg.id === CONDAMNEE_ID &&
+        State &&
+        State.sceauDone() &&
+        doorCfg.redirectUrl &&
+        doorCfg.redirectUrl !== "#"
+      ) {
+        if (terminalOutput) {
+          terminalOutput.textContent =
+            "Le Sceau Temporel descelle la porte. La branche oubliée s'ouvre...";
+          terminalOutput.className = "terminal-output ok";
+        }
+        setAccessTokenForDoor(doorCfg.id);
+        playDoorOpen();
+        playSuccess();
+        setTimeout(() => {
+          window.location.href = doorCfg.redirectUrl;
+        }, 1000);
+        return;
+      }
       if (terminalOutput) {
         terminalOutput.textContent =
-          "Cette porte est condamnée. Aucun mécanisme ne répond.";
+          doorCfg.id === CONDAMNEE_ID
+            ? "Porte scellée : il vous manque le Sceau Temporel."
+            : "Cette porte est condamnée. Aucun mécanisme ne répond.";
         terminalOutput.className = "terminal-output err";
       }
       triggerDoorShake();
@@ -531,6 +610,7 @@
   // INIT
   buildDoors();
   setupDragScroll();
+  renderFragHud();
 
   if (config.doors && config.doors.length > 0) {
     selectDoor(config.doors[0].id);

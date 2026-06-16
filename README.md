@@ -39,7 +39,10 @@ touchant `apps/**`, `assets/sfx/sounds/**` ou `deploy/**`.
 | Couloir | `apps/corridor` | `/dedale/` |
 | Porte-Machine | `apps/spectrocrypt/public` | `/dedale/portemachine/` |
 | Atelier des Reliques | `apps/imprimerie` | `/dedale/reliques/` |
-| briefing · cartographie · archive · observatoire | `deploy/salle-attente.html` | page d'attente |
+| Briefing · Cartographie · Observatoire · Archive · Couloir Bêta | `apps/salles/<salle>` | `/dedale/<salle>/` |
+
+Le fil rouge (4 fragments → Sceau → Porte Condamnée) est décrit dans [`SCENARIO.md`](SCENARIO.md).
+L'état de progression est partagé entre les pages via `localStorage` ([`apps/corridor/js/dedale-state.js`](apps/corridor/js/dedale-state.js)).
 
 ## Lancement local
 

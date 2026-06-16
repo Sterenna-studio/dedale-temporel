@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Porte-Archive — Dédale Temporel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-wall: #090607; --bg-floor: #050304;
+        --accent-brass: #c29b4b; --accent-brass-dark: #8a6a30;
+        --accent-emerald: #2dcf8a; --accent-red: #e44b4b;
+        --text-main: #f4e5c1; --text-dim: #b69a71;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; }
+      body {
+        font-family: "Space Mono", monospace; color: var(--text-main);
+        background: radial-gradient(circle at 50% 12%, #1a130c 0, var(--bg-wall) 55%, var(--bg-floor) 100%);
+        display: flex; align-items: center; justify-content: center; padding: 24px;
+      }
+      .panel {
+        max-width: 580px; width: 100%; padding: 28px; text-align: center;
+        border: 1px solid var(--accent-brass-dark); border-radius: 14px;
+        background: radial-gradient(circle at top, #2a2118 0, #14100b 65%);
+        box-shadow: 0 0 40px rgba(0,0,0,.85), inset 0 0 22px rgba(0,0,0,.9);
+      }
+      .kicker { font-size: .7rem; letter-spacing: .32em; text-transform: uppercase; color: var(--text-dim); }
+      h1 { font-family: "Cinzel", serif; font-size: 1.4rem; color: var(--accent-brass); margin: 6px 0 12px; }
+      p.lore { font-size: .82rem; line-height: 1.55; color: var(--text-dim); margin: 0 auto 16px; max-width: 460px; }
+      .slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0; }
+      .slot {
+        padding: 12px 6px; border: 1px solid #3b2a1b; border-radius: 10px; background: #0c0805;
+      }
+      .slot .sym { font-family: "Cinzel", serif; font-size: 1.8rem; color: #4c4c4c; }
+      .slot.has .sym { color: var(--accent-emerald); text-shadow: 0 0 12px rgba(45,207,138,.5); }
+      .slot .nm { font-size: .62rem; color: var(--text-dim); margin-top: 4px; }
+      .slot .st { font-size: .64rem; margin-top: 4px; color: var(--accent-red); }
+      .slot.has .st { color: var(--accent-emerald); }
+      button {
+        font-family: "Cinzel", serif; font-size: .9rem; letter-spacing: .05em; cursor: pointer;
+        color: #14100b; background: linear-gradient(180deg, var(--accent-brass), var(--accent-brass-dark));
+        border: none; border-radius: 9px; padding: 11px 20px; margin-top: 6px;
+      }
+      button:disabled { opacity: .5; cursor: default; }
+      .seal { display: none; margin: 16px 0; }
+      .seal .glyph { font-family: "Cinzel", serif; font-size: 2.6rem; color: var(--accent-emerald); letter-spacing: .1em; text-shadow: 0 0 18px rgba(45,207,138,.6); }
+      .seal .code { font-size: .9rem; color: var(--accent-brass); margin-top: 8px; letter-spacing: .14em; }
+      .seal .next { font-size: .8rem; color: var(--text-dim); margin-top: 10px; }
+      a.back {
+        display: inline-block; margin-top: 12px; font-family: "Cinzel", serif; font-size: .82rem;
+        text-decoration: none; color: var(--text-main); padding: 9px 18px; border-radius: 8px;
+        border: 1px solid var(--accent-brass-dark); background: #120e09;
+      }
+      a.back:hover { border-color: var(--accent-emerald); color: var(--accent-emerald); }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <div class="kicker">S.T.E.A.M. · Dossiers effacés</div>
+      <h1>Porte-Archive</h1>
+      <p class="lore">
+        Rien ne s'efface vraiment : tout se range ailleurs. Présentez les fragments —
+        leur trace ressurgit et compose le <strong>Sceau Temporel</strong>.
+      </p>
+      <div class="slots" id="slots"></div>
+      <button id="assembleBtn">Assembler le Sceau</button>
+      <div class="seal" id="seal">
+        <div class="glyph">ΣΛΩΔ</div>
+        <div class="code">SCEAU TEMPOREL · 1912·∞</div>
+        <div class="next">La branche scellée du couloir répond désormais.<br />Retournez ouvrir la <strong>Porte Condamnée</strong>.</div>
+      </div>
+      <br />
+      <a class="back" href="/dedale/">← Retour au couloir</a>
+    </div>
+
+    <script src="/dedale/js/dedale-state.js"></script>
+    <script>
+      var slotsEl = document.getElementById("slots");
+      var assembleBtn = document.getElementById("assembleBtn");
+      var seal = document.getElementById("seal");
+      var S = window.DedaleState;
+      var FR = S ? S.FRAGMENTS : [];
+
+      function render() {
+        slotsEl.innerHTML = "";
+        FR.forEach(function (f) {
+          var has = S && S.has(f.sym);
+          var d = document.createElement("div");
+          d.className = "slot" + (has ? " has" : "");
+          d.innerHTML = '<div class="sym">' + f.sym + '</div><div class="nm">' + f.name +
+            '</div><div class="st">' + (has ? "✓ acquis" : "manquant") + "</div>";
+          slotsEl.appendChild(d);
+        });
+        var all = S && S.allCollected();
+        assembleBtn.disabled = !all;
+        if (S && S.sceauDone()) showSeal();
+        else if (!all) assembleBtn.textContent = "Fragments manquants (" + (S ? S.count() : 0) + "/4)";
+        else assembleBtn.textContent = "Assembler le Sceau";
+      }
+      function showSeal() {
+        seal.style.display = "block";
+        assembleBtn.disabled = true;
+        assembleBtn.textContent = "Sceau assemblé";
+      }
+      assembleBtn.addEventListener("click", function () {
+        if (S && S.allCollected()) { S.setSceau(); showSeal(); }
+      });
+      render();
+    </script>
+  </body>
+</html>

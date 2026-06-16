@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Salle Cartographique — Dédale Temporel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-wall: #090607; --bg-floor: #050304;
+        --accent-brass: #c29b4b; --accent-brass-dark: #8a6a30;
+        --accent-emerald: #2dcf8a; --accent-red: #e44b4b;
+        --text-main: #f4e5c1; --text-dim: #b69a71;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; }
+      body {
+        font-family: "Space Mono", monospace; color: var(--text-main);
+        background: radial-gradient(circle at 50% 12%, #101a1a 0, var(--bg-wall) 55%, var(--bg-floor) 100%);
+        display: flex; align-items: center; justify-content: center; padding: 24px;
+      }
+      .panel {
+        max-width: 600px; width: 100%; padding: 28px; text-align: center;
+        border: 1px solid var(--accent-brass-dark); border-radius: 14px;
+        background: radial-gradient(circle at top, #20251f 0, #0e120c 65%);
+        box-shadow: 0 0 40px rgba(0,0,0,.85), inset 0 0 22px rgba(0,0,0,.9);
+      }
+      .kicker { font-size: .7rem; letter-spacing: .32em; text-transform: uppercase; color: var(--text-dim); }
+      h1 { font-family: "Cinzel", serif; font-size: 1.4rem; color: var(--accent-brass); margin: 6px 0 10px; }
+      p.lore { font-size: .82rem; line-height: 1.55; color: var(--text-dim); margin: 0 auto 18px; max-width: 460px; }
+      .atlas { position: relative; height: 280px; margin: 0 auto 14px; border: 1px solid #2a3a2a; border-radius: 10px; background: repeating-linear-gradient(0deg,#0a0f0a 0 19px,#0c130c 19px 20px), repeating-linear-gradient(90deg,#0a0f0a 0 19px,#0c130c 19px 20px); overflow: hidden; }
+      svg.links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+      .node {
+        position: absolute; transform: translate(-50%, -50%);
+        font-family: "Cinzel", serif; font-size: .9rem; color: var(--text-main);
+        width: 58px; height: 58px; border-radius: 50%; cursor: pointer;
+        border: 2px solid var(--accent-brass-dark); background: #14100b;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 10px rgba(0,0,0,.6); transition: border-color .2s, transform .1s;
+      }
+      .node:hover { border-color: var(--accent-brass); }
+      .node.done { border-color: var(--accent-emerald); color: var(--accent-emerald); }
+      .status { font-size: .82rem; min-height: 1.3em; margin-bottom: 8px; }
+      .status.err { color: var(--accent-red); } .status.ok { color: var(--accent-emerald); }
+      .reveal { display: none; font-size: .95rem; color: var(--accent-emerald); margin: 10px 0; }
+      .reveal .sym { font-family: "Cinzel", serif; font-size: 2.2rem; display: block; }
+      a.back {
+        display: inline-block; margin-top: 10px; font-family: "Cinzel", serif; font-size: .82rem;
+        text-decoration: none; color: var(--text-main); padding: 9px 18px; border-radius: 8px;
+        border: 1px solid var(--accent-brass-dark); background: #120e09;
+      }
+      a.back:hover { border-color: var(--accent-emerald); color: var(--accent-emerald); }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <div class="kicker">S.T.E.A.M. · Atlas des lignes temporelles</div>
+      <h1>Salle Cartographique</h1>
+      <p class="lore">
+        Les vraies frontières sont des bifurcations de l'Histoire. Reliez les nœuds
+        <strong>dans l'ordre chronologique</strong> pour stabiliser la ligne temporelle.
+      </p>
+      <div class="status" id="status">Cliquez les dates de la plus ancienne à la plus récente.</div>
+      <div class="atlas" id="atlas">
+        <svg class="links" id="links"></svg>
+      </div>
+      <div class="reveal" id="reveal">
+        Ligne stabilisée. Fragment acquis :
+        <span class="sym">Λ</span> Ligne Temporelle
+      </div>
+      <a class="back" href="/dedale/">← Retour au couloir</a>
+    </div>
+
+    <script src="/dedale/js/dedale-state.js"></script>
+    <script>
+      // Nœuds : {label, year, x%, y%}. Ordre attendu = year croissant.
+      var NODES = [
+        { label: "1912", year: 1912, x: 22, y: 30 },
+        { label: "1957", year: 1957, x: 70, y: 22 },
+        { label: "2049", year: 2049, x: 78, y: 68 },
+        { label: "∞", year: 9999, x: 30, y: 74 },
+      ];
+      var order = NODES.slice().sort(function (a, b) { return a.year - b.year; });
+      var atlas = document.getElementById("atlas");
+      var svg = document.getElementById("links");
+      var statusEl = document.getElementById("status");
+      var reveal = document.getElementById("reveal");
+      var step = 0;
+      var solved = false;
+
+      function px(node, axis) {
+        var r = atlas.getBoundingClientRect();
+        return axis === "x" ? (node.x / 100) * r.width : (node.y / 100) * r.height;
+      }
+      function drawLine(a, b) {
+        var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        l.setAttribute("x1", px(a, "x")); l.setAttribute("y1", px(a, "y"));
+        l.setAttribute("x2", px(b, "x")); l.setAttribute("y2", px(b, "y"));
+        l.setAttribute("stroke", "#2dcf8a"); l.setAttribute("stroke-width", "2");
+        l.setAttribute("stroke-dasharray", "4 3");
+        svg.appendChild(l);
+      }
+      function win() {
+        solved = true;
+        statusEl.textContent = "Ligne temporelle stabilisée.";
+        statusEl.className = "status ok";
+        reveal.style.display = "block";
+        if (window.DedaleState) DedaleState.grant("Λ");
+      }
+      function alreadyDone() {
+        if (window.DedaleState && DedaleState.has("Λ")) {
+          NODES.forEach(function (n) { n.el.classList.add("done"); });
+          for (var i = 0; i < order.length - 1; i++) drawLine(order[i], order[i + 1]);
+          win();
+        }
+      }
+      NODES.forEach(function (n) {
+        var el = document.createElement("div");
+        el.className = "node"; el.textContent = n.label;
+        el.style.left = n.x + "%"; el.style.top = n.y + "%";
+        el.addEventListener("click", function () {
+          if (solved) return;
+          if (n === order[step]) {
+            el.classList.add("done");
+            if (step > 0) drawLine(order[step - 1], order[step]);
+            step++;
+            if (step === order.length) win();
+            else { statusEl.textContent = "Nœud relié (" + step + "/" + order.length + ")."; statusEl.className = "status ok"; }
+          } else {
+            statusEl.textContent = "Bifurcation incohérente — la ligne se rompt. On reprend.";
+            statusEl.className = "status err";
+            step = 0;
+            svg.innerHTML = "";
+            NODES.forEach(function (m) { m.el.classList.remove("done"); });
+          }
+        });
+        n.el = el;
+        atlas.appendChild(el);
+      });
+      alreadyDone();
+    </script>
+  </body>
+</html>

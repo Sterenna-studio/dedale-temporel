@@ -11,6 +11,7 @@ on:
       - "apps/corridor/**"
       - "apps/spectrocrypt/public/**"
       - "apps/imprimerie/**"
+      - "apps/salles/**"
       - "assets/sfx/sounds/**"
       - "deploy/**"
       - ".github/workflows/deploy-nitro.yml"
@@ -26,6 +27,7 @@ env:
   PORTEMACHINE_SRC: apps/spectrocrypt/public
   RELIQUES_SRC: apps/imprimerie
   SOUNDS_SRC: assets/sfx/sounds
+  SALLES_SRC: apps/salles
 
 jobs:
   deploy:
@@ -55,10 +57,11 @@ jobs:
           mkdir -p _site/reliques
           cp -r "$RELIQUES_SRC/." _site/reliques/
 
-          # Portes sans contenu -> page d'attente « salle en calibrage »
-          for salle in briefing cartographie archive observatoire; do
+          # Salles-énigmes du scénario (briefing, cartographie, observatoire,
+          # archive, condamnee) -> sous-chemins dédiés.
+          for salle in briefing cartographie observatoire archive condamnee; do
             mkdir -p "_site/$salle"
-            cp deploy/salle-attente.html "_site/$salle/index.html"
+            cp -r "$SALLES_SRC/$salle/." "_site/$salle/"
           done
 
           echo "----- arbre assemblé -----"

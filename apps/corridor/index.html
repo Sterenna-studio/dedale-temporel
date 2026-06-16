@@ -9,6 +9,17 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* HUD des fragments du Sceau Temporel */
+      .frag-hud { display: flex; gap: 5px; margin: 4px 0; justify-content: flex-end; flex-wrap: wrap; }
+      .frag-hud .chip {
+        font-family: "Cinzel", serif; font-size: .8rem; width: 22px; height: 22px;
+        display: flex; align-items: center; justify-content: center; border-radius: 50%;
+        border: 1px solid var(--accent-brass-dark, #8a6a30); color: #4c4c4c; background: #0c0805;
+      }
+      .frag-hud .chip.has { color: var(--accent-emerald, #2dcf8a); border-color: var(--accent-emerald, #2dcf8a); text-shadow: 0 0 8px rgba(45,207,138,.5); }
+      .frag-hud .chip.sceau { color: var(--accent-brass, #c29b4b); border-color: var(--accent-brass, #c29b4b); width: auto; padding: 0 8px; border-radius: 11px; font-size: .68rem; letter-spacing: .08em; }
+    </style>
   </head>
   <body>
     <div class="dedale-shell">
@@ -16,6 +27,7 @@
         <div class="dedale-title">Le Couloir des Dédales Temporels</div>
         <div class="dedale-header-right">
           <div class="dedale-subtitle">Section S.T.E.A.M. – Accès restreint</div>
+          <div class="frag-hud" id="fragHud" title="Fragments du Sceau Temporel"></div>
           <div class="header-lights">
             <span class="led led-green"></span>
             <span class="led led-amber"></span>
@@ -124,6 +136,7 @@
     <audio id="sfxNote" src="sounds/lore/note_rustle.wav" class="audio-hidden"></audio>
     <audio id="sfxConsole" src="sounds/ui/console_beep.wav" class="audio-hidden"></audio>
 
+    <script src="js/dedale-state.js"></script>
     <script src="config/config.js"></script>
     <script src="js/main.js"></script>
   </body>
