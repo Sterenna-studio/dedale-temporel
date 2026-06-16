@@ -11,6 +11,7 @@ on:
       - "dedale_dossier_complet_v6/**"
       - "spectrocrypt_v1_vanilla/public/**"
       - "impirmerie_medical/med_imprimerie_puzzle_v7_8_1/**"
+      - "deploy/**"
       - ".github/workflows/deploy-nitro.yml"
   workflow_dispatch:
 
@@ -47,6 +48,12 @@ jobs:
           # Atelier des Reliques -> Imprimerie Médicale
           mkdir -p _site/reliques
           cp -r "$RELIQUES_SRC/." _site/reliques/
+
+          # Portes sans contenu -> page d'attente « salle en calibrage »
+          for salle in briefing cartographie archive observatoire; do
+            mkdir -p "_site/$salle"
+            cp deploy/salle-attente.html "_site/$salle/index.html"
+          done
 
           echo "----- arbre assemblé -----"
           find _site -maxdepth 2 -type d | sort

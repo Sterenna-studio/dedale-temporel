@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Salle en calibrage — Dédale Temporel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-wall: #090607;
+        --bg-floor: #050304;
+        --accent-brass: #c29b4b;
+        --accent-brass-dark: #8a6a30;
+        --accent-emerald: #2dcf8a;
+        --text-main: #f4e5c1;
+        --text-dim: #b69a71;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        font-family: "Space Mono", monospace;
+        color: var(--text-main);
+        background:
+          radial-gradient(circle at 50% 20%, #1a130c 0, var(--bg-wall) 55%, var(--bg-floor) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        overflow: hidden;
+      }
+      .panel {
+        position: relative;
+        max-width: 560px;
+        width: 100%;
+        padding: 38px 30px 34px;
+        text-align: center;
+        border: 1px solid var(--accent-brass-dark);
+        border-radius: 14px;
+        background:
+          radial-gradient(circle at top, #2a2118 0, #14100b 65%);
+        box-shadow:
+          0 0 40px rgba(0, 0, 0, 0.85),
+          inset 0 0 22px rgba(0, 0, 0, 0.9);
+      }
+      .gear {
+        width: 88px;
+        height: 88px;
+        margin: 0 auto 14px;
+        color: var(--accent-brass);
+        animation: spin 9s linear infinite;
+        filter: drop-shadow(0 0 8px rgba(194, 155, 75, 0.35));
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        .gear { animation: none; }
+      }
+      .kicker {
+        font-size: 0.72rem;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 10px;
+      }
+      h1 {
+        font-family: "Cinzel", serif;
+        font-size: 1.55rem;
+        letter-spacing: 0.05em;
+        color: var(--accent-brass);
+        margin: 0 0 6px;
+      }
+      .status {
+        color: var(--accent-emerald);
+        font-size: 0.9rem;
+        margin: 0 0 18px;
+      }
+      p.lore {
+        font-size: 0.86rem;
+        line-height: 1.55;
+        color: var(--text-dim);
+        margin: 0 auto 22px;
+        max-width: 440px;
+      }
+      .bar {
+        height: 8px;
+        border-radius: 6px;
+        background: #0c0805;
+        border: 1px solid var(--accent-brass-dark);
+        overflow: hidden;
+        margin: 0 auto 24px;
+        max-width: 320px;
+      }
+      .bar > span {
+        display: block;
+        height: 100%;
+        width: 38%;
+        background: linear-gradient(90deg, var(--accent-brass-dark), var(--accent-brass));
+        animation: load 2.6s ease-in-out infinite;
+      }
+      @keyframes load {
+        0% { margin-left: -40%; width: 40%; }
+        50% { width: 65%; }
+        100% { margin-left: 100%; width: 40%; }
+      }
+      a.back {
+        display: inline-block;
+        font-family: "Cinzel", serif;
+        font-size: 0.82rem;
+        letter-spacing: 0.06em;
+        text-decoration: none;
+        color: var(--text-main);
+        padding: 9px 18px;
+        border-radius: 8px;
+        border: 1px solid var(--accent-brass-dark);
+        background: #120e09;
+        transition: border-color 0.2s, color 0.2s;
+      }
+      a.back:hover {
+        border-color: var(--accent-emerald);
+        color: var(--accent-emerald);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <svg class="gear" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+        <path d="M50 8l5 10a35 35 0 0 1 8 3l11-3 7 7-3 11a35 35 0 0 1 3 8l10 5v10l-10 5a35 35 0 0 1-3 8l3 11-7 7-11-3a35 35 0 0 1-8 3l-5 10H40l-5-10a35 35 0 0 1-8-3l-11 3-7-7 3-11a35 35 0 0 1-3-8L-2 58V48l10-5a35 35 0 0 1 3-8L8 24l7-7 11 3a35 35 0 0 1 8-3l5-10z" transform="translate(5 5) scale(0.9)"/>
+        <circle cx="50" cy="50" r="14" fill="#14100b"/>
+      </svg>
+      <div class="kicker">S.T.E.A.M. · Dédale Temporel</div>
+      <h1 id="salleNom">Salle inconnue</h1>
+      <p class="status">⚙ Calibrage temporel en cours…</p>
+      <p class="lore">
+        Cette salle existe déjà quelque part dans la trame du temps,
+        mais ses coordonnées ne sont pas encore stabilisées.
+        Les agents techniciens ajustent les rouages — revenez bientôt.
+      </p>
+      <div class="bar"><span></span></div>
+      <a class="back" href="../">← Retour au couloir des portes</a>
+    </div>
+
+    <script>
+      (function () {
+        var noms = {
+          portemachine: "Porte-Machine",
+          briefing: "Salle de Briefing",
+          cartographie: "Salle Cartographique",
+          reliques: "Atelier des Reliques",
+          archive: "Porte-Archive",
+          observatoire: "Observatoire Synchronique"
+        };
+        var seg = location.pathname.replace(/\/+$/, "").split("/").pop() || "";
+        var nom = noms[seg.toLowerCase()];
+        if (nom) {
+          document.getElementById("salleNom").textContent = nom;
+          document.title = nom + " — en calibrage · Dédale Temporel";
+        }
+      })();
+    </script>
+  </body>
+</html>
