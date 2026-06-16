@@ -1,40 +1,67 @@
 # Dédale Temporel
 
 Projet d'**escape game** sur le thème *cuivre / vapeur / temporel* (univers steampunk).
-Le dépôt regroupe les différents modules-énigmes, les packs sonores et les outils associés.
+Le couloir des portes temporelles et ses salles-énigmes sont déployés sur
+[`nitro.sterenna.fr/dedale`](https://nitro.sterenna.fr/dedale/) (convention Nitro apps).
+
+## Arborescence
+
+```text
+apps/
+├── corridor/      # Couloir des portes temporelles (hub) → /dedale/
+├── spectrocrypt/  # SpectroCrypt (décrypteur audio)     → /dedale/portemachine/
+└── imprimerie/    # Puzzle Imprimerie Médicale            → /dedale/reliques/
+assets/
+└── sfx/           # Pack de sons (ambiance, UI, portes)   → /dedale/sounds/
+deploy/            # Gabarits de déploiement (page d'attente « salle en calibrage »)
+archive/           # Anciennes itérations & variantes, non déployées
+```
 
 ## Modules
 
 | Dossier | Description |
 |---------|-------------|
-| [`dedale_dossier_complet_v6`](dedale_dossier_complet_v6) | Cœur du dédale : labyrinthe de portes-temporelles avec console de saisie de codes, énigmes, notes et page d'admin. Configuration des portes dans [`config/config.js`](dedale_dossier_complet_v6/config/config.js). |
-| [`impirmerie_medical`](impirmerie_medical) | Énigme « Imprimerie Médicale » : puzzle de pièces avec physique (inertie, collisions, snap), sons et reconstitution d'un code d'identification. Version déployée : `med_imprimerie_puzzle_v7_8_1`. |
-| [`spectrocrypt_v1_vanilla`](spectrocrypt_v1_vanilla) | **SpectroCrypt** — app web (vanilla JS) pour chiffrer/déchiffrer des messages cachés dans l'audio (SpectroGlyph, FSK + CRC-16) avec vue spectrogramme. Inclut des tests Jest. |
-| [`dedale_sfx_pack`](dedale_sfx_pack) | Pack de sons (ambiance, UI, portes, lore) au format MP3/WAV avec mapping JSON. |
-| [`deploy`](deploy) | Gabarits de déploiement Nitro (ex. page d'attente « salle en calibrage »). |
+| [`apps/corridor`](apps/corridor) | Cœur du dédale : labyrinthe de portes-temporelles avec console de saisie de codes, énigmes, notes et page d'admin (gardée par superuser Supabase). Config des portes : [`config/config.js`](apps/corridor/config/config.js). |
+| [`apps/spectrocrypt`](apps/spectrocrypt) | **SpectroCrypt** — app web (vanilla JS) pour chiffrer/déchiffrer des messages cachés dans l'audio (SpectroGlyph, FSK + CRC-16) avec vue spectrogramme. Tests Jest. Seul `public/` est déployé. |
+| [`apps/imprimerie`](apps/imprimerie) | Énigme « Imprimerie Médicale » : puzzle de pièces avec physique (inertie, collisions, snap), sons et reconstitution d'un code d'identification. |
+| [`assets/sfx`](assets/sfx) | Pack de sons (ambiance, UI, portes, lore) MP3/WAV + mapping JSON. |
+| [`deploy`](deploy) | Gabarits de déploiement Nitro (page d'attente). |
+| [`archive`](archive) | Itérations & variantes conservées, **non déployées**. |
 
-## Lancement rapide
+## Déploiement
 
-La plupart des modules sont des pages web statiques : ouvrir le `index.html` correspondant via un petit serveur local.
+`.github/workflows/deploy-nitro.yml` assemble couloir + salles + sons en un seul
+arbre et le pousse via rsync SSH vers `~/nitro/dedale/`. Déclenché à chaque push
+touchant `apps/**`, `assets/sfx/sounds/**` ou `deploy/**`.
+
+| Porte | Source | URL |
+|-------|--------|-----|
+| Couloir | `apps/corridor` | `/dedale/` |
+| Porte-Machine | `apps/spectrocrypt/public` | `/dedale/portemachine/` |
+| Atelier des Reliques | `apps/imprimerie` | `/dedale/reliques/` |
+| briefing · cartographie · archive · observatoire | `deploy/salle-attente.html` | page d'attente |
+
+## Lancement local
+
+Pages statiques : servir via un petit serveur local.
 
 ```bash
-python -m http.server 8000
-# puis ouvrir http://localhost:8000
+python -m http.server 8000   # puis http://localhost:8000/apps/corridor/
 ```
 
-Pour **SpectroCrypt** (avec dépendances et tests) :
+Pour **SpectroCrypt** (dépendances + tests) :
 
 ```bash
-cd spectrocrypt_v1_vanilla
+cd apps/spectrocrypt
 npm install
 npm run serve     # http://localhost:8000/public/
 npm test          # tests Jest
 ```
 
-> Le mode micro de SpectroCrypt nécessite HTTPS.
+> Le mode micro de SpectroCrypt nécessite HTTPS. La page admin du couloir requiert
+> une session **superuser Supabase** (shared Nitro) et reste masquée sinon.
 
 ## Notes
 
-- Chaque module possède son propre `README.md` détaillé.
-- Les sons fournis dans les packs peuvent servir de placeholders et être remplacés.
+- Chaque module a son propre `README.md`.
 - `node_modules/` et `coverage/` ne sont pas versionnés (voir `.gitignore`).

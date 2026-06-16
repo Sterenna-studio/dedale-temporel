@@ -8,10 +8,10 @@ on:
   push:
     branches: [main]
     paths:
-      - "dedale_dossier_complet_v6/**"
-      - "spectrocrypt_v1_vanilla/public/**"
-      - "impirmerie_medical/med_imprimerie_puzzle_v7_8_1/**"
-      - "dedale_sfx_pack/sounds/**"
+      - "apps/corridor/**"
+      - "apps/spectrocrypt/public/**"
+      - "apps/imprimerie/**"
+      - "assets/sfx/sounds/**"
       - "deploy/**"
       - ".github/workflows/deploy-nitro.yml"
   workflow_dispatch:
@@ -22,10 +22,10 @@ concurrency:
 
 env:
   # Sources -> sous-chemins servis sous /dedale/
-  CORRIDOR_SRC: dedale_dossier_complet_v6
-  PORTEMACHINE_SRC: spectrocrypt_v1_vanilla/public
-  RELIQUES_SRC: impirmerie_medical/med_imprimerie_puzzle_v7_8_1/med_imprimerie_puzzle_v7_6_2
-  SOUNDS_SRC: dedale_sfx_pack/sounds
+  CORRIDOR_SRC: apps/corridor
+  PORTEMACHINE_SRC: apps/spectrocrypt/public
+  RELIQUES_SRC: apps/imprimerie
+  SOUNDS_SRC: assets/sfx/sounds
 
 jobs:
   deploy:
