@@ -1,0 +1,630 @@
+[
+  {
+    "d": "2016-01-15",
+    "t": "Oxenfree",
+    "p": [
+      "PC",
+      "XB1"
+    ],
+    "g": [
+      "Narratif",
+      "Indé"
+    ]
+  },
+  {
+    "d": "2016-01-19",
+    "t": "Darkest Dungeon",
+    "p": [
+      "PC"
+    ],
+    "g": [
+      "RPG",
+      "Roguelike"
+    ]
+  },
+  {
+    "d": "2016-01-26",
+    "t": "The Witness",
+    "p": [
+      "PC",
+      "PS4"
+    ],
+    "g": [
+      "Puzzle",
+      "Exploration"
+    ]
+  },
+  {
+    "d": "2016-01-26",
+    "t": "LEGO Marvel’s Avengers",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Action",
+      "Coop"
+    ]
+  },
+  {
+    "d": "2016-01-28",
+    "t": "Rise of the Tomb Raider (PC)",
+    "p": [
+      "PC"
+    ],
+    "g": [
+      "Action",
+      "Aventure"
+    ]
+  },
+  {
+    "d": "2016-02-04",
+    "t": "Naruto Shippuden: Ultimate Ninja Storm 4",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Fighting",
+      "Anime"
+    ]
+  },
+  {
+    "d": "2016-02-05",
+    "t": "XCOM 2",
+    "p": [
+      "PC"
+    ],
+    "g": [
+      "Tactique",
+      "Stratégie"
+    ]
+  },
+  {
+    "d": "2016-02-09",
+    "t": "Firewatch",
+    "p": [
+      "PC",
+      "PS4"
+    ],
+    "g": [
+      "Aventure",
+      "Narratif"
+    ]
+  },
+  {
+    "d": "2016-02-16",
+    "t": "Street Fighter V",
+    "p": [
+      "PC",
+      "PS4"
+    ],
+    "g": [
+      "Fighting",
+      "Compétitif"
+    ]
+  },
+  {
+    "d": "2016-02-23",
+    "t": "Far Cry Primal",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Open World",
+      "Action"
+    ]
+  },
+  {
+    "d": "2016-02-26",
+    "t": "Stardew Valley",
+    "p": [
+      "PC"
+    ],
+    "g": [
+      "Simulation",
+      "Indé"
+    ]
+  },
+  {
+    "d": "2016-03-08",
+    "t": "Tom Clancy’s The Division",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "TPS",
+      "Online"
+    ]
+  },
+  {
+    "d": "2016-03-11",
+    "t": "Hitman (2016) — Episode 1",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Infiltration",
+      "Épisodique"
+    ]
+  },
+  {
+    "d": "2016-03-18",
+    "t": "Pokkén Tournament",
+    "p": [
+      "Wii U"
+    ],
+    "g": [
+      "Fighting",
+      "Pokémon"
+    ]
+  },
+  {
+    "d": "2016-03-25",
+    "t": "Hyrule Warriors Legends",
+    "p": [
+      "3DS"
+    ],
+    "g": [
+      "Action",
+      "Zelda"
+    ]
+  },
+  {
+    "d": "2016-04-05",
+    "t": "Quantum Break",
+    "p": [
+      "XB1",
+      "PC"
+    ],
+    "g": [
+      "Action",
+      "Narratif"
+    ]
+  },
+  {
+    "d": "2016-04-12",
+    "t": "Dark Souls III",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Action-RPG",
+      "Soulslike"
+    ]
+  },
+  {
+    "d": "2016-04-12",
+    "t": "Ratchet & Clank (PS4)",
+    "p": [
+      "PS4"
+    ],
+    "g": [
+      "Action",
+      "Plateforme"
+    ]
+  },
+  {
+    "d": "2016-04-26",
+    "t": "Alienation",
+    "p": [
+      "PS4"
+    ],
+    "g": [
+      "Twin-stick",
+      "Coop"
+    ]
+  },
+  {
+    "d": "2016-05-10",
+    "t": "Uncharted 4: A Thief’s End",
+    "p": [
+      "PS4"
+    ],
+    "g": [
+      "Action",
+      "Aventure"
+    ]
+  },
+  {
+    "d": "2016-05-13",
+    "t": "DOOM (2016)",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "FPS",
+      "Action"
+    ]
+  },
+  {
+    "d": "2016-05-24",
+    "t": "Overwatch",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "FPS",
+      "Hero Shooter"
+    ]
+  },
+  {
+    "d": "2016-05-31",
+    "t": "The Witcher 3: Blood and Wine",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "RPG",
+      "Extension"
+    ]
+  },
+  {
+    "d": "2016-06-07",
+    "t": "Mirror’s Edge Catalyst",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Parkour",
+      "Action"
+    ]
+  },
+  {
+    "d": "2016-06-10",
+    "t": "Kirby: Planet Robobot",
+    "p": [
+      "3DS"
+    ],
+    "g": [
+      "Plateforme",
+      "Nintendo"
+    ]
+  },
+  {
+    "d": "2016-06-21",
+    "t": "Umbrella Corps",
+    "p": [
+      "PC",
+      "PS4"
+    ],
+    "g": [
+      "Shooter",
+      "Multijoueur"
+    ]
+  },
+  {
+    "d": "2016-06-29",
+    "t": "Inside",
+    "p": [
+      "XB1"
+    ],
+    "g": [
+      "Plateforme",
+      "Indé"
+    ]
+  },
+  {
+    "d": "2016-07-05",
+    "t": "Furi",
+    "p": [
+      "PS4",
+      "PC"
+    ],
+    "g": [
+      "Boss Rush",
+      "Action"
+    ]
+  },
+  {
+    "d": "2016-07-06",
+    "t": "Pokémon GO",
+    "p": [
+      "Mobile"
+    ],
+    "g": [
+      "AR",
+      "Pokémon"
+    ]
+  },
+  {
+    "d": "2016-07-12",
+    "t": "Song of the Deep",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Metroidvania",
+      "Aventure"
+    ]
+  },
+  {
+    "d": "2016-08-02",
+    "t": "Batman: The Telltale Series — Ep.1",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Narratif",
+      "Aventure"
+    ]
+  },
+  {
+    "d": "2016-08-09",
+    "t": "No Man’s Sky",
+    "p": [
+      "PS4",
+      "PC"
+    ],
+    "g": [
+      "Exploration",
+      "Sandbox"
+    ]
+  },
+  {
+    "d": "2016-08-16",
+    "t": "Grow Up",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Plateforme",
+      "Indé"
+    ]
+  },
+  {
+    "d": "2016-08-23",
+    "t": "Deus Ex: Mankind Divided",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Immersive Sim",
+      "RPG"
+    ]
+  },
+  {
+    "d": "2016-09-13",
+    "t": "ReCore",
+    "p": [
+      "XB1",
+      "PC"
+    ],
+    "g": [
+      "Action",
+      "Aventure"
+    ]
+  },
+  {
+    "d": "2016-09-20",
+    "t": "NBA 2K17",
+    "p": [
+      "PS4",
+      "XB1",
+      "PC"
+    ],
+    "g": [
+      "Sport"
+    ]
+  },
+  {
+    "d": "2016-09-27",
+    "t": "Forza Horizon 3",
+    "p": [
+      "XB1",
+      "PC"
+    ],
+    "g": [
+      "Course",
+      "Open World"
+    ]
+  },
+  {
+    "d": "2016-09-27",
+    "t": "XCOM 2 (Consoles)",
+    "p": [
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Tactique",
+      "Stratégie"
+    ]
+  },
+  {
+    "d": "2016-10-07",
+    "t": "Mafia III",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Action",
+      "Open World"
+    ]
+  },
+  {
+    "d": "2016-10-11",
+    "t": "Gears of War 4",
+    "p": [
+      "XB1",
+      "PC"
+    ],
+    "g": [
+      "TPS",
+      "Action"
+    ]
+  },
+  {
+    "d": "2016-10-21",
+    "t": "Battlefield 1",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "FPS",
+      "Multijoueur"
+    ]
+  },
+  {
+    "d": "2016-10-21",
+    "t": "Sid Meier’s Civilization VI",
+    "p": [
+      "PC"
+    ],
+    "g": [
+      "4X",
+      "Stratégie"
+    ]
+  },
+  {
+    "d": "2016-10-28",
+    "t": "Titanfall 2",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "FPS",
+      "Action"
+    ]
+  },
+  {
+    "d": "2016-11-04",
+    "t": "Call of Duty: Infinite Warfare",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "FPS"
+    ]
+  },
+  {
+    "d": "2016-11-11",
+    "t": "Dishonored 2",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Infiltration",
+      "Immersive Sim"
+    ]
+  },
+  {
+    "d": "2016-11-15",
+    "t": "Watch Dogs 2",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Open World",
+      "Hacking"
+    ]
+  },
+  {
+    "d": "2016-11-18",
+    "t": "Pokémon Sun / Moon",
+    "p": [
+      "3DS"
+    ],
+    "g": [
+      "JRPG",
+      "Pokémon"
+    ]
+  },
+  {
+    "d": "2016-11-29",
+    "t": "Final Fantasy XV",
+    "p": [
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "JRPG",
+      "Aventure"
+    ]
+  },
+  {
+    "d": "2016-12-02",
+    "t": "Steep",
+    "p": [
+      "PC",
+      "PS4",
+      "XB1"
+    ],
+    "g": [
+      "Sport",
+      "Open World"
+    ]
+  },
+  {
+    "d": "2016-12-06",
+    "t": "Dead Rising 4",
+    "p": [
+      "XB1",
+      "PC"
+    ],
+    "g": [
+      "Action",
+      "Zombie"
+    ]
+  },
+  {
+    "d": "2016-12-06",
+    "t": "The Last Guardian",
+    "p": [
+      "PS4"
+    ],
+    "g": [
+      "Aventure",
+      "Narratif"
+    ]
+  },
+  {
+    "d": "2016-12-15",
+    "t": "Super Mario Run",
+    "p": [
+      "Mobile"
+    ],
+    "g": [
+      "Plateforme",
+      "Nintendo"
+    ]
+  }
+]
