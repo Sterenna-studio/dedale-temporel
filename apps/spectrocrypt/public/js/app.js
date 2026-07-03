@@ -230,6 +230,7 @@
     const res = SC.decodeFskAuto(mono, buf.sampleRate, profiles.length ? profiles : defaultProfiles());
     $('decodedMessage').textContent = res.ok ? res.message : '(not found)';
     $('decStatus').textContent = res.ok ? `OK (offset ${res.alignmentOffset})` : 'No valid frame (CRC failed or not FSK).';
+    if (res.ok && window.DedaleState) { DedaleState.grant('Σ'); $('decStatus').textContent += ' · Fragment Σ acquis'; }
     $('metaInfo').textContent = `SR ${buf.sampleRate} Hz · ${spec.width} frames`;
 
     ac.close();
@@ -316,6 +317,7 @@
         live.lastMsg = res.message;
         $('decodedMessage').textContent = res.message;
         $('decStatus').textContent = 'Mic: OK (decoded)';
+        if (window.DedaleState) { DedaleState.grant('Σ'); $('decStatus').textContent += ' · Fragment Σ acquis'; }
       }
     }
     setTimeout(periodicDecode, 300);

@@ -50,8 +50,10 @@
     "porte-reliques",
     "porte-archive",
   ];
-  // Portes qui décernent un fragment à l'entrée (les autres le font dans la salle).
-  const DOOR_FRAGMENT = { "porte-machine": "Σ", "porte-reliques": "Δ" };
+  // Σ et Δ ne sont plus décernés à l'entrée : ils se méritent en résolvant
+  // les puzzles (SpectroCrypt → Σ, Imprimerie → Δ), qui appellent
+  // DedaleState.grant() eux-mêmes. La map reste vide (extensible au besoin).
+  const DOOR_FRAGMENT = {};
   const CONDAMNEE_ID = "porte-condamnee-02";
 
   function blockIfNoBriefing(doorCfg) {

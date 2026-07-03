@@ -1307,6 +1307,7 @@ function checkEntry(){
       resultEl.textContent = `✅ Code d’identification : ${CODE_OK}`;
       setStatus("Code déverrouillé.");
       if (winCode) winCode.textContent = CODE_OK;
+      if (window.DedaleState) DedaleState.grant("Δ");
       openModal();
       audio.play("succes");
     } else {
