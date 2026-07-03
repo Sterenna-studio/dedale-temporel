@@ -92,6 +92,99 @@
     }
   }
 
+  /* --- INDICES À TROUVER + CARNET DE BORD --- */
+
+  const CLUES = window.DEDALE_CLUES || [];
+  const hallway = document.querySelector(".hallway");
+  const invToggle = document.getElementById("invToggle");
+  const invPanel = document.getElementById("invPanel");
+  const invClose = document.getElementById("invClose");
+  const invList = document.getElementById("invList");
+  const invBadge = document.getElementById("invBadge");
+  const itemOverlay = document.getElementById("itemOverlay");
+  const itemTitle = document.getElementById("itemTitle");
+  const itemText = document.getElementById("itemText");
+  const itemReveal = document.getElementById("itemReveal");
+  const itemClose = document.getElementById("itemClose");
+
+  function getClue(id) {
+    return CLUES.find((c) => c.id === id) || null;
+  }
+
+  function buildClues() {
+    if (!hallway) return;
+    CLUES.forEach((clue) => {
+      const el = document.createElement("button");
+      el.className = "clue";
+      el.dataset.clueId = clue.id;
+      el.setAttribute("aria-label", clue.label);
+      el.innerHTML =
+        '<span class="clue-icon">✎</span>' +
+        '<span class="clue-tip">' + (clue.hint || clue.label) + "</span>";
+      const p = clue.pos || {};
+      if (p.top) el.style.top = p.top;
+      if (p.bottom) el.style.bottom = p.bottom;
+      if (p.left) el.style.left = p.left;
+      if (p.right) el.style.right = p.right;
+      if (p.rotate) el.style.setProperty("--rot", p.rotate);
+      if (State && State.hasItem(clue.id)) el.classList.add("found");
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openItem(clue);
+      });
+      hallway.appendChild(el);
+    });
+  }
+
+  function openItem(clue) {
+    if (State) State.findItem(clue.id);
+    const el =
+      hallway && hallway.querySelector('.clue[data-clue-id="' + clue.id + '"]');
+    if (el) el.classList.add("found");
+    if (itemTitle) itemTitle.textContent = clue.label;
+    if (itemText) itemText.textContent = (clue.text || "").trim();
+    if (itemReveal) {
+      itemReveal.innerHTML = clue.code
+        ? "Code d'accès pour <strong>" + clue.reveals + "</strong> : <code>" + clue.code + "</code>"
+        : "";
+    }
+    if (itemOverlay) itemOverlay.classList.remove("hidden");
+    playNoteSound();
+    renderInventory();
+  }
+
+  function renderInventory() {
+    if (invBadge) invBadge.textContent = State ? State.inventoryCount() : 0;
+    if (!invList) return;
+    invList.innerHTML = "";
+    const found = State ? State.foundItems() : [];
+    if (found.length === 0) {
+      invList.innerHTML =
+        '<div class="inv-empty">Aucune note pour l\'instant. Fouillez le couloir : ' +
+        "certaines sont posées au sol, oubliées de côté.</div>";
+      return;
+    }
+    found.forEach((id) => {
+      const clue = getClue(id);
+      if (!clue) return;
+      const row = document.createElement("button");
+      row.className = "inv-item";
+      row.innerHTML =
+        '<span class="inv-item-label">' + clue.label + "</span>" +
+        '<span class="inv-item-code">' + (clue.code || "") + "</span>";
+      row.addEventListener("click", () => openItem(clue));
+      invList.appendChild(row);
+    });
+  }
+
+  function toggleInventory(force) {
+    if (!invPanel) return;
+    const show =
+      force !== undefined ? force : invPanel.classList.contains("hidden");
+    invPanel.classList.toggle("hidden", !show);
+    if (show) renderInventory();
+  }
+
   /* AUDIO INIT + SFX */
 
   function initAudio() {
@@ -611,6 +704,21 @@
   buildDoors();
   setupDragScroll();
   renderFragHud();
+  buildClues();
+  renderInventory();
+
+  if (invToggle) invToggle.addEventListener("click", () => toggleInventory());
+  if (invClose) invClose.addEventListener("click", () => toggleInventory(false));
+  if (itemClose) {
+    itemClose.addEventListener("click", () => {
+      if (itemOverlay) itemOverlay.classList.add("hidden");
+    });
+  }
+  if (itemOverlay) {
+    itemOverlay.addEventListener("click", (e) => {
+      if (e.target === itemOverlay) itemOverlay.classList.add("hidden");
+    });
+  }
 
   if (config.doors && config.doors.length > 0) {
     selectDoor(config.doors[0].id);

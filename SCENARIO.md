@@ -65,9 +65,17 @@ MACHINE     GRAPHIE    TOIRE          RELIQUES
 
 ## Codes — état actuel vs cible
 
-Aujourd'hui, chaque porte accepte un code = son nom (`briefing`, `cartographie`…).
-Cible : ces codes restent des **codes d'accès** à la salle, mais la **progression**
-repose sur les **fragments** collectés (et non sur les noms).
+Chaque porte accepte un code = son nom (`briefing`, `cartographie`…). Ces codes
+ne s'inventent pas : ils se **trouvent**. Des **notes d'agents** oubliées sont
+disséminées dans le couloir (posées au sol, de côté). Les ramasser révèle le code
+d'une salle et les range dans le **Carnet de bord** (inventaire local persistant,
+`localStorage`), reconsultable à tout moment.
+
+- Catalogue des indices : [`apps/corridor/js/clues.js`](apps/corridor/js/clues.js)
+- Inventaire : `DedaleState.findItem / foundItems` dans
+  [`dedale-state.js`](apps/corridor/js/dedale-state.js)
+
+La **progression** repose ensuite sur les **fragments** collectés (et non sur les noms).
 
 | Porte | Code d'accès (inchangé) | Rôle dans le fil rouge |
 |-------|-------------------------|------------------------|

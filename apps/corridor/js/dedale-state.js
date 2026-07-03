@@ -25,7 +25,7 @@
   function defaults() {
     const fragments = {};
     SYMS.forEach((s) => (fragments[s] = false));
-    return { briefing: false, fragments, sceau: false };
+    return { briefing: false, fragments, sceau: false, inventory: {} };
   }
 
   function load() {
@@ -38,6 +38,12 @@
       base.sceau = !!parsed.sceau;
       if (parsed.fragments) {
         SYMS.forEach((s) => (base.fragments[s] = !!parsed.fragments[s]));
+      }
+      if (parsed.inventory && typeof parsed.inventory === "object") {
+        base.inventory = {};
+        Object.keys(parsed.inventory).forEach((k) => {
+          if (parsed.inventory[k]) base.inventory[k] = true;
+        });
       }
       return base;
     } catch (e) {
@@ -105,6 +111,24 @@
     },
     sceauDone() {
       return load().sceau === true;
+    },
+
+    // Inventaire (notes / indices trouvés dans le couloir)
+    findItem(id) {
+      if (!id) return load();
+      const s = load();
+      s.inventory[id] = true;
+      save(s);
+      return s;
+    },
+    hasItem(id) {
+      return load().inventory[id] === true;
+    },
+    foundItems() {
+      return Object.keys(load().inventory);
+    },
+    inventoryCount() {
+      return this.foundItems().length;
     },
 
     reset() {

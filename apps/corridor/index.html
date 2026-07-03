@@ -19,6 +19,62 @@
       }
       .frag-hud .chip.has { color: var(--accent-emerald, #2dcf8a); border-color: var(--accent-emerald, #2dcf8a); text-shadow: 0 0 8px rgba(45,207,138,.5); }
       .frag-hud .chip.sceau { color: var(--accent-brass, #c29b4b); border-color: var(--accent-brass, #c29b4b); width: auto; padding: 0 8px; border-radius: 11px; font-size: .68rem; letter-spacing: .08em; }
+
+      /* Indices à trouver dans le couloir */
+      .hallway { position: relative; }
+      .clue {
+        position: absolute; z-index: 6; cursor: pointer;
+        width: 30px; height: 26px; padding: 0; border: none; border-radius: 3px;
+        background: linear-gradient(160deg, #efe4c4 0%, #d8c79b 100%);
+        box-shadow: 0 3px 7px rgba(0,0,0,.6); opacity: .62;
+        transform: rotate(var(--rot, 0deg)); transition: opacity .2s, transform .12s, box-shadow .2s;
+      }
+      .clue::before { content: ""; position: absolute; inset: 3px; border-top: 1px solid #b7a06a; box-shadow: 0 4px 0 -3px #b7a06a, 0 8px 0 -3px #b7a06a, 0 12px 0 -3px #b7a06a; }
+      .clue:hover { opacity: 1; transform: rotate(var(--rot, 0deg)) scale(1.12); box-shadow: 0 0 12px rgba(45,207,138,.6); }
+      .clue .clue-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: .8rem; color: #6b5324; }
+      .clue .clue-tip {
+        position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+        white-space: nowrap; font-family: "Space Mono", monospace; font-size: .62rem;
+        color: var(--text-main, #f4e5c1); background: #14100b; border: 1px solid var(--accent-brass-dark, #8a6a30);
+        padding: 3px 6px; border-radius: 4px; opacity: 0; pointer-events: none; transition: opacity .18s;
+      }
+      .clue:hover .clue-tip { opacity: 1; }
+      .clue.found { opacity: .32; filter: grayscale(.4); }
+      .clue.found::after { content: "✓"; position: absolute; top: -6px; right: -6px; font-size: .7rem; color: var(--accent-emerald, #2dcf8a); }
+
+      /* Carnet de bord */
+      .inv-toggle {
+        position: fixed; bottom: 16px; right: 16px; z-index: 40; cursor: pointer;
+        font-family: "Cinzel", serif; font-size: .82rem; color: #14100b;
+        background: linear-gradient(180deg, var(--accent-brass, #c29b4b), var(--accent-brass-dark, #8a6a30));
+        border: none; border-radius: 10px; padding: 9px 14px; box-shadow: 0 4px 12px rgba(0,0,0,.6);
+      }
+      .inv-badge {
+        display: inline-block; min-width: 18px; text-align: center; margin-left: 4px;
+        background: #14100b; color: var(--accent-emerald, #2dcf8a); border-radius: 9px; font-size: .72rem; padding: 0 5px;
+      }
+      .inv-panel {
+        position: fixed; bottom: 58px; right: 16px; z-index: 40; width: 300px; max-width: 90vw;
+        max-height: 60vh; overflow: auto; padding: 14px; border-radius: 12px;
+        border: 1px solid var(--accent-brass-dark, #8a6a30);
+        background: radial-gradient(circle at top, #2a2118 0, #14100b 70%);
+        box-shadow: 0 0 30px rgba(0,0,0,.85);
+      }
+      .inv-panel.hidden { display: none; }
+      .inv-head { display: flex; justify-content: space-between; align-items: center; font-family: "Cinzel", serif; color: var(--accent-brass, #c29b4b); font-size: .95rem; }
+      .inv-x { background: none; border: none; color: var(--text-dim, #b69a71); font-size: 1.3rem; cursor: pointer; line-height: 1; }
+      .inv-sub { font-family: "Space Mono", monospace; font-size: .68rem; color: var(--text-dim, #b69a71); margin: 4px 0 10px; }
+      .inv-empty { font-family: "Space Mono", monospace; font-size: .72rem; color: var(--text-dim, #b69a71); line-height: 1.5; }
+      .inv-item {
+        width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px;
+        font-family: "Space Mono", monospace; font-size: .74rem; text-align: left; cursor: pointer;
+        color: var(--text-main, #f4e5c1); background: #0c0805; border: 1px solid #3b2a1b;
+        border-radius: 7px; padding: 7px 9px; margin-bottom: 6px;
+      }
+      .inv-item:hover { border-color: var(--accent-emerald, #2dcf8a); }
+      .inv-item-code { color: var(--accent-emerald, #2dcf8a); font-size: .72rem; }
+      .item-reveal { margin-top: 10px; font-family: "Space Mono", monospace; font-size: .78rem; color: var(--text-dim, #b69a71); }
+      .item-reveal code { color: var(--accent-emerald, #2dcf8a); font-size: .9rem; background: #0c0805; padding: 1px 6px; border-radius: 4px; }
     </style>
   </head>
   <body>
@@ -99,8 +155,9 @@
 
             <div id="terminalOutput" class="terminal-output"></div>
             <div class="hint-line">
-              Astuce : parfois, la porte n'est pas <em>devant</em> la machine…
-              elle <em>est</em> la machine.
+              Astuce : les codes ne s'inventent pas — ils se <em>trouvent</em>.
+              Fouillez le couloir : des agents ont laissé des notes au sol, oubliées.
+              Ouvrez le <strong>Carnet de bord</strong> pour les reconsulter.
             </div>
           </div>
         </aside>
@@ -115,6 +172,29 @@
           <span class="led led-red"></span>
         </div>
       </footer>
+    </div>
+
+    <!-- Carnet de bord (inventaire local des indices trouvés) -->
+    <button id="invToggle" class="inv-toggle" title="Carnet de bord">
+      🗒 Carnet <span class="inv-badge" id="invBadge">0</span>
+    </button>
+    <aside id="invPanel" class="inv-panel hidden">
+      <div class="inv-head">
+        <span>Carnet de bord</span>
+        <button id="invClose" class="inv-x" aria-label="Fermer">×</button>
+      </div>
+      <div class="inv-sub">Notes et indices ramassés dans le couloir.</div>
+      <div class="inv-list" id="invList"></div>
+    </aside>
+
+    <!-- Overlay d'un élément trouvé -->
+    <div id="itemOverlay" class="note-overlay hidden">
+      <div class="note-card">
+        <h3 id="itemTitle"></h3>
+        <div class="note-text" id="itemText"></div>
+        <div class="item-reveal" id="itemReveal"></div>
+        <button class="note-close" id="itemClose">Ranger dans le carnet</button>
+      </div>
     </div>
 
     <!-- Overlay de la note en grand -->
@@ -137,6 +217,7 @@
     <audio id="sfxConsole" src="sounds/ui/console_beep.wav" class="audio-hidden"></audio>
 
     <script src="js/dedale-state.js"></script>
+    <script src="js/clues.js"></script>
     <script src="config/config.js"></script>
     <script src="js/main.js"></script>
   </body>
