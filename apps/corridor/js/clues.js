@@ -2,6 +2,9 @@
 // Indices diégétiques disséminés dans le couloir : notes d'agents oubliées,
 // posées au sol ou de côté. Chacune révèle le code (nom) d'une salle.
 // Les positions sont relatives à la scène du couloir (.hallway).
+//
+// `active: false` = indice préparé mais pas encore mis en jeu (masqué du
+// couloir). Pour le moment, seule la note du Briefing est active.
 
 window.DEDALE_CLUES = [
   {
@@ -16,6 +19,7 @@ window.DEDALE_CLUES = [
 briefing. Ne pas confondre avec la salle des cartes.
 Le mot d'accès, c'est simplement le nom de la salle. »`,
     pos: { bottom: "8px", left: "16px", rotate: "-7deg" },
+    active: true,
   },
   {
     id: "note-cartographie",
@@ -28,6 +32,7 @@ Le mot d'accès, c'est simplement le nom de la salle. »`,
 « L'atlas temporel est reclassé en salle cartographique.
 Pour entrer, prononce « atlas » — ou le nom de la salle. »`,
     pos: { top: "14px", right: "18px", rotate: "5deg" },
+    active: false,
   },
   {
     id: "note-portemachine",
@@ -41,6 +46,7 @@ Pour entrer, prononce « atlas » — ou le nom de la salle. »`,
 On la nomme porte-machine. Tant que tu la vois comme
 une porte, tu ne vois pas le décrypteur. »`,
     pos: { bottom: "10px", right: "22px", rotate: "8deg" },
+    active: false,
   },
   {
     id: "note-observatoire",
@@ -54,6 +60,7 @@ une porte, tu ne vois pas le décrypteur. »`,
 L'accès se déverrouille en nommant le lieu :
 observatoire. »`,
     pos: { top: "18px", left: "20px", rotate: "-4deg" },
+    active: false,
   },
   {
     id: "note-reliques",
@@ -67,6 +74,7 @@ observatoire. »`,
 Code d'atelier : reliques. Ne pas exposer plus de
 trois pièces à la fois. »`,
     pos: { bottom: "40px", left: "44%", rotate: "3deg" },
+    active: false,
   },
   {
     id: "note-archive",
@@ -80,5 +88,6 @@ trois pièces à la fois. »`,
 Rien ne s'efface : il suffit de nommer le lieu —
 archive — pour que la trace ressurgisse. »`,
     pos: { top: "20px", right: "44%", rotate: "-6deg" },
+    active: false,
   },
 ];

@@ -179,7 +179,7 @@
 
   function buildClues() {
     if (!hallway) return;
-    CLUES.forEach((clue) => {
+    CLUES.filter((clue) => clue.active !== false).forEach((clue) => {
       const el = document.createElement("button");
       el.className = "clue";
       el.dataset.clueId = clue.id;
