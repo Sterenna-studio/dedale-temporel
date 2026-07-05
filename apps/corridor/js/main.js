@@ -31,6 +31,70 @@
 
   let activeDoorId = null;
 
+  /* --- RÉGLAGES DU SON (persistants) --- */
+
+  const AUDIO_KEY = "dedale_audio_v1";
+  // Par défaut : ambiance COUPÉE, effets actifs.
+  const AUDIO_DEFAULTS = { ambient: false, sfx: true, ambientVol: 0.3, sfxVol: 0.7 };
+
+  function loadAudioSettings() {
+    try {
+      const raw = localStorage.getItem(AUDIO_KEY);
+      if (!raw) return Object.assign({}, AUDIO_DEFAULTS);
+      const p = JSON.parse(raw);
+      return {
+        ambient: !!p.ambient,
+        sfx: p.sfx !== false,
+        ambientVol:
+          typeof p.ambientVol === "number" ? p.ambientVol : AUDIO_DEFAULTS.ambientVol,
+        sfxVol: typeof p.sfxVol === "number" ? p.sfxVol : AUDIO_DEFAULTS.sfxVol,
+      };
+    } catch (e) {
+      return Object.assign({}, AUDIO_DEFAULTS);
+    }
+  }
+
+  let audioSettings = loadAudioSettings();
+
+  function saveAudioSettings() {
+    try {
+      localStorage.setItem(AUDIO_KEY, JSON.stringify(audioSettings));
+    } catch (e) {}
+  }
+
+  function sfxElements() {
+    return [
+      sfxSuccess,
+      sfxError,
+      sfxDoorOpen,
+      sfxDoorHover,
+      sfxDoorLocked,
+      sfxNote,
+      sfxConsole,
+    ];
+  }
+
+  function applyAudioSettings() {
+    if (bgMusic) {
+      bgMusic.volume = audioSettings.ambientVol;
+      bgMusic.muted = !audioSettings.ambient;
+      if (audioSettings.ambient && audioInitialized) {
+        const p = bgMusic.play();
+        if (p && typeof p.then === "function") p.catch(() => {});
+      } else {
+        try {
+          bgMusic.pause();
+        } catch (e) {}
+      }
+    }
+    sfxElements().forEach((a) => {
+      if (a) {
+        a.muted = !audioSettings.sfx;
+        a.volume = audioSettings.sfxVol;
+      }
+    });
+  }
+
   function normalize(str) {
     return (str || "").toLowerCase().replace(/\s+/g, "");
   }
@@ -192,27 +256,8 @@
   function initAudio() {
     if (audioInitialized) return;
     audioInitialized = true;
-
-    try {
-      if (bgMusic) {
-        bgMusic.volume = 0.3;
-        const p = bgMusic.play();
-        if (p && typeof p.then === "function") {
-          p.catch(() => {
-            // L'utilisateur devra déclencher plus tard
-          });
-        }
-      }
-      if (sfxSuccess) sfxSuccess.volume = 0.7;
-      if (sfxError) sfxError.volume = 0.7;
-      if (sfxDoorOpen) sfxDoorOpen.volume = 0.8;
-      if (sfxDoorHover) sfxDoorHover.volume = 0.4;
-      if (sfxDoorLocked) sfxDoorLocked.volume = 0.8;
-      if (sfxNote) sfxNote.volume = 0.6;
-      if (sfxConsole) sfxConsole.volume = 0.5;
-    } catch (e) {
-      console.warn("Audio init error", e);
-    }
+    // Applique les réglages : l'ambiance ne démarre que si activée par l'utilisateur.
+    applyAudioSettings();
   }
 
   function playSuccess() {
@@ -702,12 +747,73 @@
     );
   }
 
+  /* --- MENU DU SON --- */
+
+  function updateSoundIcon() {
+    const btn = document.getElementById("soundToggle");
+    if (btn) btn.textContent = audioSettings.ambient ? "🔊" : "🔈";
+  }
+
+  function setupSoundMenu() {
+    const toggle = document.getElementById("soundToggle");
+    const panel = document.getElementById("soundPanel");
+    const close = document.getElementById("soundClose");
+    const ambient = document.getElementById("sndAmbient");
+    const ambientVol = document.getElementById("sndAmbientVol");
+    const sfx = document.getElementById("sndSfx");
+    const sfxVol = document.getElementById("sndSfxVol");
+
+    if (ambient) ambient.checked = audioSettings.ambient;
+    if (sfx) sfx.checked = audioSettings.sfx;
+    if (ambientVol) ambientVol.value = Math.round(audioSettings.ambientVol * 100);
+    if (sfxVol) sfxVol.value = Math.round(audioSettings.sfxVol * 100);
+    updateSoundIcon();
+    applyAudioSettings(); // pose l'état muet dès le chargement (sans lecture forcée)
+
+    if (toggle && panel) {
+      toggle.addEventListener("click", () => panel.classList.toggle("hidden"));
+    }
+    if (close && panel) {
+      close.addEventListener("click", () => panel.classList.add("hidden"));
+    }
+    if (ambient) {
+      ambient.addEventListener("change", () => {
+        audioSettings.ambient = ambient.checked;
+        saveAudioSettings();
+        applyAudioSettings();
+        updateSoundIcon();
+      });
+    }
+    if (sfx) {
+      sfx.addEventListener("change", () => {
+        audioSettings.sfx = sfx.checked;
+        saveAudioSettings();
+        applyAudioSettings();
+      });
+    }
+    if (ambientVol) {
+      ambientVol.addEventListener("input", () => {
+        audioSettings.ambientVol = (parseInt(ambientVol.value, 10) || 0) / 100;
+        saveAudioSettings();
+        applyAudioSettings();
+      });
+    }
+    if (sfxVol) {
+      sfxVol.addEventListener("input", () => {
+        audioSettings.sfxVol = (parseInt(sfxVol.value, 10) || 0) / 100;
+        saveAudioSettings();
+        applyAudioSettings();
+      });
+    }
+  }
+
   // INIT
   buildDoors();
   setupDragScroll();
   renderFragHud();
   buildClues();
   renderInventory();
+  setupSoundMenu();
 
   if (invToggle) invToggle.addEventListener("click", () => toggleInventory());
   if (invClose) invClose.addEventListener("click", () => toggleInventory(false));

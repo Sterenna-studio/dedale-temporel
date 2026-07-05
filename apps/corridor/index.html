@@ -75,6 +75,24 @@
       .inv-item-code { color: var(--accent-emerald, #2dcf8a); font-size: .72rem; }
       .item-reveal { margin-top: 10px; font-family: "Space Mono", monospace; font-size: .78rem; color: var(--text-dim, #b69a71); }
       .item-reveal code { color: var(--accent-emerald, #2dcf8a); font-size: .9rem; background: #0c0805; padding: 1px 6px; border-radius: 4px; }
+
+      /* Réglages du son */
+      .sound-toggle {
+        position: fixed; bottom: 16px; left: 16px; z-index: 40; cursor: pointer;
+        font-size: 1rem; width: 40px; height: 40px; border-radius: 50%;
+        color: #14100b; background: linear-gradient(180deg, var(--accent-brass, #c29b4b), var(--accent-brass-dark, #8a6a30));
+        border: none; box-shadow: 0 4px 12px rgba(0,0,0,.6);
+      }
+      .sound-panel {
+        position: fixed; bottom: 62px; left: 16px; z-index: 40; width: 250px; max-width: 90vw;
+        padding: 14px; border-radius: 12px; border: 1px solid var(--accent-brass-dark, #8a6a30);
+        background: radial-gradient(circle at top, #2a2118 0, #14100b 70%);
+        box-shadow: 0 0 30px rgba(0,0,0,.85);
+      }
+      .sound-panel.hidden { display: none; }
+      .snd-row { display: flex; justify-content: space-between; align-items: center; font-family: "Space Mono", monospace; font-size: .78rem; color: var(--text-main, #f4e5c1); margin: 10px 0 4px; }
+      .snd-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent-emerald, #2dcf8a); cursor: pointer; }
+      .sound-panel input[type=range] { width: 100%; accent-color: var(--accent-brass, #c29b4b); }
     </style>
   </head>
   <body>
@@ -185,6 +203,26 @@
       </div>
       <div class="inv-sub">Notes et indices ramassés dans le couloir.</div>
       <div class="inv-list" id="invList"></div>
+    </aside>
+
+    <!-- Réglages du son -->
+    <button id="soundToggle" class="sound-toggle" title="Réglages du son">🔈</button>
+    <aside id="soundPanel" class="sound-panel hidden">
+      <div class="inv-head">
+        <span>Son du dédale</span>
+        <button id="soundClose" class="inv-x" aria-label="Fermer">×</button>
+      </div>
+      <div class="inv-sub">L'ambiance est coupée par défaut.</div>
+      <div class="snd-row">
+        <label for="sndAmbient">Ambiance</label>
+        <input type="checkbox" id="sndAmbient" />
+      </div>
+      <input type="range" id="sndAmbientVol" min="0" max="100" value="30" />
+      <div class="snd-row">
+        <label for="sndSfx">Effets sonores</label>
+        <input type="checkbox" id="sndSfx" />
+      </div>
+      <input type="range" id="sndSfxVol" min="0" max="100" value="70" />
     </aside>
 
     <!-- Overlay d'un élément trouvé -->
