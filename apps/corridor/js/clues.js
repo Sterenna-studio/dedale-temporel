@@ -9,8 +9,8 @@
 window.DEDALE_CLUES = [
   {
     id: "note-briefing",
-    label: "Note de service",
-    hint: "Papier froissé, tombé au sol près de l'entrée.",
+    label: "Note n°1 — Note de service",
+    hint: "Papier froissé, coincé entre les lattes du plancher. Regardez au sol.",
     reveals: "Salle de Briefing",
     code: "briefing",
     text: `Mémo interne — agent Vasseur :
@@ -18,9 +18,9 @@ window.DEDALE_CLUES = [
 « Rappel : le débriefing se tient TOUJOURS en salle de
 briefing. Ne pas confondre avec la salle des cartes.
 Le mot d'accès, c'est simplement le nom de la salle. »`,
-    pos: { bottom: "8px", left: "16px", rotate: "-7deg" },
+    pos: { bottom: "14%", left: "44%", rotate: "-7deg" },
     active: true,
-    view: "devant", // "devant" | "sol" | "plafond" | "derriere"
+    view: "sol", // "devant" | "sol" | "plafond" | "derriere"
   },
   {
     id: "note-cartographie",
