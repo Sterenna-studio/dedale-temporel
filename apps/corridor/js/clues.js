@@ -20,6 +20,7 @@ briefing. Ne pas confondre avec la salle des cartes.
 Le mot d'accès, c'est simplement le nom de la salle. »`,
     pos: { bottom: "8px", left: "16px", rotate: "-7deg" },
     active: true,
+    view: "devant", // "devant" | "sol" | "plafond" | "derriere"
   },
   {
     id: "note-cartographie",
@@ -33,6 +34,7 @@ Le mot d'accès, c'est simplement le nom de la salle. »`,
 Pour entrer, prononce « atlas » — ou le nom de la salle. »`,
     pos: { top: "14px", right: "18px", rotate: "5deg" },
     active: false,
+    view: "devant",
   },
   {
     id: "note-portemachine",
@@ -47,6 +49,7 @@ On la nomme porte-machine. Tant que tu la vois comme
 une porte, tu ne vois pas le décrypteur. »`,
     pos: { bottom: "10px", right: "22px", rotate: "8deg" },
     active: false,
+    view: "devant",
   },
   {
     id: "note-observatoire",
@@ -61,6 +64,7 @@ L'accès se déverrouille en nommant le lieu :
 observatoire. »`,
     pos: { top: "18px", left: "20px", rotate: "-4deg" },
     active: false,
+    view: "devant",
   },
   {
     id: "note-reliques",
@@ -75,6 +79,7 @@ Code d'atelier : reliques. Ne pas exposer plus de
 trois pièces à la fois. »`,
     pos: { bottom: "40px", left: "44%", rotate: "3deg" },
     active: false,
+    view: "devant",
   },
   {
     id: "note-archive",
@@ -89,5 +94,6 @@ Rien ne s'efface : il suffit de nommer le lieu —
 archive — pour que la trace ressurgisse. »`,
     pos: { top: "20px", right: "44%", rotate: "-6deg" },
     active: false,
+    view: "devant",
   },
 ];

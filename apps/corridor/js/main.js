@@ -177,12 +177,42 @@
     return CLUES.find((c) => c.id === id) || null;
   }
 
+  /* --- DIRECTION DU REGARD (Devant / Sol / Plafond / Derrière) --- */
+
+  let currentLookView = "devant";
+
+  function setLookView(view) {
+    currentLookView = view;
+    document.querySelectorAll(".look-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.view === view);
+    });
+    document.querySelectorAll(".view-panel").forEach((panel) => {
+      panel.classList.toggle("active", panel.dataset.view === view);
+    });
+    if (hallway) {
+      hallway.querySelectorAll(".clue").forEach((el) => {
+        el.style.display = el.dataset.clueView === view ? "" : "none";
+      });
+    }
+  }
+
+  function setupLookNav() {
+    document.querySelectorAll(".look-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        setLookView(btn.dataset.view);
+        playConsoleBeep();
+      });
+    });
+  }
+
   function buildClues() {
     if (!hallway) return;
     CLUES.filter((clue) => clue.active !== false).forEach((clue) => {
       const el = document.createElement("button");
       el.className = "clue";
       el.dataset.clueId = clue.id;
+      el.dataset.clueView = clue.view || "devant";
+      el.style.display = (clue.view || "devant") === currentLookView ? "" : "none";
       el.setAttribute("aria-label", clue.label);
       el.innerHTML =
         '<span class="clue-icon">✎</span>' +
@@ -814,6 +844,7 @@
   buildClues();
   renderInventory();
   setupSoundMenu();
+  setupLookNav();
 
   if (invToggle) invToggle.addEventListener("click", () => toggleInventory());
   if (invClose) invClose.addEventListener("click", () => toggleInventory(false));
