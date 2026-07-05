@@ -87,6 +87,23 @@ La **progression** repose ensuite sur les **fragments** collectés (et non sur l
 | Archive | `archive` + **4 fragments** | assemble le Sceau |
 | Condamnée | *(pas de code)* | s'ouvre via le Sceau |
 
+## Accès aux salles : uniquement par la porte du couloir
+
+Chaque salle (`apps/salles/*`, SpectroCrypt, Imprimerie) charge en tout premier
+dans `<head>` un garde partagé :
+[`apps/corridor/js/corridor-guard.js`](apps/corridor/js/corridor-guard.js).
+
+- La page déclare `window.DEDALE_ROOM_ID = "<id-de-la-porte>"` avant de charger
+  le script.
+- Le garde vérifie `sessionStorage.dedale_access_<doorId>` (posé par
+  `main.js` quand on passe la porte avec le bon code / bouton d'entrée).
+  Absent → redirection immédiate vers `/dedale/` avant tout rendu.
+
+⚠️ **Verrou côté client uniquement** (site 100 % statique, sans backend) : il
+bloque la navigation directe par URL en usage normal, mais un utilisateur qui
+pose lui-même la clé `sessionStorage` via les devtools le contourne. Il n'y a
+pas de moyen d'imposer une vraie vérification serveur sur cet hébergement.
+
 ## Notes d'implémentation (pour la phase de build)
 
 - **Suivi des fragments** : stocker la collecte (ex. `localStorage` `dedale_fragments`)
