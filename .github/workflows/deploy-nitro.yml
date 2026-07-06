@@ -12,6 +12,7 @@ on:
       - "apps/spectrocrypt/public/**"
       - "apps/imprimerie/**"
       - "apps/salles/**"
+      - "apps/steam-clicker/**"
       - "assets/sfx/sounds/**"
       - "deploy/**"
       - ".github/workflows/deploy-nitro.yml"
@@ -28,6 +29,7 @@ env:
   RELIQUES_SRC: apps/imprimerie
   SOUNDS_SRC: assets/sfx/sounds
   SALLES_SRC: apps/salles
+  STEAMCLICKER_SRC: apps/steam-clicker
 
 jobs:
   deploy:
@@ -63,6 +65,10 @@ jobs:
             mkdir -p "_site/$salle"
             cp -r "$SALLES_SRC/$salle/." "_site/$salle/"
           done
+
+          # Salle des Engrenages -> Steam Clicker
+          mkdir -p _site/steam-clicker
+          cp -r "$STEAMCLICKER_SRC/." _site/steam-clicker/
 
           echo "----- arbre assemblé -----"
           find _site -maxdepth 2 -type d | sort
