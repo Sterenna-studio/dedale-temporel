@@ -1,0 +1,1 @@
+export function initPanel(){ /* future module effects hook */ }
