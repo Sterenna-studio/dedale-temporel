@@ -26,27 +26,27 @@ Vous avez intercepté un fragment sonore sans voix, sans mots,
 seulement un chaos de fréquences. Pourtant, les archives
 mentionnent un dispositif ancien : le Décrypteur Temporel Interlangage.
 
-On raconte qu’une de ces machines a été verrouillée derrière une porte.
+On raconte qu'une de ces machines a été verrouillée derrière une porte.
 Tant que vous voyez une porte, vous ne voyez pas la machine.
 
 Observez les rivets, la forme du battant, la manière dont
-le métal semble prêt à vibrer. Demandez-vous si ce n’est pas
+le métal semble prêt à vibrer. Demandez-vous si ce n'est pas
 déjà un mécanisme de décodage caché à ciel ouvert.
 
 Quand vous aurez trouvé comment la nommer, entrez ce nom
-comme code d’accès dans la console.`,
+comme code d'accès dans la console.`,
       hasNote: true,
       noteText: `Plus tu regardes une porte comme une simple barrière,
 Ô moins tu remarques les détails qui la rendent unique.
 Regarde ses engrenages, ses rivets, ses cadrans :
-Tout semble immobile, pourtant tout est prêt à s’animer.
-Ecoute les vibrations dans le métal quand on l’effleure.
+Tout semble immobile, pourtant tout est prêt à s'animer.
+Ecoute les vibrations dans le métal quand on l'effleure.
 
 Méfie-toi : certaines portes ne ferment rien…
 Au contraire, ce sont elles qui décodent le monde.
 Ce que tu prends pour un battant est peut-être un écran,
 Habillé de symboles, de chiffres, de stries étranges.
-Il suffit parfois d’un bon réglage pour qu’elle “parle”.
+Il suffit parfois d'un bon réglage pour qu'elle "parle".
 Ne demande pas « où est la machine ? »
 Elle est sous tes yeux.`,
       notePosition: {
@@ -72,11 +72,11 @@ Elle est sous tes yeux.`,
 Au fil des époques, les agents S.T.E.A.M. ont toujours commencé ici :
 une table, quelques dossiers, un tableau griffonné.
 
-On raconte que si l’on écoute le bois de cette porte,
+On raconte que si l'on écoute le bois de cette porte,
 on entend encore les échos des anciennes missions.
 
-Son code n’est pas un mot de passe,
-c’est le nom que les agents lui ont donné.`,
+Son code n'est pas un mot de passe,
+c'est le nom que les agents lui ont donné.`,
       hasNote: true,
       noteText: `RAPPEL : Ne sortir d'ici qu'en ayant un plan.
 Les missions improvisées finissent rarement bien.`,
@@ -106,7 +106,7 @@ représentent ni des pays ni des continents, mais des
 bifurcations de l'Histoire.
 
 Chaque fois qu'un agent ouvre un portail, une nouvelle ligne
-s’ajoute à ces diagrammes lumineux.
+s'ajoute à ces diagrammes lumineux.
 
 Le mot de passe n'est pas lié à un lieu,
 mais à la manière dont on nomme un ensemble de chemins.`,
@@ -167,10 +167,10 @@ Sinon, c'est le temps qui choisit laquelle garder.`,
       riddleTitle: "Porte-Archive – Dossiers effacés",
       riddleText: `
 Derrière cette porte, les dossiers ne sont jamais vraiment détruits.
-Ils s’effacent en façade, mais laissent toujours une trace
+Ils s'effacent en façade, mais laissent toujours une trace
 quelque part dans les plis du temps.
 
-Trouver son code, c’est admettre qu’aucun secret
+Trouver son code, c'est admettre qu'aucun secret
 ne disparaît complètement.`,
       hasNote: true,
       noteText: `Rien ne se perd.
@@ -216,6 +216,44 @@ par vous convaincre que vous auriez pu la changer.`,
       },
       dialLabel: "00:00",
       signText: "Observatoire"
+    },
+
+    {
+      id: "porte-steam-clicker",
+      name: "Salle des Engrenages",
+      type: "temporal",
+      folder: "steam-clicker",
+      redirectUrl: "https://nitro.sterenna.fr/dedale/steam-clicker/",
+      requireCode: true,
+      validCodes: ["engrenages", "salle des engrenages", "steam clicker"],
+      placeholder: "Nommez la salle des mécanismes actifs…",
+      riddleTitle: "Salle des Engrenages – Mécanique perpétuelle",
+      riddleText: `
+Derrière cette porte, les engrenages ne s'arrêtent jamais.
+
+Des apprentis vapeur aux condenseurs d'éther,
+chaque mécanisme s'imbrique dans le suivant,
+formant une chaîne de production qui défie le temps.
+
+On dit que les agents qui y pénètrent oublient
+combien d'heures s'écoulent à actionner la manivelle.
+
+Pour y accéder, nommez simplement ce que vous entendez
+derrière le battant : le bruit incessant des rouages.`,
+      hasNote: true,
+      noteText: `NOTE DE L'INGÉNIEUR EN CHEF :
+
+Ne tentez pas d'arrêter la machine principale.
+Les anneaux orbitaux sont synchronisés depuis 1887.
+Toute interruption provoque une cascade de paradoxes
+dont personne n'est encore revenu intact.`,
+      notePosition: {
+        bottom: "22px",
+        right: "20px",
+        rotate: "4deg"
+      },
+      dialLabel: "⚙",
+      signText: "Salle des Engrenages"
     },
 
     // Porte verrouillée / grisée, purement décorative pour le moment
@@ -274,7 +312,6 @@ sera consignée dans le journal des paradoxes.`,
       signText: "Couloir Bêta"
     },
 
-    
     {
       id: "porte-admin",
       name: "Couloir d'administration",
@@ -314,7 +351,7 @@ En cas de doute : verrouiller l'accès et prévenir la direction.`,
       signText: "Couloir d'administration"
     },
 
-// Porte de sortie
+    // Porte de sortie
     {
       id: "porte-sortie",
       name: "Sortie de l'Agence",
