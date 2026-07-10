@@ -3,6 +3,20 @@ name: Deploy to Nitro
 # Assemble le couloir des portes temporelles + le contenu des salles
 # dans un seul arbre, puis le déploie sur https://nitro.sterenna.fr/dedale/
 # via rsync SSH (convention Nitro apps).
+#
+# Apps déployées :
+#   /dedale/              <- apps/corridor (couloir principal)
+#   /dedale/sounds/       <- assets/sfx/sounds
+#   /dedale/portemachine/ <- apps/spectrocrypt/public
+#   /dedale/reliques/     <- apps/imprimerie  (excl. old.vers/)
+#   /dedale/briefing/     <- apps/salles/briefing
+#   /dedale/cartographie/ <- apps/salles/cartographie
+#   /dedale/observatoire/ <- apps/salles/observatoire
+#   /dedale/archive/      <- apps/salles/archive
+#   /dedale/condamnee/    <- apps/salles/condamnee
+#   /dedale/steam-clicker/<- apps/steam-clicker
+#   /dedale/workplate/    <- apps/WORKPLATE
+#   /dedale/dispersion/   <- apps/dispersion
 
 on:
   push:
@@ -13,6 +27,8 @@ on:
       - "apps/imprimerie/**"
       - "apps/salles/**"
       - "apps/steam-clicker/**"
+      - "apps/WORKPLATE/**"
+      - "apps/dispersion/**"
       - "assets/sfx/sounds/**"
       - "deploy/**"
       - ".github/workflows/deploy-nitro.yml"
@@ -23,13 +39,14 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Sources -> sous-chemins servis sous /dedale/
-  CORRIDOR_SRC: apps/corridor
+  CORRIDOR_SRC:     apps/corridor
   PORTEMACHINE_SRC: apps/spectrocrypt/public
-  RELIQUES_SRC: apps/imprimerie
-  SOUNDS_SRC: assets/sfx/sounds
-  SALLES_SRC: apps/salles
+  RELIQUES_SRC:     apps/imprimerie
+  SOUNDS_SRC:       assets/sfx/sounds
+  SALLES_SRC:       apps/salles
   STEAMCLICKER_SRC: apps/steam-clicker
+  WORKPLATE_SRC:    apps/WORKPLATE
+  DISPERSION_SRC:   apps/dispersion
 
 jobs:
   deploy:
@@ -47,7 +64,7 @@ jobs:
           # Couloir des portes (racine de /dedale/)
           cp -r "$CORRIDOR_SRC/." _site/
 
-          # Sons du couloir (référencés par index.html sous sounds/...)
+          # Sons du couloir
           mkdir -p _site/sounds
           cp -r "$SOUNDS_SRC/." _site/sounds/
 
@@ -55,12 +72,11 @@ jobs:
           mkdir -p _site/portemachine
           cp -r "$PORTEMACHINE_SRC/." _site/portemachine/
 
-          # Atelier des Reliques -> Imprimerie Médicale
+          # Atelier des Reliques -> Imprimerie Médicale (sans old.vers/)
           mkdir -p _site/reliques
-          cp -r "$RELIQUES_SRC/." _site/reliques/
+          rsync -a --exclude='old.vers/' "$RELIQUES_SRC/" _site/reliques/
 
-          # Salles-énigmes du scénario (briefing, cartographie, observatoire,
-          # archive, condamnee) -> sous-chemins dédiés.
+          # Salles-énigmes du scénario
           for salle in briefing cartographie observatoire archive condamnee; do
             mkdir -p "_site/$salle"
             cp -r "$SALLES_SRC/$salle/." "_site/$salle/"
@@ -69,6 +85,14 @@ jobs:
           # Salle des Engrenages -> Steam Clicker
           mkdir -p _site/steam-clicker
           cp -r "$STEAMCLICKER_SRC/." _site/steam-clicker/
+
+          # Workplate -> carnet + calibration
+          mkdir -p _site/workplate
+          cp -r "$WORKPLATE_SRC/." _site/workplate/
+
+          # Dispersion -> mini-app tuyaux
+          mkdir -p _site/dispersion
+          cp -r "$DISPERSION_SRC/." _site/dispersion/
 
           echo "----- arbre assemblé -----"
           find _site -maxdepth 2 -type d | sort
