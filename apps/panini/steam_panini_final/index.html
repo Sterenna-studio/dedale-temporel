@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carnet Panini Interactif — S.T.E.A.M.</title>
+  <!-- Import Cinzel Decorative font for the player name -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet" />
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Libraries for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <!-- Top controls: name entry, unlock code, style switcher, PDF export -->
+  <div class="controls">
+    <label>Nom de l'agent :
+      <input type="text" id="player-name" value="Agent" />
+    </label>
+    <label>Code mission :
+      <input type="text" id="unlock-code" maxlength="3" />
+      <button id="unlock-button">Débloquer</button>
+    </label>
+    <button id="style-toggle">Changer de style</button>
+    <button id="export-pdf">Exporter en PDF</button>
+  </div>
+
+  <div id="container">
+    <!-- Main sheet where stickers are placed. Style class toggles background and layout. -->
+    <main id="sheet" class="poster-style">
+      <!-- Decorative elements for the panini style; hidden in poster mode -->
+      <img class="gear tl" src="assets/gear.png" alt="gear" />
+      <img class="gear tr" src="assets/gear.png" alt="gear" />
+      <img class="gear bl" src="assets/gear.png" alt="gear" />
+      <img class="gear br" src="assets/gear.png" alt="gear" />
+      <!-- Header with logo and title (shown in panini mode) -->
+      <header id="sheet-header">
+        <img src="assets/steam-logo.png" alt="S.T.E.A.M." class="logo" />
+        <h1 id="sheet-title">MISSION</h1>
+      </header>
+      <!-- Player name display -->
+      <div id="player-name-display" class="player-name">Agent</div>
+      <!-- Grid for sticker slots -->
+      <div id="grid" class="grid"></div>
+    </main>
+    <!-- Inventory sidebar -->
+    <aside id="inventory">
+      <h2>Inventaire</h2>
+      <div id="inventory-items" class="inventory-items"></div>
+    </aside>
+  </div>
+
+  <!-- Modal popup for mission details -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close">×</button>
+      <h2 id="modal-title"></h2>
+      <div class="modal-image-wrapper">
+        <img id="modal-image" alt="Image de la mission" />
+      </div>
+      <p id="modal-description"></p>
+      <p id="modal-secret" class="secret"></p>
+      <button id="toggle-photo" class="btn-photo">Voir photo équipe</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

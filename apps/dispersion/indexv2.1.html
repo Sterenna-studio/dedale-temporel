@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Scatter Reveal – Cycle de vent</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: system-ui, sans-serif;
+      background: #000;
+    }
+
+    #scene {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #000 url("assets/background.jpg") center/cover no-repeat;
+      overflow: hidden;
+      touch-action: none;
+      cursor: grab;
+    }
+
+    #scene.is-dragging {
+      cursor: grabbing;
+    }
+
+    .scatter-item {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      user-select: none;
+      border-radius: 10px;
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.5));
+      will-change: transform, left, top, opacity;
+      opacity: 1;
+    }
+
+    .hint {
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.65);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      backdrop-filter: blur(4px);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    /* Cadre tuyaux dorés */
+    .frame-border {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 150;
+    }
+
+    .pipe {
+      position: absolute;
+      background: linear-gradient(90deg, #4b2e00, #f4d36b, #b8860b, #f7e7a2);
+      box-shadow:
+        0 0 6px rgba(0,0,0,0.8),
+        0 0 18px rgba(255,215,0,0.7);
+    }
+
+    .pipe.horizontal {
+      height: 18px;
+      left: 0;
+      right: 0;
+      border-radius: 999px;
+    }
+
+    .pipe.vertical {
+      width: 18px;
+      top: 0;
+      bottom: 0;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #4b2e00, #f4d36b, #b8860b, #f7e7a2);
+    }
+
+    #pipe-top { top: 0; }
+    #pipe-bottom { bottom: 0; }
+    #pipe-left { left: 0; }
+    #pipe-right { right: 0; }
+
+    .corner {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid #f4d36b;
+      background: radial-gradient(circle at 30% 30%, #fff7c2, #cda349 60%, #4b2e00 100%);
+      box-shadow:
+        0 0 8px rgba(0,0,0,0.8),
+        0 0 16px rgba(255,215,0,0.8);
+    }
+
+    #corner-tl { top: 0; left: 0; }
+    #corner-tr { top: 0; right: 0; }
+    #corner-bl { bottom: 0; left: 0; }
+    #corner-br { bottom: 0; right: 0; }
+
+    /* Cadran du vent */
+    .wind-gauge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid #f4d36b;
+      background: radial-gradient(circle at 30% 30%, #1a1200, #5c3c08 55%, #0b0700 100%);
+      box-shadow:
+        0 0 6px rgba(0,0,0,0.9),
+        0 0 12px rgba(255,215,0,0.6);
+      pointer-events: none;
+      z-index: 300;
+      overflow: hidden;
+    }
+
+    .wind-tick {
+      position: absolute;
+      width: 2px;
+      height: 6px;
+      background: rgba(250, 235, 180, 0.6);
+      top: 6px;
+      left: 50%;
+      transform-origin: 50% 39px;
+    }
+
+    .wind-needle {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      width: 4px;
+      height: 40px;
+      background: #f7e7a2;
+      box-shadow: 0 0 4px rgba(0,0,0,0.8);
+      border-radius: 999px;
+      transform-origin: 50% 100%;
+      transform: translate(-50%, 0) rotate(0deg);
+    }
+
+    .wind-needle-head {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 10px solid #f7e7a2;
+      filter: drop-shadow(0 0 3px rgba(0,0,0,0.9));
+    }
+
+    .wind-center {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff9d2, #b8860b 60%, #4b2e00 100%);
+      border: 2px solid #f4d36b;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 4px rgba(0,0,0,0.9);
+    }
+
+    .wind-label {
+      position: absolute;
+      bottom: 6px;
+      width: 100%;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #fbe9a7;
+      text-shadow: 0 0 4px #000;
+    }
+
+    /* Popup "vent approche" */
+    #wind-warning {
+      position: absolute;
+      top: 110px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10,10,30,0.9);
+      border-radius: 999px;
+      border: 1px solid #f4d36b;
+      color: #fbe9a7;
+      padding: 6px 14px;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 4px #000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 250;
+    }
+
+    #wind-warning.visible {
+      opacity: 1;
+    }
+
+    /* Lignes de vent */
+    .wind-line {
+      position: absolute;
+      pointer-events: none;
+      z-index: 120;
+      transform-origin: 50% 50%;
+    }
+
+    .wind-line-inner {
+      width: 120px;
+      height: 2px;
+      background: linear-gradient(
+        to right,
+        rgba(180,220,255,0),
+        rgba(230,245,255,0.95),
+        rgba(180,220,255,0)
+      );
+      opacity: 0.9;
+      filter: blur(0.4px);
+      transform-origin: 0% 50%;
+      animation: wind-move 1.8s linear forwards;
+    }
+
+    @keyframes wind-move {
+      0%   { transform: translateX(-140%); opacity: 0; }
+      10%  { opacity: 0.9; }
+      90%  { opacity: 0.9; }
+      100% { transform: translateX(140%); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="scene">
+    <div class="hint">
+      Clique / glisse (ou touche / glisse) pour pousser les objets et révéler l’image de fond
+    </div>
+
+    <div class="wind-gauge">
+      <div class="wind-tick" style="transform: translateX(-50%) rotate(0deg);"></div>
+      <div class="wind-tick" style="transform: translateX(-50%) rotate(90deg);"></div>
+      <div class="wind-tick" style="transform: translateX(-50%) rotate(180deg);"></div>
+      <div class="wind-tick" style="transform: translateX(-50%) rotate(270deg);"></div>
+
+      <div class="wind-needle" id="wind-needle">
+        <div class="wind-needle-head"></div>
+      </div>
+      <div class="wind-center"></div>
+      <div class="wind-label">VENT</div>
+    </div>
+
+    <div id="wind-warning">⚠️ Attention, le vent approche…</div>
+  </div>
+
+  <div class="frame-border">
+    <div id="pipe-top" class="pipe horizontal"></div>
+    <div id="pipe-bottom" class="pipe horizontal"></div>
+    <div id="pipe-left" class="pipe vertical"></div>
+    <div id="pipe-right" class="pipe vertical"></div>
+
+    <div id="corner-tl" class="corner"></div>
+    <div id="corner-tr" class="corner"></div>
+    <div id="corner-bl" class="corner"></div>
+    <div id="corner-br" class="corner"></div>
+  </div>
+
+  <script>
+    // --- CONFIG CARTES --------------------------------------------------------
+    const MIN_OBJECTS = 50;
+    const MAX_OBJECTS = 150;
+    const INITIAL_OBJECTS = 80; // valeur de départ
+
+    const PLACE_COUNT = 17;
+    const OBJECT_IMAGES = Array.from(
+      { length: PLACE_COUNT },
+      (_, i) => `assets/place${i + 1}.jpg`
+    );
+
+    const MIN_SIZE = 110;
+    const MAX_SIZE = 260;
+
+    const FORCE_RADIUS = 220;
+    const MAX_FORCE   = 1.2;
+    const FRICTION    = 0.92;
+    const EDGE_MARGIN = 20;
+
+    // durée avant disparition après contact bord (ms)
+    const EDGE_DESPAWN_TIME = 8000;
+
+    // --- CONFIG VENT ----------------------------------------------------------
+    const WIND_MIN_INTERVAL   = 15000;
+    const WIND_MAX_INTERVAL   = 20000;
+    const GUST_MIN_DURATION   = 5000;
+    const GUST_MAX_DURATION   = 15000;
+    const WIND_WARNING_LEAD   = 2500;
+
+    const WIND_STRENGTH_MIN   = 0.04;
+    const WIND_STRENGTH_MAX   = 0.09;
+
+    const WIND_LINES_PER_SPAWN = 8;
+    const WIND_LINES_INTERVAL  = 900;
+
+    // --- STATE ----------------------------------------------------------------
+    const scene          = document.getElementById("scene");
+    const windNeedle     = document.getElementById("wind-needle");
+    const windWarningEl  = document.getElementById("wind-warning");
+    const items          = [];
+
+    let pointerActive = false;
+    let pointerX = 0;
+    let pointerY = 0;
+
+    let sceneWidth = 0;
+    let sceneHeight = 0;
+
+    let windAngleDeg = 0;
+    let windDirX = 1;
+    let windDirY = 0;
+    let windStrengthCurrent = 0;
+    let windActive = false;
+
+    let windLineIntervalId = null;
+    let lastTimestamp = null;
+
+    let destroyedSinceLastWind = 0;
+
+    function updateSceneSize() {
+      const rect = scene.getBoundingClientRect();
+      sceneWidth = rect.width;
+      sceneHeight = rect.height;
+    }
+
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function choice(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function updatePointer(e) {
+      const rect = scene.getBoundingClientRect();
+      pointerX = e.clientX - rect.left;
+      pointerY = e.clientY - rect.top;
+    }
+
+    // --- CREATION / SPAWN D'OBJETS -------------------------------------------
+    function computeWindFactorFromSize(size) {
+      const norm = (MAX_SIZE - size) / (MAX_SIZE - MIN_SIZE); // 0 gros, 1 petit
+      const randomFactor = rand(0.8, 1.2);
+      return (0.5 + norm * 1.8) * randomFactor;
+    }
+
+    function createScatterItem(x, y) {
+      if (items.length >= MAX_OBJECTS) return;
+
+      const img = document.createElement("img");
+      img.src = choice(OBJECT_IMAGES);
+      img.className = "scatter-item";
+
+      const depth = Math.random();
+      const size = rand(MIN_SIZE, MAX_SIZE);
+      const scale = 0.7 + depth * 0.6;
+
+      img.style.width = size + "px";
+
+      const angle = rand(-40, 40);
+      img.style.transform =
+        `translate(-50%, -50%) rotate(${angle}deg) scale(${scale})`;
+      img.style.zIndex = String(10 + Math.round(depth * 90));
+      img.style.left = x + "px";
+      img.style.top = y + "px";
+      img.style.opacity = "1";
+
+      scene.appendChild(img);
+
+      const windFactor = computeWindFactorFromSize(size);
+
+      items.push({
+        el: img,
+        x,
+        y,
+        vx: 0,
+        vy: 0,
+        windFactor,
+        edgeTime: 0,
+        touchedEdge: false,
+        size
+      });
+    }
+
+    function createInitialItems() {
+      for (let i = 0; i < INITIAL_OBJECTS && i < MAX_OBJECTS; i++) {
+        const x = rand(EDGE_MARGIN, sceneWidth - EDGE_MARGIN);
+        const y = rand(EDGE_MARGIN, sceneHeight - EDGE_MARGIN);
+        createScatterItem(x, y);
+      }
+    }
+
+    function chooseWindEdge() {
+      if (Math.abs(windDirX) >= Math.abs(windDirY)) {
+        return windDirX > 0 ? "left" : "right";
+      } else {
+        return windDirY > 0 ? "top" : "bottom";
+      }
+    }
+
+    function spawnItemAtEdge() {
+      if (sceneWidth <= 0 || sceneHeight <= 0) return;
+      if (items.length >= MAX_OBJECTS) return;
+
+      const edge = chooseWindEdge();
+      let x, y;
+
+      switch (edge) {
+        case "left":
+          x = EDGE_MARGIN;
+          y = rand(EDGE_MARGIN, sceneHeight - EDGE_MARGIN);
+          break;
+        case "right":
+          x = sceneWidth - EDGE_MARGIN;
+          y = rand(EDGE_MARGIN, sceneHeight - EDGE_MARGIN);
+          break;
+        case "top":
+          x = rand(EDGE_MARGIN, sceneWidth - EDGE_MARGIN);
+          y = EDGE_MARGIN;
+          break;
+        case "bottom":
+        default:
+          x = rand(EDGE_MARGIN, sceneWidth - EDGE_MARGIN);
+          y = sceneHeight - EDGE_MARGIN;
+          break;
+      }
+
+      createScatterItem(x, y);
+    }
+
+    // --- VISUEL : LIGNES DE VENT ---------------------------------------------
+    function spawnWindLines() {
+      if (!windActive) return;
+
+      for (let i = 0; i < WIND_LINES_PER_SPAWN; i++) {
+        const line = document.createElement("div");
+        line.className = "wind-line";
+
+        const inner = document.createElement("div");
+        inner.className = "wind-line-inner";
+        line.appendChild(inner);
+
+        const x = rand(0, sceneWidth);
+        const y = rand(0, sceneHeight);
+
+        line.style.left = x + "px";
+        line.style.top = y + "px";
+        line.style.transform =
+          `translate(-50%, -50%) rotate(${windAngleDeg}deg)`;
+
+        scene.appendChild(line);
+
+        setTimeout(() => {
+          if (line.parentNode) {
+            line.parentNode.removeChild(line);
+          }
+        }, 2000);
+      }
+    }
+
+    // --- POPUP VENT -----------------------------------------------------------
+    function showWindWarning() {
+      if (!windWarningEl) return;
+      windWarningEl.classList.add("visible");
+      setTimeout(() => {
+        windWarningEl.classList.remove("visible");
+      }, 2500);
+    }
+
+    // --- GESTION RAFALES ------------------------------------------------------
+    function startGust() {
+      windAngleDeg = rand(0, 360);
+      const rad = windAngleDeg * Math.PI / 180;
+      windDirX = Math.cos(rad);
+      windDirY = Math.sin(rad);
+      windStrengthCurrent = rand(WIND_STRENGTH_MIN, WIND_STRENGTH_MAX);
+
+      if (windNeedle) {
+        windNeedle.style.transform =
+          `translate(-50%, 0) rotate(${windAngleDeg}deg)`;
+      }
+
+      // Calcul du nombre de nouvelles places à ajouter :
+      // au moins 10 + nb disparues depuis le dernier vent, sans dépasser MAX_OBJECTS
+      const baseSpawn = 10 + destroyedSinceLastWind;
+      const capacityLeft = Math.max(0, MAX_OBJECTS - items.length);
+      const toSpawn = Math.max(0, Math.min(baseSpawn, capacityLeft));
+
+      // reset du compteur de disparitions depuis le dernier vent
+      destroyedSinceLastWind = 0;
+
+      for (let i = 0; i < toSpawn; i++) {
+        spawnItemAtEdge();
+      }
+
+      windActive = true;
+      spawnWindLines();
+      windLineIntervalId = setInterval(spawnWindLines, WIND_LINES_INTERVAL);
+
+      const duration = rand(GUST_MIN_DURATION, GUST_MAX_DURATION);
+      setTimeout(stopGust, duration);
+    }
+
+    function stopGust() {
+      windActive = false;
+      windStrengthCurrent = 0;
+
+      if (windLineIntervalId) {
+        clearInterval(windLineIntervalId);
+        windLineIntervalId = null;
+      }
+
+      scheduleNextWind();
+    }
+
+    function scheduleNextWind() {
+      const interval = rand(WIND_MIN_INTERVAL, WIND_MAX_INTERVAL);
+      const warningDelay = Math.max(0, interval - WIND_WARNING_LEAD);
+
+      setTimeout(showWindWarning, warningDelay);
+      setTimeout(startGust, interval);
+    }
+
+    // --- PHYSIQUE -------------------------------------------------------------
+    function tick(timestamp) {
+      if (lastTimestamp == null) {
+        lastTimestamp = timestamp;
+      }
+      const dt = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+
+      for (let i = items.length - 1; i >= 0; i--) {
+        const obj = items[i];
+
+        // Pointeur
+        if (pointerActive) {
+          const dx = obj.x - pointerX;
+          const dy = obj.y - pointerY;
+          const dist = Math.hypot(dx, dy) || 1;
+
+          if (dist < FORCE_RADIUS) {
+            const strength = (FORCE_RADIUS - dist) / FORCE_RADIUS * MAX_FORCE;
+            const nx = dx / dist;
+            const ny = dy / dist;
+
+            obj.vx += nx * strength;
+            obj.vy += ny * strength;
+          }
+        }
+
+        // Vent continu pendant rafale
+        if (windActive && windStrengthCurrent > 0) {
+          obj.vx += windDirX * windStrengthCurrent * obj.windFactor;
+          obj.vy += windDirY * windStrengthCurrent * obj.windFactor;
+        }
+
+        // friction + déplacement
+        obj.vx *= FRICTION;
+        obj.vy *= FRICTION;
+
+        obj.x += obj.vx;
+        obj.y += obj.vy;
+
+        // Gestion des bords
+        let atEdge = false;
+
+        if (obj.x < EDGE_MARGIN) {
+          obj.x = EDGE_MARGIN;
+          obj.vx = 0;
+          atEdge = true;
+        } else if (obj.x > sceneWidth - EDGE_MARGIN) {
+          obj.x = sceneWidth - EDGE_MARGIN;
+          obj.vx = 0;
+          atEdge = true;
+        }
+
+        if (obj.y < EDGE_MARGIN) {
+          obj.y = EDGE_MARGIN;
+          obj.vy = 0;
+          atEdge = true;
+        } else if (obj.y > sceneHeight - EDGE_MARGIN) {
+          obj.y = sceneHeight - EDGE_MARGIN;
+          obj.vy = 0;
+          atEdge = true;
+        }
+
+        // Dès qu'on touche un bord, on commence à disparaître
+        if (atEdge && !obj.touchedEdge) {
+          obj.touchedEdge = true;
+          obj.edgeTime = 0;
+        }
+
+        if (obj.touchedEdge) {
+          obj.edgeTime += dt;
+          const t = Math.min(1, obj.edgeTime / EDGE_DESPAWN_TIME);
+          obj.el.style.opacity = String(1 - t);
+
+          if (obj.edgeTime >= EDGE_DESPAWN_TIME) {
+            // suppression définitive
+            if (obj.el.parentNode) {
+              obj.el.parentNode.removeChild(obj.el);
+            }
+            items.splice(i, 1);
+            destroyedSinceLastWind++;
+            continue;
+          }
+        }
+
+        obj.el.style.left = obj.x + "px";
+        obj.el.style.top = obj.y + "px";
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    // --- EVENTS ----------------------------------------------------------------
+    scene.addEventListener("pointerdown", (e) => {
+      pointerActive = true;
+      updatePointer(e);
+      scene.classList.add("is-dragging");
+    });
+
+    scene.addEventListener("pointermove", (e) => {
+      if (!pointerActive) return;
+      updatePointer(e);
+    });
+
+    ["pointerup", "pointercancel", "pointerleave"].forEach(evt => {
+      scene.addEventListener(evt, () => {
+        pointerActive = false;
+        scene.classList.remove("is-dragging");
+      });
+    });
+
+    window.addEventListener("wheel", (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    window.addEventListener("resize", updateSceneSize);
+
+    window.addEventListener("load", () => {
+      updateSceneSize();
+      createInitialItems();
+      scheduleNextWind();
+      requestAnimationFrame(tick);
+    });
+  </script>
+</body>
+</html>

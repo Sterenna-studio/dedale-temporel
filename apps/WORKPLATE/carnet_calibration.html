@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calibrage – Carnet de l'agent temporel</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   "Roboto", "Helvetica Neue", Arial, sans-serif;
+      background: #222;
+      color: #f1f1f1;
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      gap: 10px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .left {
+      flex: 1 1 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .right {
+      flex: 0 0 360px;
+      background: #111;
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .page {
+      position: relative;
+      width: 1123px;   /* même taille que la version print écran */
+      height: 794px;
+      background-image: url("img/carnet_agent_temporel.png");
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    .zone-box {
+      position: absolute;
+      border: 2px dashed rgba(0, 255, 255, 0.9);
+      box-sizing: border-box;
+      pointer-events: none;
+    }
+
+    .zone-box label {
+      position: absolute;
+      top: -1.2em;
+      left: 0;
+      font-size: 11px;
+      background: rgba(0,0,0,0.6);
+      padding: 1px 4px;
+      border-radius: 4px 4px 4px 0;
+    }
+
+    h1 {
+      font-size: 16px;
+      margin: 0 0 4px 0;
+    }
+
+    small {
+      color: #aaa;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid #444;
+      background: #222;
+      color: #f1f1f1;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #333;
+    }
+
+    .info {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    textarea {
+      width: 100%;
+      height: 220px;
+      resize: vertical;
+      background: #000;
+      color: #0f0;
+      border-radius: 4px;
+      border: 1px solid #555;
+      padding: 6px 8px;
+      box-sizing: border-box;
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 12px;
+      white-space: pre;
+    }
+
+    .zone-status {
+      font-size: 12px;
+      line-height: 1.4;
+      background: #181818;
+      border-radius: 4px;
+      padding: 6px 8px;
+    }
+
+    .zone-status span {
+      display: inline-block;
+      min-width: 80px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #333;
+      margin-left: 6px;
+    }
+
+    .badge.ok {
+      background: #225522;
+      color: #a7f3a7;
+    }
+
+    .badge.todo {
+      background: #553222;
+      color: #fecaca;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Zone gauche : image + clics -->
+    <div class="left">
+      <div id="page" class="page">
+        <!-- Rectangles overlay -->
+        <div id="box-apprenti" class="zone-box"><label>Apprenti</label></div>
+        <div id="box-cadet" class="zone-box"><label>Cadet</label></div>
+        <div id="box-agent" class="zone-box"><label>Agent</label></div>
+        <div id="box-maitre" class="zone-box"><label>Maître</label></div>
+      </div>
+    </div>
+
+    <!-- Zone droite : contrôle + export -->
+    <div class="right">
+      <div>
+        <h1>Calibrage des zones</h1>
+        <small>Clique sur l'image : 1 fois pour le coin haut-gauche, 1 fois pour le coin bas-droit.</small>
+      </div>
+
+      <div>
+        <label for="zoneSelect">Zone en cours :</label>
+        <select id="zoneSelect">
+          <option value="apprenti">Apprenti du Sablier</option>
+          <option value="cadet">Cadet Chronographe</option>
+          <option value="agent">Agent de Terrain</option>
+          <option value="maitre">Maître Horloger</option>
+        </select>
+      </div>
+
+      <div class="info">
+        <strong>Mode clic :</strong><br>
+        • 1er clic = coin <strong>haut-gauche</strong> de la zone choisie<br>
+        • 2ème clic = coin <strong>bas-droit</strong><br>
+        • 3ème clic sur la même zone = on recommence (le 1er coin est replacé)
+      </div>
+
+      <button id="resetZone">Réinitialiser la zone sélectionnée</button>
+
+      <div class="zone-status" id="status"></div>
+
+      <div>
+        <label for="cssOutput">CSS généré :</label>
+        <textarea id="cssOutput" readonly></textarea>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const page = document.getElementById("page");
+    const zoneSelect = document.getElementById("zoneSelect");
+    const resetBtn = document.getElementById("resetZone");
+    const statusDiv = document.getElementById("status");
+    const cssOutput = document.getElementById("cssOutput");
+
+    const boxes = {
+      apprenti: document.getElementById("box-apprenti"),
+      cadet: document.getElementById("box-cadet"),
+      agent: document.getElementById("box-agent"),
+      maitre: document.getElementById("box-maitre")
+    };
+
+    const zones = {
+      apprenti: { label: "Apprenti du Sablier", clicks: 0, p1: null, p2: null },
+      cadet:    { label: "Cadet Chronographe",  clicks: 0, p1: null, p2: null },
+      agent:    { label: "Agent de Terrain",    clicks: 0, p1: null, p2: null },
+      maitre:   { label: "Maître Horloger",     clicks: 0, p1: null, p2: null }
+    };
+
+    function updateBoxes() {
+      const rect = page.getBoundingClientRect();
+
+      Object.entries(zones).forEach(([key, z]) => {
+        const box = boxes[key];
+        if (z.p1 && z.p2) {
+          const x1 = Math.min(z.p1.x, z.p2.x);
+          const x2 = Math.max(z.p1.x, z.p2.x);
+          const y1 = Math.min(z.p1.y, z.p2.y);
+          const y2 = Math.max(z.p1.y, z.p2.y);
+
+          const left = x1 + "%";
+          const top = y1 + "%";
+          const width = (x2 - x1) + "%";
+          const height = (y2 - y1) + "%";
+
+          box.style.display = "block";
+          box.style.left = left;
+          box.style.top = top;
+          box.style.width = width;
+          box.style.height = height;
+        } else {
+          box.style.display = "none";
+        }
+      });
+
+      updateStatus();
+      updateCSS();
+    }
+
+    function updateStatus() {
+      const lines = [];
+
+      Object.entries(zones).forEach(([key, z]) => {
+        const done = z.p1 && z.p2;
+        const badge = done
+          ? '<span class="badge ok">OK</span>'
+          : '<span class="badge todo">à faire</span>';
+
+        let desc = "";
+        if (done) {
+          const x1 = Math.min(z.p1.x, z.p2.x).toFixed(1);
+          const y1 = Math.min(z.p1.y, z.p2.y).toFixed(1);
+          const x2 = Math.max(z.p1.x, z.p2.x).toFixed(1);
+          const y2 = Math.max(z.p1.y, z.p2.y).toFixed(1);
+          desc = ` (${x1}%, ${y1}%) → (${x2}%, ${y2}%)`;
+        }
+
+        lines.push(`<div><span>${z.label}</span>${badge}${desc}</div>`);
+      });
+
+      statusDiv.innerHTML = lines.join("");
+    }
+
+    function updateCSS() {
+      let css = "/* À coller dans ton fichier CSS */\n\n";
+
+      Object.entries(zones).forEach(([key, z]) => {
+        css += `.zone-${key} {\n`;
+        if (z.p1 && z.p2) {
+          const x1 = Math.min(z.p1.x, z.p2.x);
+          const x2 = Math.max(z.p1.x, z.p2.x);
+          const y1 = Math.min(z.p1.y, z.p2.y);
+          const y2 = Math.max(z.p1.y, z.p2.y);
+
+          const top = y1.toFixed(1);
+          const left = x1.toFixed(1);
+          const width = (x2 - x1).toFixed(1);
+          const height = (y2 - y1).toFixed(1);
+
+          css += `  top: ${top}%;\n`;
+          css += `  left: ${left}%;\n`;
+          css += `  width: ${width}%;\n`;
+          css += `  height: ${height}%;\n`;
+        } else {
+          css += "  /* top/left/width/height à définir */\n";
+        }
+        css += `}\n\n`;
+      });
+
+      cssOutput.value = css;
+    }
+
+    page.addEventListener("click", (e) => {
+      const rect = page.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+      const key = zoneSelect.value;
+      const z = zones[key];
+
+      if (!z.p1 || (z.p1 && z.p2)) {
+        // on (re)commence : on place p1
+        z.p1 = { x, y };
+        z.p2 = null;
+        z.clicks = 1;
+      } else {
+        // deuxième clic : p2
+        z.p2 = { x, y };
+        z.clicks = 2;
+      }
+
+      updateBoxes();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      const key = zoneSelect.value;
+      zones[key].p1 = null;
+      zones[key].p2 = null;
+      zones[key].clicks = 0;
+      updateBoxes();
+    });
+
+    // init affichage
+    updateBoxes();
+  </script>
+</body>
+</html>

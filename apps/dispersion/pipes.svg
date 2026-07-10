@@ -1,0 +1,15 @@
+<!-- Source S -->
+<use href="#node-cap" x="80" y="200" />
+<!-- Machine M -->
+<use href="#node-cap" x="600" y="200" />
+<!-- Tu changes la lettre M en éditant le <text> du symbole dans defs -->
+
+<!-- Tuyau principal -->
+<use href="#pipe-straight-h" x="100" y="191" />
+<use href="#pipe-straight-h" x="220" y="191" />
+
+<!-- Coude -->
+<use href="#pipe-elbow" x="340" y="160" />
+
+<!-- Valve de dérivation -->
+<use href="#valve" x="280" y="200" />

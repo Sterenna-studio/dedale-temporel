@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Carnet de l'agent temporel – Set complet</title>
+  <style>
+    /* ——— STYLES GÉNÉRAUX ÉCRAN ——— */
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #111;
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .page {
+      position: relative;
+      width: 1123px;           /* A4 paysage approx à l’écran */
+      height: 794px;
+      background-image: url("img/carnet_agent_temporel.png");
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+      color: #3b2715;
+      overflow: hidden;
+    }
+
+    .zone {
+      position: absolute;
+      line-height: 1.2;
+      /* la taille réelle sera ajustée par le JS */
+      font-size: 11pt;
+    }
+
+    .zone h3 {
+      margin: 0 0 0.2rem 0;
+      font-size: 1.1em;
+      text-transform: uppercase;
+    }
+
+    /* ===== Positions issues de ton outil de calibrage ===== */
+
+    .zone-apprenti {
+      top: 33.2%;
+      left: 41.1%;
+      width: 17.7%;
+      height: 32.5%;
+    }
+
+    .zone-cadet {
+      top: 18.8%;
+      left: 6.5%;
+      width: 28.7%;
+      height: 27.8%;
+    }
+
+    .zone-agent {
+      top: 43.3%;
+      left: 65.4%;
+      width: 19.9%;
+      height: 16.1%;
+    }
+
+    .zone-maitre {
+      top: 12.2%;
+      left: 64.9%;
+      width: 27.2%;
+      height: 23.2%;
+    }
+
+    /* ——— STYLES PRINT ——— */
+
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+
+    @media print {
+
+      html, body {
+        background: #fff;
+        min-height: 0;
+        display: block;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      .page {
+        width: 297mm;
+        height: 210mm;
+        margin: 0;
+        box-shadow: none;
+        page-break-inside: avoid;
+      }
+
+      /* le JS a déjà ajusté la font-size avant l’aperçu d’impression */
+    }
+
+    /* Debug visuel optionnel :
+    .zone { outline: 1px dashed red; }
+    */
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Zone Cadet Chronographe -->
+    <div class="zone zone-cadet">
+      <h3>Cadet Chronographe</h3>
+      <p style="font-size:0.9em;">
+        Complète les suites :
+      </p>
+      <p style="font-size:0.9em;">
+        1) 4 – 7 – 10 – 13 – ___<br />
+        2) 2 – 4 – 8 – 16 – ___<br />
+        3) 20 – 17 – 14 – 11 – ___
+      </p>
+      <p style="font-size:0.9em;">
+        Additionne les trois nombres pour obtenir le<br />
+        <strong>CODE :</strong> _ _ _
+      </p>
+    </div>
+
+    <!-- Zone Apprenti du Sablier -->
+    <div class="zone zone-apprenti">
+      <h3>Apprenti du Sablier</h3>
+      <p style="font-size:0.9em;">
+        Mini-Agent part en mission pour S.T.E.A.M.<br />
+        On sait que :
+      </p>
+      <ul style="margin:0 0 0.2rem 1em; padding-left:0.6em; font-size:0.9em;">
+        <li>Sa mission commence à <strong>10 h</strong>.</li>
+        <li>Elle dure <strong>3 heures</strong>.</li>
+        <li>Le goûter est <strong>1 h après la fin</strong>.</li>
+        <li>Il se réveille <strong>2 h avant</strong> le début.</li>
+        <li>Il se couche <strong>4 h après</strong> le goûter.</li>
+      </ul>
+      <p style="font-size:0.85em; margin-top:0.2rem;">
+        Réveil : ____ &nbsp; Début : ____<br />
+        Goûter : ____ &nbsp; Coucher : ____<br />
+        <strong>CODE :</strong> _ _ _ _
+      </p>
+    </div>
+
+    <!-- Zone Agent de Terrain – Vigenère -->
+    <div class="zone zone-agent">
+      <h3>Agent de Terrain</h3>
+      <p style="font-size:0.85em;">
+        Code de Vigenère – mot-clé : <strong>STEAM</strong>.
+      </p>
+      <p style="font-family:'Courier New', monospace; font-size:0.8em;">
+       <br />
+        J X X R A M O I L Q U H H E
+      </p>
+      <p style="font-size:0.8em;">
+        Utilise le tableau pour retrouver le <strong>message secret</strong> :
+      </p>
+      <p style="font-size:0.8em;">
+        ____________________________
+      </p>
+    </div>
+
+    <!-- Zone Maître Horloger -->
+    <div class="zone zone-maitre">
+      <h3>Maître Horloger</h3>
+      <p style="font-size:0.85em;">
+        <strong>Pierre</strong>, <strong>Cat</strong> et <strong>Paul</strong>
+        visitent le <em>Moyen Âge</em>, la <em>Révolution industrielle</em> et le
+        <em>Futur</em>. Ils doivent ramener :
+        une <strong>clé en or</strong>, des <strong>plans de machine</strong>,
+        un <strong>cristal temporel</strong>.
+      </p>
+      <p style="font-size:0.82em;">
+        1. Futur → Cristal temporel.<br />
+        2. Pierre → Révolution industrielle.<br />
+        3. Cat ne va pas dans le Futur.<br />
+        4. Moyen Âge → Clé en or.<br />
+        5. Paul ne rapporte pas la clé en or.
+      </p>
+      <p style="font-size:0.82em;">
+        Pierre : __________________<br />
+        Cat : _____________________<br />
+        Paul : ____________________
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Ajuste la taille de la police pour que le contenu de chaque .zone
+    // tienne dans le cadre (sans overflow).
+    function fitZone(zone, maxPt = 11, minPt = 7) {
+      let size = maxPt;
+      zone.style.fontSize = size + "pt";
+
+      // On laisse un petit buffer pour éviter les scrollbars invisibles
+      const fits = () =>
+        zone.scrollHeight <= zone.clientHeight + 1 &&
+        zone.scrollWidth <= zone.clientWidth + 1;
+
+      while (!fits() && size > minPt) {
+        size -= 0.25; // on diminue petit à petit
+        zone.style.fontSize = size + "pt";
+      }
+    }
+
+    function fitAllZones() {
+      const zones = document.querySelectorAll(".zone");
+      zones.forEach(z => fitZone(z));
+    }
+
+    window.addEventListener("load", () => {
+      fitAllZones();
+    });
+
+    window.addEventListener("resize", () => {
+      fitAllZones();
+    });
+
+    // Avant impression, on recalcule pour être sûr
+    if (window.matchMedia) {
+      const mediaQueryList = window.matchMedia("print");
+      mediaQueryList.addListener(mql => {
+        if (mql.matches) {
+          fitAllZones();
+        }
+      });
+    }
+
+    window.addEventListener("beforeprint", fitAllZones);
+  </script>
+</body>
+</html>

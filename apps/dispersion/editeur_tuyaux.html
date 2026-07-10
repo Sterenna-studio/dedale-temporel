@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Éditeur de circuit de tuyaux S.T.E.A.M.</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #151515;
+      color: #f5f5f5;
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #1f1f1f;
+      border-right: 1px solid #444;
+      padding: 16px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 0 0 8px;
+    }
+
+    h2 {
+      font-size: 14px;
+      margin: 12px 0 4px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #c9a36b;
+    }
+
+    button {
+      width: 100%;
+      margin-bottom: 4px;
+      padding: 6px 8px;
+      background: #2a2a2a;
+      border: 1px solid #555;
+      border-radius: 4px;
+      color: #f5f5f5;
+      font-size: 13px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    button:hover {
+      background: #353535;
+      border-color: #c9a36b;
+    }
+
+    button span.short {
+      font-weight: bold;
+      color: #ffc76a;
+    }
+
+    .info {
+      font-size: 12px;
+      color: #bbb;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #121212;
+    }
+
+    .toolbar {
+      padding: 6px 10px;
+      border-bottom: 1px solid #444;
+      font-size: 12px;
+      color: #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #181818;
+    }
+
+    .canvas-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    svg {
+      background: #202020;
+      border: 1px solid #444;
+      box-shadow: 0 0 12px rgba(0,0,0,.6);
+    }
+
+    .draggable {
+      cursor: grab;
+    }
+
+    .draggable:active {
+      cursor: grabbing;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h1>Éditeur de tuyaux</h1>
+    <div class="info">
+      Clique sur un bouton, puis déplace l’élément dans le plan.<br>
+      Idéal pour construire ton circuit S → M avec tuyaux gelés, valves, etc.
+    </div>
+
+    <h2>Tuyaux</h2>
+    <button data-type="pipe-h"><span>Tuyau horizontal</span> <span class="short">─</span></button>
+    <button data-type="pipe-v"><span>Tuyau vertical</span> <span class="short">│</span></button>
+    <button data-type="elbow"><span>Coude 90°</span> <span class="short">┘</span></button>
+    <button data-type="T"><span>Jonction en T</span> <span class="short">┬</span></button>
+    <button data-type="cross"><span>Intersection</span> <span class="short">┼</span></button>
+
+    <h2>Éléments spéciaux</h2>
+    <button data-type="valve"><span>Valve</span> <span class="short">V</span></button>
+    <button data-type="frost"><span>Givre sur tuyau</span> <span class="short">❄</span></button>
+    <button data-type="cap-S"><span>Cap “S” (source)</span> <span class="short">S</span></button>
+    <button data-type="cap-M"><span>Cap “M” (machine)</span> <span class="short">M</span></button>
+    <button data-type="cap-letter"><span>Cap (lettre annexe)</span> <span class="short">A</span></button>
+
+    <h2>Actions</h2>
+    <button id="delete-selected"><span>Supprimer l’élément sélectionné</span></button>
+
+    <div class="info">
+      Astuce : tu peux zoomer la page (Ctrl+Molette) pour plus de précision et, une fois satisfait, récupérer le code SVG via les outils de dev ou copier l’élément dans ton projet.
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="toolbar">
+      <div>Glisser / déposer les éléments pour construire ton réseau.</div>
+      <div>Ctrl+Z ne marche pas ici 😅 → duplique plutôt prudemment.</div>
+    </div>
+    <div class="canvas-wrapper">
+      <!-- CANVAS SVG -->
+      <svg id="canvas" width="900" height="600" viewBox="0 0 900 600"
+           xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Petit fond quadrillé -->
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <rect width="40" height="40" fill="#202020" />
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#333" stroke-width="1"/>
+          </pattern>
+
+          <style>
+            .pipe {
+              fill: #b66a33;
+              stroke: #7a4523;
+              stroke-width: 3;
+            }
+            .pipe-border {
+              fill: none;
+              stroke: #4a2b16;
+              stroke-width: 2;
+            }
+            .valve-wheel {
+              fill: #f5e4c8;
+              stroke: #7a4523;
+              stroke-width: 3;
+            }
+            .valve-inner {
+              fill: #b66a33;
+            }
+            .frost {
+              fill: #e7f7ff;
+              stroke: #a8c4d5;
+              stroke-width: 2;
+            }
+            .node-cap {
+              fill: #f5e4c8;
+              stroke: #7a4523;
+              stroke-width: 3;
+            }
+            .label {
+              font-family: "Segoe UI", system-ui, sans-serif;
+              font-size: 14px;
+              fill: #2b1a0e;
+              font-weight: bold;
+            }
+            .selected-outline {
+              stroke: #ffd27f;
+              stroke-width: 2;
+              fill: none;
+              pointer-events: none;
+            }
+          </style>
+
+          <!-- ❶ Segment droit horizontal -->
+          <g id="pipe-straight-h">
+            <rect x="0" y="0" width="120" height="18" rx="8" ry="8" class="pipe"/>
+            <rect x="0" y="0" width="120" height="18" rx="8" ry="8" class="pipe-border"/>
+          </g>
+
+          <!-- ❷ Segment droit vertical -->
+          <g id="pipe-straight-v">
+            <use href="#pipe-straight-h" transform="rotate(90 9 9)" />
+          </g>
+
+          <!-- ❸ Coude 90° -->
+          <g id="pipe-elbow">
+            <!-- bloc de 60x60 -->
+            <path d="M 9 0 H 60
+                     A 9 9 0 0 1 69 9
+                     V 60
+                     A 9 9 0 0 1 60 69
+                     H 9
+                     A 9 9 0 0 1 0 60
+                     V 9
+                     A 9 9 0 0 1 9 0 Z"
+                  class="pipe"/>
+            <path d="M 9 0 H 60
+                     A 9 9 0 0 1 69 9
+                     V 60
+                     A 9 9 0 0 1 60 69
+                     H 9
+                     A 9 9 0 0 1 0 60
+                     V 9
+                     A 9 9 0 0 1 9 0 Z"
+                  class="pipe-border"/>
+          </g>
+
+          <!-- ❹ T de dérivation -->
+          <g id="pipe-T">
+            <!-- barre principale -->
+            <use href="#pipe-straight-h" x="0" y="21"/>
+            <!-- branche verticale au centre -->
+            <rect x="51" y="0" width="18" height="42" rx="8" ry="8" class="pipe"/>
+            <rect x="51" y="0" width="18" height="42" rx="8" ry="8" class="pipe-border"/>
+          </g>
+
+          <!-- ❺ Croisillon -->
+          <g id="pipe-cross">
+            <!-- horizontal -->
+            <use href="#pipe-straight-h" x="0" y="21"/>
+            <!-- vertical -->
+            <rect x="51" y="0" width="18" height="63" rx="8" ry="8" class="pipe"/>
+            <rect x="51" y="0" width="18" height="63" rx="8" ry="8" class="pipe-border"/>
+          </g>
+
+          <!-- ❻ Valve -->
+          <g id="valve">
+            <circle cx="0" cy="0" r="20" class="valve-wheel"/>
+            <circle cx="0" cy="0" r="12" class="valve-inner"/>
+            <path d="M -12 0 H 12 M 0 -12 V 12" stroke="#f5e4c8" stroke-width="3" />
+            <text x="0" y="4" text-anchor="middle" class="label">V</text>
+          </g>
+
+          <!-- ❼ Givre -->
+          <g id="frost-chunk">
+            <path d="M0 0 
+                     C 15 -8, 35 -8, 50 0
+                     L 48 10
+                     C 42 5, 38 15, 34 10
+                     C 30 18, 26 8, 22 11
+                     C 18 16, 14 6, 10 9
+                     C 6 12, 4 6, 0 10 Z"
+                  class="frost"/>
+          </g>
+
+          <!-- ❽ Cap -->
+          <g id="node-cap">
+            <circle cx="0" cy="0" r="20" class="node-cap"/>
+            <text x="0" y="4" text-anchor="middle" class="label">S</text>
+          </g>
+
+        </defs>
+
+        <!-- Fond quadrillé -->
+        <rect x="0" y="0" width="900" height="600" fill="url(#grid)" />
+
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    const svgNS = "http://www.w3.org/2000/svg";
+    const canvas = document.getElementById("canvas");
+    const buttons = document.querySelectorAll(".sidebar button[data-type]");
+    const deleteBtn = document.getElementById("delete-selected");
+
+    let selectedElement = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    // Création d'un nouvel élément en fonction du type
+    function createElement(type) {
+      let el;
+
+      switch (type) {
+        case "pipe-h":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#pipe-straight-h");
+          break;
+        case "pipe-v":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#pipe-straight-v");
+          break;
+        case "elbow":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#pipe-elbow");
+          break;
+        case "T":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#pipe-T");
+          break;
+        case "cross":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#pipe-cross");
+          break;
+        case "valve":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#valve");
+          break;
+        case "frost":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#frost-chunk");
+          break;
+        case "cap-S":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#node-cap");
+          el.dataset.capLetter = "S";
+          break;
+        case "cap-M":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#node-cap");
+          el.dataset.capLetter = "M";
+          break;
+        case "cap-letter":
+          el = document.createElementNS(svgNS, "use");
+          el.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#node-cap");
+          el.dataset.capLetter = "A"; // par défaut
+          break;
+        default:
+          return;
+      }
+
+      el.setAttribute("x", 400);
+      el.setAttribute("y", 300);
+      el.classList.add("draggable");
+
+      // Pour les caps, on change la lettre interne si besoin
+      if (el.dataset.capLetter) {
+        // dupliquer le contenu de node-cap pour pouvoir changer le texte
+        const g = document.getElementById("node-cap");
+        // clone profond du g
+        const groupClone = g.cloneNode(true);
+        // met à jour le texte
+        const textNode = groupClone.querySelector("text");
+        textNode.textContent = el.dataset.capLetter;
+
+        // On remplace le <use> par un <g> placé sur le canvas
+        const wrapper = document.createElementNS(svgNS, "g");
+        wrapper.setAttribute("transform", "translate(400,300)");
+        wrapper.classList.add("draggable");
+        wrapper.appendChild(groupClone);
+        canvas.appendChild(wrapper);
+        attachDragHandlers(wrapper);
+        setSelected(wrapper);
+        return;
+      }
+
+      canvas.appendChild(el);
+      attachDragHandlers(el);
+      setSelected(el);
+    }
+
+    // Gestion de la sélection
+    function setSelected(el) {
+      selectedElement = el;
+      // Supprimer les outlines existants
+      const oldOutlines = canvas.querySelectorAll(".selected-outline");
+      oldOutlines.forEach(o => o.remove());
+
+      if (!el) return;
+
+      // Dessiner un rectangle de sélection approximatif
+      const bbox = el.getBBox();
+      const outline = document.createElementNS(svgNS, "rect");
+      outline.setAttribute("x", bbox.x - 4);
+      outline.setAttribute("y", bbox.y - 4);
+      outline.setAttribute("width", bbox.width + 8);
+      outline.setAttribute("height", bbox.height + 8);
+      outline.classList.add("selected-outline");
+      outline.dataset.for = "selection";
+
+      // On met l'outline juste après l'élément pour qu'il ne bloque pas les clics
+      canvas.insertBefore(outline, el.nextSibling);
+    }
+
+    // Gestion du drag & drop
+    function attachDragHandlers(el) {
+      el.addEventListener("mousedown", (evt) => {
+        evt.preventDefault();
+        setSelected(el);
+
+        let pt = canvas.createSVGPoint();
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+        let svgP = pt.matrixTransform(canvas.getScreenCTM().inverse());
+
+        // Gestion <use> vs <g> transform
+        if (el.tagName === "use") {
+          const x = parseFloat(el.getAttribute("x") || 0);
+          const y = parseFloat(el.getAttribute("y") || 0);
+          offsetX = svgP.x - x;
+          offsetY = svgP.y - y;
+        } else {
+          // suppose transform="translate(x,y)"
+          const tf = el.getAttribute("transform") || "translate(0,0)";
+          const match = /translate\(([-\d.]+),\s*([-\d.]+)\)/.exec(tf);
+          const x = match ? parseFloat(match[1]) : 0;
+          const y = match ? parseFloat(match[2]) : 0;
+          offsetX = svgP.x - x;
+          offsetY = svgP.y - y;
+        }
+
+        function onMouseMove(e2) {
+          let pt2 = canvas.createSVGPoint();
+          pt2.x = e2.clientX;
+          pt2.y = e2.clientY;
+          let svgP2 = pt2.matrixTransform(canvas.getScreenCTM().inverse());
+
+          if (el.tagName === "use") {
+            el.setAttribute("x", svgP2.x - offsetX);
+            el.setAttribute("y", svgP2.y - offsetY);
+          } else {
+            const nx = svgP2.x - offsetX;
+            const ny = svgP2.y - offsetY;
+            el.setAttribute("transform", `translate(${nx},${ny})`);
+          }
+          // maj outline
+          setSelected(el);
+        }
+
+        function onMouseUp() {
+          window.removeEventListener("mousemove", onMouseMove);
+          window.removeEventListener("mouseup", onMouseUp);
+        }
+
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+      });
+    }
+
+    // Clic sur les boutons palette
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const type = btn.dataset.type;
+        createElement(type);
+      });
+    });
+
+    // Clic sur le canvas pour changer la sélection
+    canvas.addEventListener("mousedown", (evt) => {
+      if (evt.target === canvas || evt.target.tagName === "rect" && evt.target.getAttribute("fill") === "url(#grid)") {
+        // clic sur le fond
+        setSelected(null);
+      }
+    });
+
+    // Suppression de l’élément sélectionné
+    deleteBtn.addEventListener("click", () => {
+      if (!selectedElement) return;
+      const outline = canvas.querySelector(".selected-outline");
+      if (outline) outline.remove();
+      selectedElement.remove();
+      selectedElement = null;
+    });
+  </script>
+</body>
+</html>

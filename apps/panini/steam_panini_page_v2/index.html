@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page Panini — S.T.E.A.M.</title>
+  <style>
+    :root{
+      --cols:3;
+      --rows:4;
+      --slot:55mm;
+      --gap:4mm;
+      --paper:#ecdcb4;
+      --paper2:#e7d3a0;
+      --ink:#241f19;
+      --border:#2b2b2b;
+      --accent:#8c6a2f;
+    }
+    @page{ size:A4; margin:12mm; }
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
+    body{ margin:0; background:#d9d5cc; font-family: ui-serif, Georgia, Times, serif; color:var(--ink); }
+    .sheet{ width:210mm; height:297mm; margin:0 auto;
+      background: radial-gradient(120mm 80mm at 5% 0%, rgba(255,255,255,.25), transparent 70%),
+                  radial-gradient(120mm 80mm at 100% 100%, rgba(0,0,0,.06), transparent 60%),
+                  linear-gradient(var(--paper), var(--paper2));
+      position:relative; padding:18mm; border:1.4mm solid var(--border); outline:2mm double var(--border);
+      box-shadow:0 1.5mm 6mm rgba(0,0,0,.25);
+    }
+    header{ display:flex; align-items:center; gap:10mm; justify-content:center; }
+    header img{ height:18mm; object-fit:contain; }
+    header h1{ margin:0; letter-spacing:1.5mm; font-size:14mm; }
+    .inner-frame{ position:absolute; inset:10mm; border:.7mm solid var(--border); pointer-events:none; }
+    .gear{ position:absolute; width:12mm; height:12mm; }
+    .gear.tl{ left:6mm; top:6mm } .gear.tr{ right:6mm; top:6mm } .gear.bl{ left:6mm; bottom:6mm } .gear.br{ right:6mm; bottom:6mm }
+    .grid{ display:grid; grid-template-columns:repeat(var(--cols), var(--slot)); grid-auto-rows:var(--slot);
+           gap:var(--gap); justify-content:center; align-content:start; margin-top:6mm; }
+    .slot{ position:relative; border:.9mm solid var(--border); border-radius:6mm; background:rgba(255,255,255,.25);
+           box-shadow:inset 0 0 0 .6mm rgba(255,255,255,.35); overflow:hidden; }
+    .slot::after{ content:""; position:absolute; inset:3.5mm; border:.5mm dashed rgba(0,0,0,.35); border-radius:5mm; }
+    .sheet[data-debug="1"] .slot::before{ content:attr(data-index); position:absolute; left:3.5mm; top:2.5mm; font-size:4mm; opacity:.5; }
+    footer{ position:absolute; left:18mm; right:18mm; bottom:10mm; display:flex; justify-content:space-between; font-size:3.6mm; opacity:.7; }
+    /* Admin panel (hidden at print) */
+    .admin{ width:210mm; margin:8mm auto 10mm; background:#fff; border:1px solid #bbb; border-radius:8px; padding:10px 12px;
+            box-shadow:0 1mm 4mm rgba(0,0,0,.12); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .admin h2{ margin:0 0 6px 0; font-size:16px }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:end; }
+    .row label{ display:flex; flex-direction:column; font-size:12px; gap:4px }
+    .row input[type="number"], .row input[type="text"]{ width:90px; padding:6px 8px; border:1px solid #bbb; border-radius:6px; }
+    .row input[pattern]{ width:120px }
+    .row .btn{ padding:7px 12px; border:1px solid #444; border-radius:6px; background:#222; color:#fff; cursor:pointer; }
+    .row .btn:active{ transform:translateY(1px) }
+    .row .check{ display:flex; align-items:center; gap:6px; margin-left:auto }
+    @media print{ body{ background:none } .sheet{ box-shadow:none } .admin{ display:none } }
+  </style>
+</head>
+<body>
+  <!-- Panneau Admin (ne s'imprime pas) -->
+  <section class="admin" id="admin">
+    <h2>Configuration Panini</h2>
+    <div class="row">
+      <label>Colonnes<br><input id="cols" type="number" min="1" max="8" value="3"></label>
+      <label>Lignes<br><input id="rows" type="number" min="1" max="10" value="4"></label>
+      <label>Taille d'une case (mm)<br><input id="slot" type="number" min="20" max="90" value="55"></label>
+      <label>Espacement (mm)<br><input id="gap" type="number" min="2" max="20" value="4"></label>
+      <label>Logo (chemin)<br><input id="logoPath" type="text" value="assets/steam-logo.png"></label>
+      <button class="btn" id="apply">Appliquer</button>
+      <label class="check"><input id="debug" type="checkbox" checked> Numérotation</label>
+    </div>
+    <p style="margin:6px 0 0 0; font-size:12px; opacity:.8">Astuce: remplacez <code>assets/steam-logo.png</code> par votre logo. Le panneau est masqué à l'impression.</p>
+  </section>
+
+  <main class="sheet" id="sheet" aria-label="Album de stickers S.T.E.A.M.">
+    <img class="gear tl" src="assets/gear.png" alt="gear" aria-hidden="true"/>
+    <img class="gear tr" src="assets/gear.png" alt="gear" aria-hidden="true"/>
+    <img class="gear bl" src="assets/gear.png" alt="gear" aria-hidden="true"/>
+    <img class="gear br" src="assets/gear.png" alt="gear" aria-hidden="true"/>
+
+    <div class="inner-frame" aria-hidden="true"></div>
+
+    <header>
+      <img id="logo" src="assets/steam-logo.png" alt="S.T.E.A.M. logo" />
+      <h1>MISSION</h1>
+    </header>
+
+    <section class="grid" id="grid" role="list" aria-label="Emplacements de stickers"></section>
+
+    <footer>
+      <span>S.T.E.A.M. — Carnet Panini</span>
+      <span>Impression: A4 • marges min • arrière-plans activés</span>
+    </footer>
+  </main>
+
+  <script>
+    const el = (sel) => document.querySelector(sel);
+    const sheet = el('#sheet');
+    const grid = el('#grid');
+    const inputs = {
+      cols: el('#cols'),
+      rows: el('#rows'),
+      slot: el('#slot'),
+      gap: el('#gap'),
+      logoPath: el('#logoPath'),
+      debug: el('#debug')
+    };
+    const logo = el('#logo');
+
+    function apply(){
+      const cols = Math.max(1, parseInt(inputs.cols.value||3));
+      const rows = Math.max(1, parseInt(inputs.rows.value||4));
+      const slot = Math.max(10, parseInt(inputs.slot.value||55));
+      const gap  = Math.max(0, parseInt(inputs.gap.value||4));
+      document.documentElement.style.setProperty('--cols', cols);
+      document.documentElement.style.setProperty('--rows', rows);
+      document.documentElement.style.setProperty('--slot', slot+'mm');
+      document.documentElement.style.setProperty('--gap', gap+'mm');
+      logo.src = inputs.logoPath.value || 'assets/steam-logo.png';
+      sheet.toggleAttribute('data-debug', inputs.debug.checked);
+
+      // rebuild grid
+      grid.innerHTML = '';
+      const total = cols * rows;
+      for(let i=1;i<=total;i++){
+        const d = document.createElement('div');
+        d.className = 'slot';
+        d.setAttribute('role','listitem');
+        d.setAttribute('data-index', String(i).padStart(2,'0'));
+        grid.appendChild(d);
+      }
+    }
+
+    el('#apply').addEventListener('click', apply);
+    document.addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase()==='d'){ inputs.debug.checked = !inputs.debug.checked; apply(); }
+      if(e.key.toLowerCase()==='a'){ const a = document.getElementById('admin'); a.style.display = (a.style.display==='none'?'':'none'); }
+    });
+
+    apply();
+  </script>
+</body>
+</html>

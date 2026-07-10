@@ -1,0 +1,237 @@
+/* Styles for the Carnet Panini (SVG style) page */
+
+/* Colour palette similar to the original panini page */
+:root {
+  --paper: #ecdcb4;
+  --paper2: #e7d3a0;
+  --ink: #241f19;
+  --border: #2b2b2b;
+  --accent: #8c6a2f;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f8f5ee;
+  color: var(--ink);
+}
+
+/* Top control bar */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  background-color: #efebe0;
+  padding: 10px;
+  border-bottom: 1px solid #c5b89d;
+  font-size: 14px;
+}
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.controls input[type="text"] {
+  padding: 4px 6px;
+  border: 1px solid #bfb7a1;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.controls button {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background-color: var(--border);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.controls button:hover {
+  background-color: #423c2f;
+}
+
+/* Container wraps the sheet and inventory */
+.sheet-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Panini sheet with decorative background */
+.panini-sheet {
+  position: relative;
+  width: 100%;
+  /* A4 ratio: width:height ≈ 210:297 */
+  aspect-ratio: 210 / 297;
+  background: radial-gradient(120mm 80mm at 5% 0%, rgba(255, 255, 255, 0.25), transparent 70%),
+              radial-gradient(120mm 80mm at 100% 100%, rgba(0, 0, 0, 0.06), transparent 60%),
+              linear-gradient(var(--paper), var(--paper2));
+  box-shadow: 0 1.5mm 6mm rgba(0, 0, 0, 0.25);
+  padding: 18mm;
+  border: 1.4mm solid var(--border);
+  outline: 2mm double var(--border);
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+/* Decorative gears */
+.gear {
+  position: absolute;
+  width: 12mm;
+  height: 12mm;
+  pointer-events: none;
+}
+.gear.tl { left: 6mm; top: 6mm; }
+.gear.tr { right: 6mm; top: 6mm; }
+.gear.bl { left: 6mm; bottom: 6mm; }
+.gear.br { right: 6mm; bottom: 6mm; }
+
+/* Header inside the sheet */
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10mm;
+  pointer-events: none;
+}
+.sheet-header .logo {
+  height: 20mm;
+  object-fit: contain;
+}
+.sheet-header h1 {
+  margin: 0;
+  font-size: 18mm;
+  letter-spacing: 1.5mm;
+  color: var(--ink);
+}
+
+/* Player name display */
+.player-name {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 24px;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #bfb7a1;
+  pointer-events: none;
+}
+
+/* Sticker grid: 3x4 equal cells */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+  height: calc(100% - 40mm); /* leave space for header and margins */
+  box-sizing: border-box;
+}
+
+.slot {
+  position: relative;
+  border: 2px dashed rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  cursor: pointer;
+}
+.slot.assigned {
+  border-style: solid;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Inventory below the sheet */
+.inventory {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #faf7f1;
+  padding: 10px;
+  border-top: 1px solid #d4c8b2;
+  box-sizing: border-box;
+}
+.inventory h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  border-bottom: 1px solid #d4c8b2;
+  padding-bottom: 4px;
+}
+.inventory-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.inventory-item {
+  width: 60px;
+  height: 60px;
+  border: 1px solid #bfb7a1;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #555;
+  user-select: none;
+  cursor: pointer;
+}
+.inventory-item.unlocked {
+  opacity: 1;
+  cursor: grab;
+}
+
+/* Modal for mission details */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal.hidden {
+  display: none;
+}
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  max-width: 90%;
+  width: 500px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.modal-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+.modal-image-wrapper img {
+  max-width: 100%;
+  height: auto;
+}
+.modal-content h2 {
+  margin-top: 0;
+}

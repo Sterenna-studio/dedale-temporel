@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Imprimerie Médicale — Tirage de Noël (Puzzle)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="title">
+      <div class="kicker">IMPRIMERIE MÉDICALE • DÉBUT XXe</div>
+      <h1>Tirage spécial de Noël — Plaques mélangées</h1>
+      <p class="subtitle">
+        Des agents d’Hadès Corp ont saboté l’atelier. Sur ordinateur : reconstitue chaque plaque en <strong>hauteur</strong>, puis assemble-les en <strong>ligne</strong>.
+        Sur mobile : reconstitue en <strong>largeur</strong>, puis assemble en <strong>colonne</strong>.
+      </p>
+    </div>
+  </header>
+
+  <div class="hud">
+    <div class="hudLeft">
+      <button id="btnShuffle" class="btn">Mélanger</button>
+      <button id="btnReset" class="btn btnGhost">Réinitialiser</button>
+      <button id="btnHint" class="btn btnGhost">Indice</button>
+    </div>
+
+    <div class="hudMid">
+      <div class="hudHint" id="panelHint">Assemble les bonnes moitiés (jonction interne), puis relie les plaques (connecteurs externes).</div>
+    </div>
+
+    <div class="hudRight">
+      <div class="stat"><span class="label">Plaques :</span> <span id="statBuilt">0</span>/8</div>
+      <div class="stat"><span class="label">Chaîne :</span> <span id="statChain">0</span>/8</div>
+    </div>
+  </div>
+
+  <main class="main">
+    <section class="panel">
+      <div id="board" class="board" aria-label="Zone de puzzle"></div>
+    </section>
+
+    <section class="panel panelSmall">
+      <div class="rulesWrap">
+        <div class="rulesTitle">Règles rapides</div>
+        <ol class="rules">
+          <li>Glisse-dépose les moitiés : elles <strong>snap</strong> uniquement si elles sont compatibles.</li>
+          <li>Quand une paire est correcte, elle se <strong>fusionne</strong> en plaque complète.</li>
+          <li>Connecte toutes les plaques de <strong>START</strong> à <strong>END</strong> (ou en colonne sur mobile).</li>
+          <li>Le code final est une suite de <strong>symboles</strong>.</li>
+        </ol>
+      </div>
+
+      <div class="successCard" id="successCard" hidden>
+        <div class="successTitle">Tirage validé ✅</div>
+        <div class="successText">Code d’atelier :</div>
+        <div class="successCode" id="successCode"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Astuce : le cachet central devient net quand la paire est correcte.</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

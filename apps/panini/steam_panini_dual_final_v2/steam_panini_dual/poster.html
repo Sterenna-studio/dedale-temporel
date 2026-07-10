@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poster STEAM</title>
+  <!-- Cinzel Decorative for the player name -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="poster.css">
+  <!-- PDF export libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="controls">
+    <label>Nom de l'agent&nbsp;:
+      <input type="text" id="player-name" value="Agent">
+    </label>
+    <label>Code mission&nbsp;:
+      <input type="text" id="unlock-code" maxlength="3">
+      <button id="unlock-button">Débloquer</button>
+    </label>
+    <button id="export-pdf">Exporter en PDF</button>
+  </div>
+  <div class="sheet-container">
+    <!-- Poster sheet with background and grid overlay -->
+    <div id="sheet" class="poster-sheet">
+      <div id="player-name-display" class="player-name">Agent</div>
+      <div id="grid" class="grid"></div>
+    </div>
+    <!-- Inventory below the poster -->
+    <div id="inventory" class="inventory">
+      <h2>Inventaire</h2>
+      <div id="inventory-items" class="inventory-items"></div>
+    </div>
+  </div>
+  <!-- Modal for mission details -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close">×</button>
+      <h2 id="modal-title"></h2>
+      <div class="modal-image-wrapper">
+        <img id="modal-image" alt="Mission image">
+      </div>
+      <p id="modal-description"></p>
+      <p id="modal-secret"></p>
+    </div>
+  </div>
+  <!-- Inline fallback missions data. This JSON will be used if
+       missions.json cannot be fetched (e.g. when opened via file://). -->
+  <script id="missions-data" type="application/json">
+[
+  {
+    "id": "ATT",
+    "name": "Att.E9Bjtxkdnpxwc6Nuocvhaqhakxiiwspxndxe2Zyqcf0",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/att.e9BjTxkDNPxwC6nuocVHaQhaKXIIwSpXNdxE2zyQcf0.jpg",
+    "back": 1
+  },
+  {
+    "id": "ORI",
+    "name": "Orient Express 1536X1536",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/orient-express-1536x1536.jpg",
+    "back": 1
+  },
+  {
+    "id": "LPT",
+    "name": "Lpt1Yxp6K3Y0Cwtknkpd",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/lpt1yxp6k3y0cwtknkpd.jpg",
+    "back": 1
+  },
+  {
+    "id": "VIS",
+    "name": "Visuel Sherlock Mission 2 Sans Logo 1024X1024",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/visuel-sherlock-mission-2-sans-logo-1024x1024.jpg",
+    "back": 1
+  },
+  {
+    "id": "RIC",
+    "name": "Richard Coeur De Lion",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/richard-coeur-de-lion.jpg",
+    "back": 1
+  },
+  {
+    "id": "CAR",
+    "name": "Carte Pierre Philosophale",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/Carte-Pierre-Philosophale.jpg",
+    "back": 1
+  },
+  {
+    "id": "LEF",
+    "name": "Le Fantome De Lopera",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/Le-Fantome-de-lOpera.jpg",
+    "back": 1
+  },
+  {
+    "id": "LUT",
+    "name": "Lutin De Pekin",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/lutin-de-pekin.jpg",
+    "back": 1
+  },
+  {
+    "id": "VISP",
+    "name": "Visuel Pyramide Rouge Grand Format",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/visuel-pyramide-rouge-grand-format.jpg",
+    "back": 1
+  },
+  {
+    "id": "VIST",
+    "name": "Visuel Temple Maya 400X400 1",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/visuel-temple-maya-400x400-1.jpg",
+    "back": 1
+  },
+  {
+    "id": "SAM",
+    "name": "Samourai Image Carree",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/Samourai-Image-Carree.jpg",
+    "back": 1
+  },
+  {
+    "id": "MER",
+    "name": "Merlin 1536X1536",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/merlin-1536x1536.jpg",
+    "back": 1
+  },
+  {
+    "id": "LAR",
+    "name": "La Relique De Salem Visuel",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/la-relique-de-salem-visuel.jpg",
+    "back": 1
+  },
+  {
+    "id": "VIS1",
+    "name": "Visuel Sherlock Mission 1",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/visuel-sherlock-mission-1.jpg",
+    "back": 1
+  },
+  {
+    "id": "ATT2",
+    "name": "Att.Edqut91Wx12H0Y86Zq1Av46Ufmv Xbrhb Ww5M42Wd8 2 (1)",
+    "description": "",
+    "secret": "",
+    "image": "missions/images/att.EdQUt91wx12h0Y86Zq1aV46UfMV_XBRhb-ww5M42wd8-2 (1).jpg",
+    "back": 1
+  }
+]
+  </script>
+  <script src="poster.js"></script>
+</body>
+</html>
