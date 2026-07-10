@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atelier de Calibration – S.T.E.A.M.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c0805;
+      --surface: #14100b;
+      --brass: #c29b4b;
+      --brass-dark: #8a6a30;
+      --emerald: #2dcf8a;
+      --text: #f4e5c1;
+      --text-dim: #b69a71;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(ellipse at top, #1a1208 0%, var(--bg) 70%);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .back-link {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      font-size: .7rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: .08em;
+      transition: color .2s;
+    }
+    .back-link:hover { color: var(--brass); }
+    header { text-align: center; margin-bottom: 3rem; }
+    .subtitle {
+      font-size: .72rem;
+      color: var(--text-dim);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: .6rem;
+    }
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      color: var(--brass);
+      text-shadow: 0 0 20px rgba(194,155,75,.3);
+      letter-spacing: .06em;
+      margin-bottom: .8rem;
+    }
+    .divider {
+      width: 100px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--brass-dark), transparent);
+      margin: 0 auto 1.2rem;
+    }
+    .lead {
+      font-size: .76rem;
+      color: var(--text-dim);
+      max-width: 46ch;
+      text-align: center;
+      line-height: 1.8;
+      margin: 0 auto;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      max-width: 660px;
+      width: 100%;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--brass-dark);
+      border-radius: 10px;
+      padding: 1.6rem 1.4rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+      transition: border-color .2s, box-shadow .2s, transform .15s;
+      box-shadow: 0 4px 16px rgba(0,0,0,.5);
+    }
+    .card:hover {
+      border-color: var(--emerald);
+      box-shadow: 0 0 22px rgba(45,207,138,.18);
+      transform: translateY(-3px);
+    }
+    .card:active { transform: translateY(0); }
+    .card-icon { font-size: 1.8rem; line-height: 1; }
+    .card-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--brass);
+      letter-spacing: .04em;
+    }
+    .card-desc {
+      font-size: .71rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+    .card-label {
+      margin-top: .2rem;
+      font-size: .63rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--emerald);
+      opacity: .75;
+    }
+    footer {
+      margin-top: 3.5rem;
+      font-size: .62rem;
+      color: var(--text-dim);
+      opacity: .4;
+      letter-spacing: .1em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="../corridor/" class="back-link">← Retour au Couloir</a>
+
+  <header>
+    <div class="subtitle">S.T.E.A.M. — Section Calibration</div>
+    <h1>Atelier de Calibration</h1>
+    <div class="divider"></div>
+    <p class="lead">
+      Chaque agent dispose d'un carnet de bord pour consigner ses mesures,
+      corriger les dérives temporelles et imprimer les fiches de mission.
+    </p>
+  </header>
+
+  <div class="card-grid">
+    <a href="carnet_calibration.html" class="card">
+      <div class="card-icon">📐</div>
+      <div class="card-title">Carnet de Calibration</div>
+      <div class="card-desc">
+        Outil interactif de calibration. Consignez les mesures de dérive
+        temporelle et vérifiez l'alignement des portails d'agence.
+      </div>
+      <div class="card-label">Outil actif</div>
+    </a>
+
+    <a href="carnet_complet_print.html" class="card">
+      <div class="card-icon">🖨</div>
+      <div class="card-title">Carnet Complet — Impression</div>
+      <div class="card-desc">
+        Version imprimable du carnet d'agent temporel.
+        Format optimisé A4, toutes sections incluses.
+      </div>
+      <div class="card-label">Format print</div>
+    </a>
+  </div>
+
+  <footer>Atelier de Calibration · Agence S.T.E.A.M. · Accès agents uniquement</footer>
+
+</body>
+</html>

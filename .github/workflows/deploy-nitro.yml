@@ -14,9 +14,9 @@ name: Deploy to Nitro
 #   /dedale/observatoire/ <- apps/salles/observatoire
 #   /dedale/archive/      <- apps/salles/archive
 #   /dedale/condamnee/    <- apps/salles/condamnee
-#   /dedale/steam-clicker/<- apps/steam-clicker
+#   /dedale/steam-clicker/<- apps/steam-clicker-wl  (version whitelist)
 #   /dedale/workplate/    <- apps/WORKPLATE
-#   /dedale/dispersion/   <- apps/dispersion
+#   /dedale/dispersion/   <- apps/dispersion  (version active : index.html uniquement)
 
 on:
   push:
@@ -26,7 +26,7 @@ on:
       - "apps/spectrocrypt/public/**"
       - "apps/imprimerie/**"
       - "apps/salles/**"
-      - "apps/steam-clicker/**"
+      - "apps/steam-clicker-wl/**"
       - "apps/WORKPLATE/**"
       - "apps/dispersion/**"
       - "assets/sfx/sounds/**"
@@ -44,7 +44,7 @@ env:
   RELIQUES_SRC:     apps/imprimerie
   SOUNDS_SRC:       assets/sfx/sounds
   SALLES_SRC:       apps/salles
-  STEAMCLICKER_SRC: apps/steam-clicker
+  STEAMCLICKER_SRC: apps/steam-clicker-wl
   WORKPLATE_SRC:    apps/WORKPLATE
   DISPERSION_SRC:   apps/dispersion
 
@@ -82,17 +82,24 @@ jobs:
             cp -r "$SALLES_SRC/$salle/." "_site/$salle/"
           done
 
-          # Salle des Engrenages -> Steam Clicker
+          # Salle des Engrenages -> Steam Clicker (version whitelist)
           mkdir -p _site/steam-clicker
-          cp -r "$STEAMCLICKER_SRC/." _site/steam-clicker/
+          rsync -a \
+            --exclude='.gitignore' \
+            --exclude='README*' \
+            --exclude='steam-clicker/' \
+            "$STEAMCLICKER_SRC/" _site/steam-clicker/
 
-          # Workplate -> carnet + calibration
+          # Atelier de Calibration -> Workplate
           mkdir -p _site/workplate
           cp -r "$WORKPLATE_SRC/." _site/workplate/
 
-          # Dispersion -> mini-app tuyaux
+          # Chambre de Dispersion -> version active uniquement (index.html)
           mkdir -p _site/dispersion
-          cp -r "$DISPERSION_SRC/." _site/dispersion/
+          rsync -a \
+            --exclude='indexv2*.html' \
+            --exclude='editeur_tuyaux.html' \
+            "$DISPERSION_SRC/" _site/dispersion/
 
           echo "----- arbre assemblé -----"
           find _site -maxdepth 2 -type d | sort

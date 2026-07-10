@@ -12,8 +12,8 @@ window.DEDALE_CONFIG = {
     {
       id: "porte-machine",
       name: "Porte-Machine",
-      type: "temporal", // 'temporal' | 'room' | 'locked' | 'exit'
-      folder: "portemachine", // sous-dossier
+      type: "temporal",
+      folder: "portemachine",
       redirectUrl: "https://nitro.sterenna.fr/dedale/portemachine/",
       requireCode: true,
       validCodes: ["portemachine", "porte machine"],
@@ -49,11 +49,7 @@ Habillé de symboles, de chiffres, de stries étranges.
 Il suffit parfois d'un bon réglage pour qu'elle "parle".
 Ne demande pas « où est la machine ? »
 Elle est sous tes yeux.`,
-      notePosition: {
-        bottom: "18px",
-        left: "18px",
-        rotate: "-6deg"
-      },
+      notePosition: { bottom: "18px", left: "18px", rotate: "-6deg" },
       dialLabel: "2049",
       signText: "Section Décrypteur"
     },
@@ -80,11 +76,7 @@ c'est le nom que les agents lui ont donné.`,
       hasNote: true,
       noteText: `RAPPEL : Ne sortir d'ici qu'en ayant un plan.
 Les missions improvisées finissent rarement bien.`,
-      notePosition: {
-        top: "32px",
-        right: "18px",
-        rotate: "3deg"
-      },
+      notePosition: { top: "32px", right: "18px", rotate: "3deg" },
       dialLabel: "1957",
       signText: "Salle de Briefing"
     },
@@ -114,11 +106,7 @@ mais à la manière dont on nomme un ensemble de chemins.`,
       noteText: `ATTENTION AGENTS :
 Les cartes de cette salle ne sont jamais "à jour".
 Elles se recalculent à chaque décision que vous prenez.`,
-      notePosition: {
-        top: "40px",
-        left: "20px",
-        rotate: "-4deg"
-      },
+      notePosition: { top: "40px", left: "20px", rotate: "-4deg" },
       dialLabel: "∞",
       signText: "Salle Cartographique"
     },
@@ -146,11 +134,7 @@ soient plus têtus que le temps lui-même.`,
       noteText: `Consigne :
 Ne JAMAIS exposer plus de trois reliques en même temps.
 Sinon, c'est le temps qui choisit laquelle garder.`,
-      notePosition: {
-        bottom: "26px",
-        left: "24px",
-        rotate: "5deg"
-      },
+      notePosition: { bottom: "26px", left: "24px", rotate: "5deg" },
       dialLabel: "Δt",
       signText: "Atelier des Reliques"
     },
@@ -176,11 +160,7 @@ ne disparaît complètement.`,
       noteText: `Rien ne se perd.
 Rien ne s'efface.
 Tout se range juste ailleurs.`,
-      notePosition: {
-        bottom: "40px",
-        right: "26px",
-        rotate: "-10deg"
-      },
+      notePosition: { bottom: "40px", right: "26px", rotate: "-10deg" },
       dialLabel: "1912",
       signText: "Archives Temporelles"
     },
@@ -209,11 +189,7 @@ un instant sans le déranger.`,
       noteText: `Note du service sécurité :
 Regarder trop longtemps la même scène finit
 par vous convaincre que vous auriez pu la changer.`,
-      notePosition: {
-        top: "30px",
-        right: "20px",
-        rotate: "-2deg"
-      },
+      notePosition: { top: "30px", right: "20px", rotate: "-2deg" },
       dialLabel: "00:00",
       signText: "Observatoire"
     },
@@ -247,16 +223,77 @@ Ne tentez pas d'arrêter la machine principale.
 Les anneaux orbitaux sont synchronisés depuis 1887.
 Toute interruption provoque une cascade de paradoxes
 dont personne n'est encore revenu intact.`,
-      notePosition: {
-        bottom: "22px",
-        right: "20px",
-        rotate: "4deg"
-      },
+      notePosition: { bottom: "22px", right: "20px", rotate: "4deg" },
       dialLabel: "⚙",
       signText: "Salle des Engrenages"
     },
 
-    // Porte verrouillée / grisée, purement décorative pour le moment
+    // ── NOUVELLE PORTE : Atelier de Calibration (WORKPLATE) ──────────────────
+    {
+      id: "porte-workplate",
+      name: "Atelier de Calibration",
+      type: "room",
+      folder: "workplate",
+      redirectUrl: "https://nitro.sterenna.fr/dedale/workplate/",
+      requireCode: true,
+      validCodes: ["workplate", "calibration", "atelier calibration", "carnet"],
+      placeholder: "Nom de l'atelier de calibration…",
+      riddleTitle: "Atelier de Calibration – Carnets d'agent",
+      riddleText: `
+Chaque agent S.T.E.A.M. reçoit un carnet de bord à son entrée dans l'agence.
+
+Ce n'est pas un simple journal : c'est un outil de calibration.
+Ses pages permettent de consigner les mesures, de corriger les dérives
+temporelles et d'imprimer les fiches de mission sous format agence.
+
+On dit que l'agent qui perd son carnet perd aussi ses repères dans le temps.
+
+Pour accéder à l'atelier, nommez l'outil que tous les agents portent sur eux.`,
+      hasNote: true,
+      noteText: `NOTE DE L'ARCHIVISTE :
+
+Les carnets de calibration ne se remplissent pas seuls.
+Chaque mesure consignée ici a été validée par au moins deux agents.
+Ne modifiez jamais une entrée sans en informer le bureau central.`,
+      notePosition: { top: "28px", left: "20px", rotate: "-3deg" },
+      dialLabel: "📋",
+      signText: "Atelier de Calibration"
+    },
+
+    // ── NOUVELLE PORTE : Chambre de Dispersion (DISPERSION) ──────────────────
+    {
+      id: "porte-dispersion",
+      name: "Chambre de Dispersion",
+      type: "temporal",
+      folder: "dispersion",
+      redirectUrl: "https://nitro.sterenna.fr/dedale/dispersion/",
+      requireCode: true,
+      validCodes: ["dispersion", "tuyaux", "chambre dispersion"],
+      placeholder: "Nommez la chambre de dispersion temporelle…",
+      riddleTitle: "Chambre de Dispersion – Réseau de tuyaux",
+      riddleText: `
+Derrière cette porte, la vapeur ne voyage pas en ligne droite.
+
+Un réseau complexe de tuyaux interconnectés redistribue
+chaque flux d'énergie temporelle vers les salles qui en ont besoin.
+
+Les agents qui ont conçu ce système ont laissé un outil de configuration
+permettant de reconfigurer les connexions à la volée.
+
+Pour entrer, trouvez le mot qui désigne la fragmentation
+d'un flux en de multiples directions.`,
+      hasNote: true,
+      noteText: `AVERTISSEMENT TECHNIQUE :
+
+Ne jamais créer de boucle fermée dans le réseau.
+Une boucle de vapeur sans sortie génère une pression
+suffisante pour déstabiliser le couloir entier.`,
+      notePosition: { bottom: "30px", right: "18px", rotate: "6deg" },
+      dialLabel: "≋",
+      signText: "Chambre de Dispersion"
+    },
+
+    // Porte verrouillée / grisée, purement décorative
     {
       id: "porte-condamnee-01",
       name: "Porte Condamnée",
@@ -303,11 +340,7 @@ Le verrou n'est pas là pour faire joli.`,
       noteText: `AVERTISSEMENT :
 Toute tentative de forcer ce passage
 sera consignée dans le journal des paradoxes.`,
-      notePosition: {
-        top: "60px",
-        left: "22px",
-        rotate: "-7deg"
-      },
+      notePosition: { top: "60px", left: "22px", rotate: "-7deg" },
       dialLabel: "X",
       signText: "Couloir Bêta"
     },
@@ -342,11 +375,7 @@ oreille d'agent – peuvent l'emprunter.`,
 – Rappeler que l'administration du dédale influence TOUTES les portes liées.
 
 En cas de doute : verrouiller l'accès et prévenir la direction.`,
-      notePosition: {
-        top: "28px",
-        right: "18px",
-        rotate: "-4deg"
-      },
+      notePosition: { top: "28px", right: "18px", rotate: "-4deg" },
       dialLabel: "ADM",
       signText: "Couloir d'administration"
     },
@@ -374,11 +403,7 @@ empruntez-la pour revenir à la réalité.`,
       noteText: `SORTIE DE SECOURS
 Pour les agents ayant trop voyagé
 dans les dédales temporels.`,
-      notePosition: {
-        top: "24px",
-        right: "22px",
-        rotate: "4deg"
-      },
+      notePosition: { top: "24px", right: "22px", rotate: "4deg" },
       dialLabel: "",
       signText: "Sortie"
     }
