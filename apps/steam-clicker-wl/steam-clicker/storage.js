@@ -1,0 +1,4 @@
+import { SAVE_KEY } from './config.js';
+export let state={plate:1,steam:0,omega:0,spin:0,pressure:0,temperature:20,lastTime:performance.now(),blueprints:0,prestigeMult:1,hasZoomedOut:false,rings:{gear:{t1:0,t2:0,chain:false,module:null},drone:{t1:0,t2:0,chain:false,module:null},auto:{t1:0,t2:0,chain:false,module:null},boiler:{t1:0,t2:0,chain:false,module:null},aether:{t1:0,t2:0,chain:false,module:null}},offsets:[0,18,36,54,72],debug:false,overdrive:false,overdriveTime:0,overdriveTempMax:100};
+export function load(){try{const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(s){state={...state,...s}}}catch(e){}}
+export function save(){localStorage.setItem(SAVE_KEY,JSON.stringify(state));}

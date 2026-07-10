@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.T.E.A.M. Clicker</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --mahogany:#4a0e0e;--brass:#d4af37;--copper:#cd7f32;--parchment:#f4e4bc;--steel:#4682b4;
+  --bg1:#2c1810;--bg2:#1a0d08;--panel:#1e0e08;--border:4px solid #d4af37;
+}
+body{
+  background:radial-gradient(circle at 50% 40%,var(--bg1),var(--bg2));
+  min-height:100vh;color:var(--parchment);
+  font-family:'Crimson Text',serif;font-size:15px;overflow-x:hidden;
+}
+/* ── HUD ── */
+#hud{
+  display:flex;justify-content:space-around;align-items:center;
+  background:linear-gradient(180deg,#0d0603,#1a0d08);
+  border-bottom:var(--border);padding:8px 20px;
+  box-shadow:0 4px 15px rgba(0,0,0,.6);position:relative;z-index:10;
+}
+.hud-stat{text-align:center;}
+.hud-label{font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:var(--brass);text-transform:uppercase;}
+.hud-value{font-size:18px;font-weight:600;color:var(--parchment);text-shadow:0 0 8px var(--copper);}
+.hud-title{
+  font-family:Cinzel,serif;font-size:22px;font-weight:900;letter-spacing:3px;
+  color:var(--brass);text-shadow:0 0 15px rgba(212,175,55,.5);text-transform:uppercase;
+}
+/* ── LAYOUT ── */
+#main{display:flex;height:calc(100vh - 57px);}
+/* ── LEFT PANEL ── */
+#left-panel{
+  width:260px;min-width:260px;
+  background:linear-gradient(180deg,#160b05,#0d0603);
+  border-right:var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.panel-title{
+  font-family:Cinzel,serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--brass);text-align:center;padding:10px;
+  border-bottom:2px solid rgba(212,175,55,.3);background:rgba(0,0,0,.3);
+}
+#shop-list{flex:1;overflow-y:auto;padding:8px;}
+#shop-list::-webkit-scrollbar{width:6px;}
+#shop-list::-webkit-scrollbar-track{background:#0d0603;}
+#shop-list::-webkit-scrollbar-thumb{background:var(--brass);border-radius:3px;}
+.shop-item{
+  background:linear-gradient(135deg,rgba(30,14,8,.9),rgba(20,9,4,.9));
+  border:2px solid rgba(212,175,55,.3);border-radius:6px;
+  margin-bottom:6px;padding:8px;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:8px;position:relative;overflow:hidden;
+}
+.shop-item:hover:not(.locked){border-color:var(--brass);box-shadow:0 0 12px rgba(212,175,55,.3);transform:translateX(2px);}
+.shop-item.locked{opacity:.4;cursor:not-allowed;}
+.shop-item.affordable{border-color:rgba(212,175,55,.6);}
+.gear-icon-wrap{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.shop-info{flex:1;min-width:0;}
+.shop-name{font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.shop-cost{font-size:12px;color:var(--brass);}
+.shop-prod{font-size:11px;color:#aaa;font-style:italic;}
+.shop-count{
+  font-family:Cinzel,serif;font-size:16px;font-weight:700;
+  color:var(--brass);min-width:28px;text-align:right;
+}
+.shop-item::after{
+  content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(212,175,55,.08),transparent);
+  transition:left .4s;
+}
+.shop-item:hover::after{left:150%;}
+/* ── CENTER ── */
+#center-area{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;gap:20px;
+}
+/* Steam bubbles */
+.steam-bubble{
+  position:absolute;bottom:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(180,180,200,.25),rgba(180,180,200,.05));
+  border:1px solid rgba(200,200,220,.15);
+  animation:bubbleUp linear infinite;pointer-events:none;
+}
+@keyframes bubbleUp{
+  0%{transform:translateY(0) scale(1);opacity:.6;}
+  100%{transform:translateY(-200px) scale(1.5);opacity:0;}
+}
+/* Machine wrapper */
+#machine{display:flex;align-items:center;gap:40px;position:relative;}
+/* Crank */
+#crank-wrap{
+  width:100px;height:100px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;transition:box-shadow .1s;
+  position:relative;user-select:none;
+}
+#crank-wrap:hover{box-shadow:0 0 20px rgba(212,175,55,.4);}
+#crank-wrap:active{box-shadow:0 0 30px rgba(212,175,55,.6);}
+#crank-svg{transition:transform .1s;transform-origin:50% 50%;}
+/* Main gear */
+#main-gear-wrap{
+  width:180px;height:180px;display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+#main-gear-svg{transform-origin:50% 50%;}
+/* Orbital rings */
+.orbit-ring{
+  position:absolute;border-radius:50%;
+  border:2px solid transparent;
+  animation:orbitSpin linear infinite;
+  pointer-events:none;
+}
+@keyframes orbitSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+/* Click zone */
+#crank-click-label{
+  font-family:Cinzel,serif;font-size:9px;letter-spacing:2px;color:var(--brass);
+  text-transform:uppercase;text-align:center;margin-top:4px;
+}
+/* Floating text */
+.float-text{
+  position:fixed;font-family:Cinzel,serif;font-size:14px;font-weight:700;
+  color:var(--brass);pointer-events:none;z-index:999;
+  animation:floatUp .9s ease-out forwards;
+  text-shadow:0 0 8px rgba(212,175,55,.8);
+}
+@keyframes floatUp{
+  0%{opacity:1;transform:translateY(0);}
+  100%{opacity:0;transform:translateY(-60px);}
+}
+/* ── RIGHT PANEL ── */
+#right-panel{
+  width:220px;min-width:220px;
+  background:linear-gradient(180deg,#160b05,#0d0603);
+  border-left:var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;
+  padding:0 0 12px 0;
+}
+#right-panel::-webkit-scrollbar{width:4px;}
+#right-panel::-webkit-scrollbar-thumb{background:var(--brass);}
+.stat-block{padding:12px 14px;border-bottom:1px solid rgba(212,175,55,.15);}
+.stat-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.stat-key{font-size:11px;color:#aaa;letter-spacing:.5px;}
+.stat-val{font-size:13px;color:var(--parchment);font-weight:600;}
+/* Prestige btn */
+#prestige-btn{
+  margin:10px 14px;padding:10px;
+  background:linear-gradient(135deg,#3a0060,#200040);
+  border:2px solid #9370db;border-radius:6px;
+  font-family:Cinzel,serif;font-size:11px;letter-spacing:2px;
+  color:#d0a0ff;text-transform:uppercase;cursor:pointer;
+  transition:all .2s;text-align:center;
+}
+#prestige-btn:hover{box-shadow:0 0 15px rgba(147,112,219,.4);transform:scale(1.02);}
+#prestige-btn.disabled{opacity:.3;cursor:not-allowed;transform:none;}
+/* Achievements mini */
+#ach-list{padding:8px 14px;}
+.ach-item{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 8px;margin-bottom:4px;border-radius:4px;
+  background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);
+  font-size:11px;color:var(--parchment);
+}
+.ach-icon{font-size:14px;}
+/* Gear decoratif autour du gear principal */
+.deco-gear{
+  position:absolute;border-radius:50%;opacity:.12;
+  animation:decoSpin linear infinite;
+}
+@keyframes decoSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+/* Notification toast */
+#toast{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);
+  background:linear-gradient(135deg,#2c1810,#1a0d08);
+  border:2px solid var(--brass);border-radius:8px;
+  padding:10px 20px;font-family:Cinzel,serif;font-size:12px;
+  color:var(--brass);letter-spacing:1px;
+  opacity:0;transition:all .3s;pointer-events:none;z-index:1000;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* Sparkle at click */
+.sparkle{
+  position:fixed;pointer-events:none;z-index:998;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--brass);
+  animation:sparkleOut .5s ease-out forwards;
+}
+@keyframes sparkleOut{
+  0%{opacity:1;transform:translate(0,0) scale(1);}
+  100%{opacity:0;transform:var(--sv) scale(0);}
+}
+/* Evolution button */
+.evo-btn{
+  width:100%;margin-top:4px;padding:3px 6px;
+  background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);
+  border-radius:3px;font-size:10px;color:var(--brass);cursor:pointer;
+  font-family:Cinzel,serif;letter-spacing:.5px;transition:all .15s;
+}
+.evo-btn:hover{background:rgba(212,175,55,.25);}
+/* Responsive scroll for very small screens */
+@media(max-width:700px){#left-panel,#right-panel{width:160px;min-width:120px;}}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hud-stat">
+    <div class="hud-label">Vapeur</div>
+    <div class="hud-value" id="hud-steam">0</div>
+  </div>
+  <div class="hud-title">⚙ S.T.E.A.M. ⚙</div>
+  <div class="hud-stat">
+    <div class="hud-label">Production</div>
+    <div class="hud-value" id="hud-sps">0 /s</div>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <!-- LEFT : Shop -->
+  <div id="left-panel">
+    <div class="panel-title">⚙ Établi</div>
+    <div id="shop-list"></div>
+  </div>
+
+  <!-- CENTER -->
+  <div id="center-area">
+    <!-- Steam bubbles container -->
+    <div id="bubbles"></div>
+    <div id="machine">
+      <!-- Crank -->
+      <div>
+        <div id="crank-wrap" onclick="onCrankClick(event)">
+          <svg id="crank-svg" width="90" height="90" viewBox="0 0 90 90">
+            <!-- Bras de manivelle -->
+            <rect x="42" y="10" width="6" height="55" rx="3" fill="#cd7f32"/>
+            <!-- Poignée haute -->
+            <circle cx="45" cy="10" r="9" fill="#d4af37" stroke="#4a0e0e" stroke-width="2"/>
+            <circle cx="45" cy="10" r="4" fill="#1a0d08"/>
+            <!-- Pivot bas -->
+            <circle cx="45" cy="65" r="12" fill="#4a0e0e" stroke="#d4af37" stroke-width="2.5"/>
+            <circle cx="45" cy="65" r="5" fill="#d4af37"/>
+            <circle cx="45" cy="65" r="2" fill="#1a0d08"/>
+          </svg>
+        </div>
+        <div class="crank-click-label" style="font-family:Cinzel,serif;font-size:9px;letter-spacing:2px;color:#d4af37;text-align:center;margin-top:4px;">CLIQUER</div>
+      </div>
+
+      <!-- Main Gear -->
+      <div id="main-gear-wrap">
+        <!-- Deco gears -->
+        <div class="deco-gear" style="width:60px;height:60px;top:-10px;right:-5px;background:radial-gradient(circle,#cd7f32,#4a0e0e);animation-duration:8s;animation-direction:reverse;"></div>
+        <div class="deco-gear" style="width:45px;height:45px;bottom:5px;left:-8px;background:radial-gradient(circle,#4682b4,#1a0d08);animation-duration:12s;"></div>
+        <!-- Orbit rings (populated by JS) -->
+        <div id="orbit-rings"></div>
+        <!-- Main Gear SVG -->
+        <svg id="main-gear-svg" width="180" height="180" viewBox="0 0 180 180">
+          <defs>
+            <radialGradient id="gearGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#6b2c0a"/>
+              <stop offset="60%" stop-color="#cd7f32"/>
+              <stop offset="100%" stop-color="#4a0e0e"/>
+            </radialGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Gear teeth via polygon -->
+          <g id="gear-body" filter="url(#glow)">
+            <polygon id="gear-poly" fill="url(#gearGrad)" stroke="#d4af37" stroke-width="1.5"/>
+          </g>
+          <!-- Center hub -->
+          <circle cx="90" cy="90" r="22" fill="#2c1810" stroke="#d4af37" stroke-width="2.5"/>
+          <circle cx="90" cy="90" r="12" fill="#d4af37"/>
+          <circle cx="90" cy="90" r="6" fill="#1a0d08"/>
+          <!-- Bolt markers -->
+          <circle cx="90" cy="72" r="2.5" fill="#d4af37"/>
+          <circle cx="90" cy="108" r="2.5" fill="#d4af37"/>
+          <circle cx="72" cy="90" r="2.5" fill="#d4af37"/>
+          <circle cx="108" cy="90" r="2.5" fill="#d4af37"/>
+        </svg>
+      </div>
+    </div>
+    <!-- Click per click info -->
+    <div style="font-family:Cinzel,serif;font-size:11px;color:#888;letter-spacing:1px;text-align:center;" id="click-info">
+      +1 vapeur / clic
+    </div>
+  </div>
+
+  <!-- RIGHT : Stats -->
+  <div id="right-panel">
+    <div class="panel-title">📊 Stats</div>
+    <div class="stat-block">
+      <div class="stat-row"><span class="stat-key">Vapeur totale</span><span class="stat-val" id="stat-total">0</span></div>
+      <div class="stat-row"><span class="stat-key">Clics totaux</span><span class="stat-val" id="stat-clicks">0</span></div>
+      <div class="stat-row"><span class="stat-key">Engrenages</span><span class="stat-val" id="stat-gears">0</span></div>
+      <div class="stat-row"><span class="stat-key">Anneaux</span><span class="stat-val" id="stat-rings">0</span></div>
+      <div class="stat-row"><span class="stat-key">Multiplicateur</span><span class="stat-val" id="stat-mult">×1.00</span></div>
+    </div>
+    <div class="panel-title" style="margin-top:4px;">🏆 Succès</div>
+    <div id="ach-list"></div>
+    <div class="panel-title" style="margin-top:4px;">⚡ Prestige</div>
+    <div style="padding:8px 14px;font-size:12px;color:#aaa;font-style:italic;">
+      Réinitialisez tout pour un multiplicateur permanent.<br>
+      <span style="color:var(--brass);font-size:11px;" id="prestige-info">Requis : 1M vapeur totale</span>
+    </div>
+    <div id="prestige-btn" class="disabled" onclick="doPrestige()">⚡ Prestige</div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// GEAR POLYGON GENERATOR
+// ═══════════════════════════════════════════════════
+function buildGearPoints(cx, cy, r_inner, r_outer, teeth) {
+  let pts = [];
+  const step = (Math.PI * 2) / teeth;
+  for (let i = 0; i < teeth; i++) {
+    const a = i * step - Math.PI / 2;
+    pts.push([cx + r_inner * Math.cos(a), cy + r_inner * Math.sin(a)]);
+    pts.push([cx + r_outer * Math.cos(a + step * 0.15), cy + r_outer * Math.sin(a + step * 0.15)]);
+    pts.push([cx + r_outer * Math.cos(a + step * 0.35), cy + r_outer * Math.sin(a + step * 0.35)]);
+    pts.push([cx + r_inner * Math.cos(a + step * 0.5), cy + r_inner * Math.sin(a + step * 0.5)]);
+  }
+  return pts.map(p => p[0].toFixed(2) + ',' + p[1].toFixed(2)).join(' ');
+}
+
+function buildMiniGearSVG(color, size, teeth) {
+  const c = size / 2;
+  const ri = c * 0.5, ro = c * 0.88;
+  const pts = buildGearPoints(c, c, ri, ro, teeth || 8);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <polygon points="${pts}" fill="${color}" stroke="#1a0d08" stroke-width="1"/>
+    <circle cx="${c}" cy="${c}" r="${ri*0.45}" fill="#1a0d08"/>
+    <circle cx="${c}" cy="${c}" r="${ri*0.2}" fill="${color}" opacity="0.5"/>
+  </svg>`;
+}
+
+// Init main gear
+document.getElementById('gear-poly').setAttribute('points',
+  buildGearPoints(90, 90, 55, 82, 14)
+);
+
+// ═══════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════
+const GEARS = [
+  {id:1, name:'Bronze',   color:'#cd7f32', baseCost:10,     baseProd:0.1,  teeth:8,  unlockAt:0},
+  {id:2, name:'Acier',    color:'#708090', baseCost:120,    baseProd:0.5,  teeth:9,  unlockAt:80},
+  {id:3, name:'Électrum', color:'#4682b4', baseCost:1300,   baseProd:2,    teeth:10, unlockAt:800},
+  {id:4, name:'Argenté',  color:'#c0c0c0', baseCost:14000,  baseProd:8,    teeth:12, unlockAt:8000},
+  {id:5, name:'Spectral', color:'#9370db', baseCost:150000, baseProd:25,   teeth:13, unlockAt:80000},
+  {id:6, name:'Roselin',  color:'#ff69b4', baseCost:1600000,baseProd:75,   teeth:14, unlockAt:800000},
+  {id:7, name:'Quantique',color:'#00ffff', baseCost:17000000,baseProd:200, teeth:16, unlockAt:8000000},
+];
+
+const ACHIEVEMENTS = [
+  {id:'a1', icon:'⚙', name:'Premier Engrenage', cond:s=>s.totalGears>=1},
+  {id:'a2', icon:'🔥', name:'100 Vapeurs', cond:s=>s.totalSteam>=100},
+  {id:'a3', icon:'💨', name:'1k Vapeurs', cond:s=>s.totalSteam>=1000},
+  {id:'a4', icon:'🌀', name:'Machine en marche', cond:s=>s.steamPerSecond>=1},
+  {id:'a5', icon:'⚡', name:'Fabrique', cond:s=>s.steamPerSecond>=10},
+  {id:'a6', icon:'🏭', name:'Industrie', cond:s=>s.steamPerSecond>=100},
+  {id:'a7', icon:'💎', name:'10 clics', cond:s=>s.totalClicks>=10},
+  {id:'a8', icon:'👆', name:'1000 clics', cond:s=>s.totalClicks>=1000},
+  {id:'a9', icon:'🌌', name:'10k Vapeurs', cond:s=>s.totalSteam>=10000},
+  {id:'a10',icon:'🔮', name:'Tier 5 débloqué', cond:s=>s.gears[5]>0},
+];
+
+let state = {
+  steam: 0, totalSteam: 0, totalClicks: 0,
+  gears: {1:0,2:0,3:0,4:0,5:0,6:0,7:0},
+  rings: 0, prestigeCount: 0, prestigeMult: 1,
+  unlockedAch: [],
+  lastSave: Date.now(),
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('steam_clicker_v1');
+    if (s) {
+      const parsed = JSON.parse(s);
+      Object.assign(state, parsed);
+    }
+  } catch(e){}
+}
+
+function saveState() {
+  state.lastSave = Date.now();
+  localStorage.setItem('steam_clicker_v1', JSON.stringify(state));
+}
+
+// ═══════════════════════════════════════════════════
+// FORMATING
+// ═══════════════════════════════════════════════════
+function fmt(n) {
+  if (n < 1000) return Math.floor(n).toString();
+  if (n < 1e6)  return (n/1000).toFixed(1) + 'k';
+  if (n < 1e9)  return (n/1e6).toFixed(2) + 'M';
+  if (n < 1e12) return (n/1e9).toFixed(2) + 'G';
+  return (n/1e12).toFixed(2) + 'T';
+}
+
+// ═══════════════════════════════════════════════════
+// PRODUCTION
+// ═══════════════════════════════════════════════════
+function getSteamPerSecond() {
+  let sps = 0;
+  for (const g of GEARS) {
+    sps += (state.gears[g.id] || 0) * g.baseProd;
+  }
+  return sps * state.prestigeMult;
+}
+
+function getClickValue() {
+  return Math.max(1, Math.floor(getSteamPerSecond() * 0.01 + 1)) * state.prestigeMult;
+}
+
+function getGearCost(tier) {
+  const g = GEARS[tier-1];
+  return Math.floor(g.baseCost * Math.pow(1.15, state.gears[g.id] || 0));
+}
+
+function getTotalGears() {
+  return Object.values(state.gears).reduce((a,b)=>a+b,0);
+}
+
+// ═══════════════════════════════════════════════════
+// CRANK ANIMATION
+// ═══════════════════════════════════════════════════
+let crankAngle = 0;
+let crankVelocity = 0;
+
+function onCrankClick(e) {
+  const val = getClickValue();
+  state.steam += val;
+  state.totalSteam += val;
+  state.totalClicks++;
+  crankVelocity += 25;
+  spawnFloatText(e.clientX, e.clientY, '+' + fmt(val));
+  spawnSparkles(e.clientX, e.clientY);
+}
+
+function spawnFloatText(x, y, text) {
+  const el = document.createElement('div');
+  el.className = 'float-text';
+  el.textContent = text;
+  el.style.left = (x - 20) + 'px';
+  el.style.top = (y - 10) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+function spawnSparkles(x, y) {
+  for (let i = 0; i < 6; i++) {
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    const angle = (i / 6) * Math.PI * 2;
+    const dist = 20 + Math.random() * 20;
+    const dx = Math.cos(angle) * dist, dy = Math.sin(angle) * dist;
+    el.style.left = x + 'px'; el.style.top = y + 'px';
+    el.style.setProperty('--sv', `translate(${dx}px,${dy}px)`);
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 500);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// SHOP
+// ═══════════════════════════════════════════════════
+function buildShop() {
+  const list = document.getElementById('shop-list');
+  list.innerHTML = '';
+  for (const g of GEARS) {
+    const count = state.gears[g.id] || 0;
+    const cost = getGearCost(g.id);
+    const isLocked = state.totalSteam < g.unlockAt && count === 0;
+    const canAfford = state.steam >= cost;
+    const div = document.createElement('div');
+    div.className = 'shop-item' + (isLocked ? ' locked' : '') + (canAfford && !isLocked ? ' affordable' : '');
+    div.innerHTML = `
+      <div class="gear-icon-wrap">${buildMiniGearSVG(g.color, 36, g.teeth)}</div>
+      <div class="shop-info">
+        <div class="shop-name" style="color:${g.color}">${g.name}</div>
+        <div class="shop-cost">💨 ${fmt(cost)}</div>
+        <div class="shop-prod">${g.baseProd}/s chacun</div>
+        ${count >= 10 ? `<button class="evo-btn" onclick="evolveGear(event,${g.id})">⬆ Évoluer (×10)</button>` : ''}
+      </div>
+      <div class="shop-count">${count > 0 ? count : (isLocked ? '🔒' : '')}</div>
+    `;
+    if (!isLocked) div.addEventListener('click', (e) => {
+      if (e.target.classList.contains('evo-btn')) return;
+      buyGear(g.id);
+    });
+    list.appendChild(div);
+  }
+}
+
+function buyGear(id) {
+  const cost = getGearCost(id);
+  if (state.steam < cost) return;
+  state.steam -= cost;
+  state.gears[id] = (state.gears[id] || 0) + 1;
+  updateOrbitRings();
+  buildShop();
+}
+
+function evolveGear(e, id) {
+  e.stopPropagation();
+  const count = state.gears[id] || 0;
+  if (count < 10) return;
+  state.gears[id] -= 10;
+  const nextId = id + 1;
+  if (nextId <= 7) state.gears[nextId] = (state.gears[nextId] || 0) + 1;
+  state.rings++;
+  showToast(`✨ 10 ${GEARS[id-1].name} → 1 ${GEARS[nextId-1]?.name || 'Quantique'} + 1 Anneau !`);
+  updateOrbitRings();
+  buildShop();
+}
+
+// ═══════════════════════════════════════════════════
+// ORBIT RINGS
+// ═══════════════════════════════════════════════════
+const RING_COLORS = ['#cd7f32','#708090','#4682b4','#c0c0c0','#9370db','#ff69b4','#00ffff'];
+function updateOrbitRings() {
+  const container = document.getElementById('orbit-rings');
+  container.innerHTML = '';
+  if (state.rings === 0) return;
+  const maxRings = Math.min(state.rings, 7);
+  for (let i = 0; i < maxRings; i++) {
+    const size = 200 + i * 22;
+    const div = document.createElement('div');
+    div.className = 'orbit-ring';
+    div.style.cssText = `width:${size}px;height:${size}px;top:${90-size/2}px;left:${90-size/2}px;
+      border-color:${RING_COLORS[i] + '60'};border-width:2px;
+      animation-duration:${12 + i*5}s;
+      animation-direction:${i%2===0?'normal':'reverse'};`;
+    const dot = document.createElement('div');
+    dot.style.cssText = `width:6px;height:6px;border-radius:50%;background:${RING_COLORS[i]};
+      position:absolute;top:-3px;left:50%;transform:translateX(-50%);
+      box-shadow:0 0 8px ${RING_COLORS[i]};`;
+    div.appendChild(dot);
+    container.appendChild(div);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// ACHIEVEMENTS
+// ═══════════════════════════════════════════════════
+function checkAchievements() {
+  const sps = getSteamPerSecond();
+  const ctx = {...state, steamPerSecond: sps, totalGears: getTotalGears()};
+  for (const a of ACHIEVEMENTS) {
+    if (!state.unlockedAch.includes(a.id) && a.cond(ctx)) {
+      state.unlockedAch.push(a.id);
+      showToast(`🏆 Succès : ${a.name} !`);
+    }
+  }
+  renderAchievements();
+}
+
+function renderAchievements() {
+  const list = document.getElementById('ach-list');
+  list.innerHTML = '';
+  for (const a of ACHIEVEMENTS) {
+    const unlocked = state.unlockedAch.includes(a.id);
+    if (!unlocked) continue;
+    const div = document.createElement('div');
+    div.className = 'ach-item';
+    div.innerHTML = `<span class="ach-icon">${a.icon}</span><span>${a.name}</span>`;
+    list.appendChild(div);
+  }
+  if (state.unlockedAch.length === 0) {
+    list.innerHTML = '<div style="padding:8px 0;font-size:11px;color:#555;font-style:italic;">Aucun succès encore...</div>';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// PRESTIGE
+// ═══════════════════════════════════════════════════
+function checkPrestige() {
+  const btn = document.getElementById('prestige-btn');
+  const info = document.getElementById('prestige-info');
+  if (state.totalSteam >= 1000000) {
+    btn.classList.remove('disabled');
+    const mult = (1 + (state.prestigeCount + 1) * 0.25).toFixed(2);
+    info.textContent = `✅ Prochain multiplicateur : ×${mult}`;
+  } else {
+    btn.classList.add('disabled');
+    info.textContent = `Requis : ${fmt(1000000)} vapeur totale`;
+  }
+}
+
+function doPrestige() {
+  if (state.totalSteam < 1000000) return;
+  if (!confirm('Prestige ? Tout sera réinitialisé sauf le multiplicateur !')) return;
+  state.prestigeCount++;
+  state.prestigeMult = 1 + state.prestigeCount * 0.25;
+  state.steam = 0; state.totalSteam = 0; state.totalClicks = 0;
+  state.gears = {1:0,2:0,3:0,4:0,5:0,6:0,7:0};
+  state.rings = 0;
+  updateOrbitRings();
+  showToast(`⚡ Prestige ${state.prestigeCount} ! Multiplicateur ×${state.prestigeMult.toFixed(2)}`);
+  buildShop();
+}
+
+// ═══════════════════════════════════════════════════
+// STEAM BUBBLES
+// ═══════════════════════════════════════════════════
+function spawnBubble() {
+  const sps = getSteamPerSecond();
+  if (sps < 0.01) return;
+  const container = document.getElementById('bubbles');
+  const el = document.createElement('div');
+  el.className = 'steam-bubble';
+  const size = 8 + Math.random() * 20;
+  const left = 30 + Math.random() * 40;
+  el.style.cssText = `width:${size}px;height:${size}px;left:${left}%;
+    animation-duration:${2 + Math.random() * 2}s;
+    animation-delay:${Math.random() * 0.5}s;`;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ═══════════════════════════════════════════════════
+// MAIN GAME LOOP
+// ═══════════════════════════════════════════════════
+let lastTick = Date.now();
+let gearRotation = 0;
+let crankRotation = 0;
+
+function gameLoop() {
+  const now = Date.now();
+  const dt = (now - lastTick) / 1000;
+  lastTick = now;
+
+  // Passive production
+  const sps = getSteamPerSecond();
+  const earned = sps * dt;
+  state.steam += earned;
+  state.totalSteam += earned;
+
+  // Crank physics
+  crankVelocity *= 0.92;
+  crankAngle += crankVelocity * dt;
+  crankAngle = Math.max(-200, Math.min(200, crankAngle));
+  document.getElementById('crank-svg').style.transform = `rotate(${crankAngle}deg)`;
+
+  // Main gear rotation
+  const speed = Math.log10(Math.max(1, sps)) * 0.7;
+  gearRotation += speed;
+  document.getElementById('main-gear-svg').style.transform = `rotate(${gearRotation}deg)`;
+
+  // HUD update
+  document.getElementById('hud-steam').textContent = fmt(state.steam);
+  document.getElementById('hud-sps').textContent = fmt(sps) + ' /s';
+
+  // Stats
+  document.getElementById('stat-total').textContent = fmt(state.totalSteam);
+  document.getElementById('stat-clicks').textContent = fmt(state.totalClicks);
+  document.getElementById('stat-gears').textContent = getTotalGears();
+  document.getElementById('stat-rings').textContent = state.rings;
+  document.getElementById('stat-mult').textContent = '×' + state.prestigeMult.toFixed(2);
+  document.getElementById('click-info').textContent = `+${fmt(getClickValue())} vapeur / clic`;
+
+  // Shop affordability refresh
+  buildShop();
+  checkAchievements();
+  checkPrestige();
+
+  requestAnimationFrame(gameLoop);
+}
+
+// Save every 2s
+setInterval(saveState, 2000);
+// Bubbles
+setInterval(spawnBubble, 400);
+
+// ═══════════════════════════════════════════════════
+// OFFLINE PRODUCTION
+// ═══════════════════════════════════════════════════
+function applyOffline() {
+  if (!state.lastSave) return;
+  const elapsed = Math.min((Date.now() - state.lastSave) / 1000, 7200);
+  if (elapsed < 5) return;
+  const sps = getSteamPerSecond();
+  const gained = sps * elapsed;
+  if (gained < 1) return;
+  state.steam += gained;
+  state.totalSteam += gained;
+  setTimeout(() => showToast(`⏰ Production hors-ligne : +${fmt(gained)} vapeur (${Math.floor(elapsed/60)} min)`), 500);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+loadState();
+applyOffline();
+buildShop();
+updateOrbitRings();
+renderAchievements();
+requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>

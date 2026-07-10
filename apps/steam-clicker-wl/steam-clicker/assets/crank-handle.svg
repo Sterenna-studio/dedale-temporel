@@ -1,0 +1,76 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 200 200"
+>
+  <!-- Fond transparent -->
+  <rect x="0" y="0" width="200" height="200" fill="none"/>
+
+  <!-- Axe central façon “gear hub” -->
+  <circle
+    cx="80" cy="100" r="22"
+    fill="saddlebrown"
+    stroke="black"
+    stroke-width="3"
+  />
+  <circle
+    cx="80" cy="100" r="14"
+    fill="peru"
+    stroke="black"
+    stroke-width="2"
+  />
+  <!-- Rivets autour du moyeu -->
+  <circle cx="80" cy="82" r="2.2" fill="black" />
+  <circle cx="96" cy="100" r="2.2" fill="black" />
+  <circle cx="80" cy="118" r="2.2" fill="black" />
+  <circle cx="64" cy="100" r="2.2" fill="black" />
+
+  <!-- Bras principal de la manivelle -->
+  <path
+    d="
+      M 94 100
+      L 130 100
+      Q 140 100 146 108
+      L 158 124
+      Q 164 132 164 140
+      L 164 142
+      Q 164 150 158 156
+      "
+    fill="none"
+    stroke="darkslategray"
+    stroke-width="8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Renfort métallique (effet double barre) -->
+  <path
+    d="
+      M 94 106
+      L 128 106
+      Q 138 106 144 114
+      L 155 128
+      Q 160 134 160 141
+      "
+    fill="none"
+    stroke="peru"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.9"
+  />
+
+  <!-- Poignée cylindrique -->
+  <ellipse
+    cx="164" cy="160" rx="9" ry="14"
+    fill="chocolate"
+    stroke="black"
+    stroke-width="2"
+  />
+
+  <!-- Reflets sur la poignée -->
+  <ellipse
+    cx="161" cy="155" rx="3" ry="6"
+    fill="burlywood"
+    opacity="0.8"
+  />
+</svg>
