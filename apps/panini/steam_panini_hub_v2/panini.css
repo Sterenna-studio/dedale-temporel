@@ -1,10 +1,15 @@
-/* Styles for the A4-style panini page */
+/* ===========================
+   Panini A4 – Styles globaux
+   =========================== */
+
 body {
   margin: 0;
   font-family: sans-serif;
   background: #fdf7ea;
   color: #333;
 }
+
+/* Barre de commandes */
 .top-bar {
   display: flex;
   justify-content: space-between;
@@ -14,81 +19,103 @@ body {
   border-bottom: 1px solid #ccc;
   flex-wrap: wrap;
 }
+
 .top-bar label {
   margin-right: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
+
 .top-bar input[type="text"] {
-  padding: 0.3rem 0.5rem;
-  font-size: 0.95rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #bda57f;
+  background: #fffaf0;
+  border-radius: 6px;
+  min-width: 220px;
 }
-.top-bar button {
-  margin-left: 0.5rem;
-  padding: 0.4rem 0.8rem;
-  border: none;
-  border-radius: 4px;
+
+.btn {
+  background: #caa56a;
+  border: 1px solid #8c6a2f;
+  color: #2b1c0f;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
   cursor: pointer;
-  background: #0075a2;
-  color: white;
-  font-size: 0.95rem;
+  margin-left: 0.5rem;
+  transition: transform .05s ease, filter .1s ease;
 }
-.top-bar button:hover {
-  background: #005b80;
-}
-.sheet-container {
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
-}
+.btn:hover { filter: brightness(1.05); }
+.btn:active { transform: translateY(1px); }
+
+/* ===========================
+   Zone principale
+   =========================== */
 .panini-wrapper {
-  max-width: 900px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 980px;           /* largeur max confortable */
+  margin: 1rem auto 2rem;
+  padding: 0 12px;
 }
+
+/* ===========================
+   Feuille A4 + Grille 3×4
+   =========================== */
 #paniniSheet {
   position: relative;
   width: 100%;
-  aspect-ratio: 210 / 297;
-  background: radial-gradient(circle at center, #fffdf5 0%, #f2e7cd 100%);
-  border: 1px solid #ccc;
-  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  aspect-ratio: 210 / 297;         /* A4 */
+  background:
+    radial-gradient(ellipse at 30% 20%, #f9eaca 0%, #f5e2be 35%, #eed6a4 100%);
+  border: 1px solid #c4ad82;
+  box-shadow: 0 8px 22px rgba(0,0,0,.12);
+  border-radius: 12px;
   margin-bottom: 1rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 2% 2%;
+
+  /* Padding intérieur du carnet (ne pas toucher pour ne pas
+     déplacer gears/logo/nom d’agent) */
   padding: 4% 3%;
   box-sizing: border-box;
+
+  /* ---- Grille ---- */
+  /* Réglages d’espacement SANS déplacer les éléments absolus */
+  --rowH: 18%;     /* hauteur d’une rangée (ajuste pour créer du vide haut/bas) */
+  --gapY: 2.5%;    /* espacement vertical entre les rangées */
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, var(--rowH));
+  column-gap: 2%;
+  row-gap: var(--gapY);
+
+  /* Centre verticalement le bloc de 4 rangées au sein de la feuille :
+     l’espace restant en haut/bas est ajouté sans bouger les éléments absolus */
+  align-content: center;
 }
 
-/* Decorative images (gears and logo) */
-#paniniSheet img.decor {
+/* Emplacements (slots) */
+#paniniSheet .slot {
+  position: relative;
+  border: 2px dashed rgba(44, 32, 15, 0.45);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+  overflow: hidden;
+}
+
+#paniniSheet .slot.filled {
+  border-style: solid;
+  border-color: rgba(44, 32, 15, 0.55);
+}
+
+#paniniSheet .slot img {
   position: absolute;
-  pointer-events: none;
-  opacity: 0.8;
-}
-#paniniSheet .gear-left {
-  width: 10%;
-  top: 2%;
-  left: 2%;
-}
-#paniniSheet .gear-right {
-  width: 10%;
-  top: 2%;
-  right: 2%;
-}
-#paniniSheet .logo {
-  width: 18%;
-  bottom: 2%;
-  left: 50%;
-  transform: translateX(-50%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-/* Agent name display */
+/* Nom d’agent (indépendant de la grille) */
 #paniniSheet .agent-name {
   position: absolute;
   top: 3%;
@@ -98,102 +125,121 @@ body {
   font-family: 'Cinzel Decorative', serif;
   font-size: 1.4rem;
   color: #3e2a1e;
+  text-shadow: 0 1px 0 rgba(255,255,255,.6);
+  pointer-events: none;   /* ne capte pas les clics */
+}
+
+/* Décorations (gears & logo) – absolues donc non impactées
+   par l’espacement de la grille */
+#paniniSheet img.decor {
+  position: absolute;
   pointer-events: none;
+  opacity: 0.85;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.6));
 }
-/* Grid cell style */
-#paniniSheet .slot {
-  border: 2px dashed rgba(0,0,0,0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  background: rgba(255,255,255,0.1);
+
+#paniniSheet .gear-left {
+  width: 10%;
+  top: 2%;
+  left: 2.5%;
 }
-#paniniSheet .slot.filled {
-  border: none;
-  background: none;
+
+#paniniSheet .gear-right {
+  width: 10%;
+  top: 2%;
+  right: 2.5%;
+  transform: scaleX(-1);
 }
-#paniniSheet .slot img {
-  max-width: 100%;
-  max-height: 100%;
-  pointer-events: none;
+
+#paniniSheet .logo-bottom {
+  width: 16%;
+  bottom: 2.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.9;
 }
-/* Inventory below */
-#inventory {
+
+/* ===========================
+   Inventaire
+   =========================== */
+.inventory {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  width: 100%;
-  justify-content: center;
+  gap: 10px;
+  padding-top: 6px;
+  border-top: 1px dashed #c8b48c;
 }
-#inventory .inv-item {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  cursor: pointer;
+
+.inv-item {
+  width: 88px;
+  height: 88px;
+  background: #fffdfa;
+  border: 1px solid #bfa06a;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #fff;
+  cursor: grab;
+  overflow: hidden;
+  box-shadow: 0 3px 8px rgba(0,0,0,.08), inset 0 0 0 2px rgba(255,255,255,.6);
 }
-#inventory .inv-item.selected {
-  outline: 3px solid #0075a2;
+.inv-item:active { cursor: grabbing; }
+.inv-item.selected {
+  box-shadow: 0 0 0 3px #8c6a2f, 0 3px 8px rgba(0,0,0,.08);
 }
-#inventory .inv-item img {
-  max-width: 100%;
-  max-height: 100%;
-}
-#inventory .inv-item .id-label {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 2px;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  font-size: 0.6rem;
-  text-align: center;
-}
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
+
+.inv-item img {
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* ===========================
+   Modal (infos mission)
+   =========================== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 1000;
 }
-.modal.hidden {
-  display: none;
-}
-.modal-content {
-  background: #fff;
+.modal.show { display: flex; }
+
+.modal .modal-content {
+  background: #fffdf8;
+  border-radius: 12px;
   padding: 1rem;
-  max-width: 600px;
-  width: 90%;
-  max-height: 90%;
-  overflow-y: auto;
-  border-radius: 6px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  position: relative;
+  width: min(720px, 92vw);
+  max-height: 88vh;
+  overflow: auto;
+  border: 1px solid #d8c39c;
+  box-shadow: 0 10px 28px rgba(0,0,0,.25);
 }
-.close {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  font-size: 1.5rem;
+
+.modal .close {
+  float: right;
+  font-size: 1.6rem;
   cursor: pointer;
 }
+
+.modal h2 {
+  margin: 0.4rem 0 0.6rem;
+  font-family: 'Cinzel Decorative', serif;
+  color: #3e2a1e;
+}
+
 .modal img {
-  max-width: 100%;
-  display: block;
-  margin: 0.5rem 0;
+  width: 100%;
+  border-radius: 10px;
+  margin: 0.5rem 0 0.75rem;
+  border: 1px solid #d8c39c;
+}
+
+.modal p {
+  margin: 0.35rem 0;
+  line-height: 1.4;
 }
