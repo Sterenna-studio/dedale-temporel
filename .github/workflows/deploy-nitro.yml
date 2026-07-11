@@ -87,7 +87,7 @@ jobs:
           rsync -a \
             --exclude='.gitignore' \
             --exclude='README*' \
-            --exclude='steam-clicker/' \
+            --exclude='old.vers/' \
             "$STEAMCLICKER_SRC/" _site/steam-clicker/
 
           # Atelier de Calibration -> Workplate
