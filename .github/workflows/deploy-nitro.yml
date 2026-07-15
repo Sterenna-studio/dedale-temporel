@@ -17,6 +17,7 @@ name: Deploy to Nitro
 #   /dedale/steam-clicker/<- apps/steam-clicker-wl  (version whitelist)
 #   /dedale/workplate/    <- apps/WORKPLATE
 #   /dedale/dispersion/   <- apps/dispersion  (version active : index.html uniquement)
+#   /dedale/panini/       <- apps/panini/steam_panini_hub_v2
 
 on:
   push:
@@ -29,6 +30,7 @@ on:
       - "apps/steam-clicker-wl/**"
       - "apps/WORKPLATE/**"
       - "apps/dispersion/**"
+      - "apps/panini/steam_panini_hub_v2/**"
       - "assets/sfx/sounds/**"
       - "deploy/**"
       - ".github/workflows/deploy-nitro.yml"
@@ -47,6 +49,7 @@ env:
   STEAMCLICKER_SRC: apps/steam-clicker-wl
   WORKPLATE_SRC:    apps/WORKPLATE
   DISPERSION_SRC:   apps/dispersion
+  PANINI_SRC:       apps/panini/steam_panini_hub_v2
 
 jobs:
   deploy:
@@ -100,6 +103,10 @@ jobs:
             --exclude='indexv2*.html' \
             --exclude='editeur_tuyaux.html' \
             "$DISPERSION_SRC/" _site/dispersion/
+
+          # Salle des Vignettes -> Panini (album de missions)
+          mkdir -p _site/panini
+          cp -r "$PANINI_SRC/." _site/panini/
 
           echo "----- arbre assemblé -----"
           find _site -maxdepth 2 -type d | sort

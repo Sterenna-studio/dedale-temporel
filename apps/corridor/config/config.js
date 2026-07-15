@@ -61,21 +61,27 @@ Elle est sous tes yeux.`,
       folder: "briefing",
       redirectUrl: "https://nitro.sterenna.fr/dedale/briefing/",
       requireCode: true,
-      validCodes: ["briefing", "sallebriefing"],
-      placeholder: "Nom de la salle de l'agence...",
-      riddleTitle: "Salle de Briefing – Mémoire des missions",
+      validCodes: ["percolateur", "le percolateur"],
+      placeholder: "Ce qui fait vraiment tourner l'agence…",
+      riddleTitle: "Salle de Briefing – Le vrai moteur de l'agence",
       riddleText: `
 Au fil des époques, les agents S.T.E.A.M. ont toujours commencé ici :
-une table, quelques dossiers, un tableau griffonné.
+une table, quelques dossiers, un tableau griffonné…
 
-On raconte que si l'on écoute le bois de cette porte,
-on entend encore les échos des anciennes missions.
+et une machine qu'on ne présente plus, qui chuinte et crachote
+dans un coin depuis 1957, sans que personne n'ait jamais
+osé la débrancher.
 
-Son code n'est pas un mot de passe,
-c'est le nom que les agents lui ont donné.`,
+Officiellement, cette salle sert aux briefings.
+Officieusement, tout le monde sait ce qui la fait vraiment tourner.
+
+Son code n'est pas un mot de passe :
+c'est le nom de ce que chaque agent vient chercher
+avant même d'écouter la mission.`,
       hasNote: true,
-      noteText: `RAPPEL : Ne sortir d'ici qu'en ayant un plan.
-Les missions improvisées finissent rarement bien.`,
+      noteText: `RAPPEL DE SERVICE :
+Une réunion sans café tourne au vinaigre.
+Le percolateur n'est pas décoratif — et il mord si on le débranche.`,
       notePosition: { top: "32px", right: "18px", rotate: "3deg" },
       dialLabel: "1957",
       signText: "Salle de Briefing"
@@ -291,6 +297,38 @@ suffisante pour déstabiliser le couloir entier.`,
       notePosition: { bottom: "30px", right: "18px", rotate: "6deg" },
       dialLabel: "≋",
       signText: "Chambre de Dispersion"
+    },
+
+    // ── NOUVELLE PORTE : Salle des Vignettes (PANINI) ─────────────────────────
+    {
+      id: "porte-panini",
+      name: "Salle des Vignettes",
+      type: "room",
+      folder: "panini",
+      redirectUrl: "https://nitro.sterenna.fr/dedale/panini/",
+      requireCode: true,
+      validCodes: ["vignette", "vignettes", "salle des vignettes", "album"],
+      placeholder: "Ce qu'on colle, échange, et qu'il manque toujours…",
+      riddleTitle: "Salle des Vignettes – L'album des missions",
+      riddleText: `
+Chaque mission accomplie laisse une trace : une vignette,
+collée dans l'album de l'agence, entre deux tampons de cire.
+
+Les agents chevronnés les collectionnent comme des trophées ;
+les recrues les regardent en rêvant de la prochaine case à remplir.
+
+On raconte qu'une salle entière est consacrée à cet album,
+remis à jour à chaque retour de mission.
+
+Pour y entrer, nommez ce que l'on colle, échange,
+et dont il manque toujours une dernière pour compléter la page.`,
+      hasNote: true,
+      noteText: `NOTE DE COLLECTION :
+Il manque toujours une vignette. Toujours.
+Ne demande pas à l'archiviste laquelle : il ne le sait pas non plus.`,
+      notePosition: { bottom: "24px", right: "24px", rotate: "2deg" },
+      dialLabel: "★",
+      signText: "Salle des Vignettes"
     },
 
     // Porte verrouillée / grisée, purement décorative

@@ -15,7 +15,7 @@ apps/
 ├── steam-clicker-wl/ # Salle des Engrenages (idle clicker vapeur) → /dedale/steam-clicker/
 ├── WORKPLATE/        # Atelier de Calibration (carnets d'agent)  → /dedale/workplate/
 ├── dispersion/       # Chambre de Dispersion (réseau de tuyaux)  → /dedale/dispersion/
-└── panini/           # Album panini — prototype, non relié à une porte, non déployé
+└── panini/           # Salle des Vignettes (album de missions)    → /dedale/panini/
 assets/
 └── sfx/              # Pack de sons (ambiance, UI, portes)       → /dedale/sounds/
 deploy/               # Gabarits de déploiement (page d'attente « salle en calibrage »)
@@ -37,7 +37,7 @@ publiées (exclues du build), mais conservées pour l'historique du projet.
 | [`apps/steam-clicker-wl`](apps/steam-clicker-wl) | **Salle des Engrenages** — idle clicker vapeur. Anciennes itérations dans `old.vers/`. |
 | [`apps/WORKPLATE`](apps/WORKPLATE) | **Atelier de Calibration** — carnets de calibration et fiches de mission imprimables pour les agents. |
 | [`apps/dispersion`](apps/dispersion) | **Chambre de Dispersion** — réseau de tuyaux reconfigurable (seul `index.html` est déployé). |
-| [`apps/panini`](apps/panini) | Album panini — prototype non relié à une porte du couloir, **non déployé**. |
+| [`apps/panini`](apps/panini) | **Salle des Vignettes** — album de missions à collectionner. Anciennes itérations dans `old.vers/`. |
 | [`assets/sfx`](assets/sfx) | Pack de sons (ambiance, UI, portes, lore) MP3/WAV + mapping JSON. |
 | [`deploy`](deploy) | Gabarits de déploiement Nitro (page d'attente). |
 | [`archive`](archive) | Itérations & variantes conservées, **non déployées**. |
@@ -57,6 +57,7 @@ touchant `apps/**`, `assets/sfx/sounds/**` ou `deploy/**`.
 | Salle des Engrenages | `apps/steam-clicker-wl` (hors `old.vers/`) | `/dedale/steam-clicker/` |
 | Atelier de Calibration | `apps/WORKPLATE` | `/dedale/workplate/` |
 | Chambre de Dispersion | `apps/dispersion` (`index.html` seul) | `/dedale/dispersion/` |
+| Salle des Vignettes | `apps/panini/steam_panini_hub_v2` | `/dedale/panini/` |
 
 Le fil rouge (4 fragments → Sceau → Porte Condamnée) est décrit dans [`SCENARIO.md`](SCENARIO.md).
 L'état de progression est partagé entre les pages via `localStorage` ([`apps/corridor/js/dedale-state.js`](apps/corridor/js/dedale-state.js)).
