@@ -46,7 +46,8 @@ publiées (exclues du build), mais conservées pour l'historique du projet.
 
 `.github/workflows/deploy-nitro.yml` assemble couloir + salles + sons en un seul
 arbre et le pousse via rsync SSH vers `~/nitro/dedale/`. Déclenché à chaque push
-touchant `apps/**`, `assets/sfx/sounds/**` ou `deploy/**`.
+touchant l'un des dossiers déployés (voir `paths:` dans le workflow), `assets/sfx/sounds/**`
+ou `deploy/**` — les `old.vers/` et le reste de `apps/panini/` en sont exclus.
 
 | Porte | Source | URL |
 |-------|--------|-----|
