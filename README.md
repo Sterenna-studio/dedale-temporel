@@ -85,4 +85,3 @@ npm test          # tests Jest
 
 - Chaque module a son propre `README.md`.
 - `node_modules/` et `coverage/` ne sont pas versionnés (voir `.gitignore`).
-- [`steam_data/`](steam_data) est un espace de travail pour l'agence S.T.E.A.M. (visuels marketing, photos, une mini-app de galerie séparée) : il ne fait pas partie du dédale et n'est jamais touché par le workflow Nitro.
