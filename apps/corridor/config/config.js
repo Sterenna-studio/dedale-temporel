@@ -61,27 +61,30 @@ Elle est sous tes yeux.`,
       folder: "briefing",
       redirectUrl: "https://nitro.sterenna.fr/dedale/briefing/",
       requireCode: true,
-      validCodes: ["percolateur", "le percolateur"],
-      placeholder: "Ce qui fait vraiment tourner l'agence…",
-      riddleTitle: "Salle de Briefing – Le vrai moteur de l'agence",
+      validCodes: ["pause", "pause café", "café", "salle de pause"],
+      placeholder: "Ce que chaque agent vient vraiment chercher ici…",
+      riddleTitle: "Salle de Briefing – Le vrai rendez-vous",
       riddleText: `
 Au fil des époques, les agents S.T.E.A.M. ont toujours commencé ici :
 une table, quelques dossiers, un tableau griffonné…
 
-et une machine qu'on ne présente plus, qui chuinte et crachote
-dans un coin depuis 1957, sans que personne n'ait jamais
-osé la débrancher.
+Mais entre deux missions, cette même salle change de nom
+dans la bouche des agents — et de fonction.
 
-Officiellement, cette salle sert aux briefings.
-Officieusement, tout le monde sait ce qui la fait vraiment tourner.
+Officiellement, on y briefe les missions.
+Officieusement, c'est là qu'on vient se poser cinq minutes,
+tasse en main, entre deux portes temporelles.
 
 Son code n'est pas un mot de passe :
-c'est le nom de ce que chaque agent vient chercher
-avant même d'écouter la mission.`,
+c'est ce que chaque agent vient chercher ici,
+bien avant d'écouter la mission.`,
       hasNote: true,
-      noteText: `RAPPEL DE SERVICE :
-Une réunion sans café tourne au vinaigre.
-Le percolateur n'est pas décoratif — et il mord si on le débranche.`,
+      noteText: `Psst — j'ai proposé à l'agent Solstice de nous rejoindre
+à la salle de pause pour un café, juste après notre brief de mission.
+
+Dis rien à l'archiviste, il compte encore les tasses.
+
+— T.`,
       notePosition: { top: "32px", right: "18px", rotate: "3deg" },
       dialLabel: "1957",
       signText: "Salle de Briefing"
