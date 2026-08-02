@@ -23,19 +23,19 @@
   let wheelLocked = false;
 
   const desktopSlots = {
-    0:  { x: 50, y: 61, scale: 0.78, opacity: 1,    blur: 0,   rotate: 0,   z: 24, light: 1.08 },
-    1:  { x: 76, y: 57, scale: 0.57, opacity: 0.88, blur: 0,   rotate: 2.5, z: 18, light: 0.88 },
+    0:  { x: 50, y: 54, scale: 0.78, opacity: 1,    blur: 0,   rotate: 0,   z: 24, light: 1.08 },
+    1:  { x: 76, y: 55, scale: 0.57, opacity: 0.88, blur: 0,   rotate: 2.5, z: 18, light: 0.88 },
     2:  { x: 91, y: 40, scale: 0.38, opacity: 0.58, blur: 0.5, rotate: 5,   z: 11, light: 0.7 },
     3:  { x: 77, y: 19, scale: 0.27, opacity: 0.28, blur: 1.2, rotate: 7,   z: 6,  light: 0.58 },
-    "-1": { x: 24, y: 57, scale: 0.57, opacity: 0.88, blur: 0,   rotate: -2.5, z: 18, light: 0.88 },
+    "-1": { x: 24, y: 55, scale: 0.57, opacity: 0.88, blur: 0,   rotate: -2.5, z: 18, light: 0.88 },
     "-2": { x: 9,  y: 40, scale: 0.38, opacity: 0.58, blur: 0.5, rotate: -5,   z: 11, light: 0.7 },
     "-3": { x: 23, y: 19, scale: 0.27, opacity: 0.28, blur: 1.2, rotate: -7,   z: 6,  light: 0.58 },
   };
 
   const mobileSlots = {
-    0:  { x: 50, y: 62, scale: 0.64, opacity: 1,    blur: 0,   rotate: 0, z: 24, light: 1.05 },
-    1:  { x: 86, y: 43, scale: 0.35, opacity: 0.48, blur: 0.7, rotate: 4, z: 11, light: 0.72 },
-    "-1": { x: 14, y: 43, scale: 0.35, opacity: 0.48, blur: 0.7, rotate: -4, z: 11, light: 0.72 },
+    0:  { x: 50, y: 56, scale: 0.64, opacity: 1,    blur: 0,   rotate: 0, z: 24, light: 1.05 },
+    1:  { x: 86, y: 41, scale: 0.35, opacity: 0.48, blur: 0.7, rotate: 4, z: 11, light: 0.72 },
+    "-1": { x: 14, y: 41, scale: 0.35, opacity: 0.48, blur: 0.7, rotate: -4, z: 11, light: 0.72 },
   };
 
   function normalizeIndex(index) {
