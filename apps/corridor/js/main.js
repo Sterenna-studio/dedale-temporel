@@ -34,8 +34,8 @@
   /* --- RÉGLAGES DU SON (persistants) --- */
 
   const AUDIO_KEY = "dedale_audio_v1";
-  // Par défaut : ambiance COUPÉE, effets actifs.
-  const AUDIO_DEFAULTS = { ambient: false, sfx: true, ambientVol: 0.3, sfxVol: 0.7 };
+  // Par défaut : ambiance COUPÉE, effets actifs mais discrets (15%).
+  const AUDIO_DEFAULTS = { ambient: false, sfx: true, ambientVol: 0.3, sfxVol: 0.15 };
 
   function loadAudioSettings() {
     try {
@@ -114,9 +114,6 @@
     "porte-reliques",
     "porte-archive",
   ];
-  // Σ et Δ ne sont plus décernés à l'entrée : ils se méritent en résolvant
-  // les puzzles (SpectroCrypt → Σ, Imprimerie → Δ), qui appellent
-  // DedaleState.grant() eux-mêmes. La map reste vide (extensible au besoin).
   const DOOR_FRAGMENT = {};
   const CONDAMNEE_ID = "porte-condamnee-02";
 
@@ -286,82 +283,46 @@
   function initAudio() {
     if (audioInitialized) return;
     audioInitialized = true;
-    // Applique les réglages : l'ambiance ne démarre que si activée par l'utilisateur.
     applyAudioSettings();
   }
 
   function playSuccess() {
     if (!sfxSuccess) return;
-    try {
-      sfxSuccess.currentTime = 0;
-      sfxSuccess.play();
-    } catch (e) {}
+    try { sfxSuccess.currentTime = 0; sfxSuccess.play(); } catch (e) {}
   }
 
   function playError() {
     if (!sfxError) return;
-    try {
-      sfxError.currentTime = 0;
-      sfxError.play();
-    } catch (e) {}
+    try { sfxError.currentTime = 0; sfxError.play(); } catch (e) {}
   }
 
   function playDoorOpen() {
     if (!sfxDoorOpen) return;
-    try {
-      sfxDoorOpen.currentTime = 0;
-      sfxDoorOpen.play();
-    } catch (e) {}
+    try { sfxDoorOpen.currentTime = 0; sfxDoorOpen.play(); } catch (e) {}
   }
 
   function playDoorHover() {
     if (!sfxDoorHover) return;
-    try {
-      sfxDoorHover.currentTime = 0;
-      sfxDoorHover.play();
-    } catch (e) {}
+    try { sfxDoorHover.currentTime = 0; sfxDoorHover.play(); } catch (e) {}
   }
 
   function playDoorLocked() {
     if (!sfxDoorLocked) return;
-    try {
-      sfxDoorLocked.currentTime = 0;
-      sfxDoorLocked.play();
-    } catch (e) {}
+    try { sfxDoorLocked.currentTime = 0; sfxDoorLocked.play(); } catch (e) {}
   }
 
   function playNoteSound() {
     if (!sfxNote) return;
-    try {
-      sfxNote.currentTime = 0;
-      sfxNote.play();
-    } catch (e) {}
+    try { sfxNote.currentTime = 0; sfxNote.play(); } catch (e) {}
   }
 
   function playConsoleBeep() {
     if (!sfxConsole) return;
-    try {
-      sfxConsole.currentTime = 0;
-      sfxConsole.play();
-    } catch (e) {}
+    try { sfxConsole.currentTime = 0; sfxConsole.play(); } catch (e) {}
   }
 
-  // Première interaction = on essaie d'initialiser le son
-  document.addEventListener(
-    "click",
-    () => {
-      initAudio();
-    },
-    { once: true }
-  );
-
-  document.addEventListener(
-    "keydown",
-    () => {
-      initAudio();
-    },
-    { once: true }
-  );
+  document.addEventListener("click",   () => { initAudio(); }, { once: true });
+  document.addEventListener("keydown", () => { initAudio(); }, { once: true });
 
   /* CONSTRUCTION DES PORTES */
 
@@ -421,7 +382,7 @@
         </div>
       `;
 
-      const hasNote = doorCfg.hasNote !== false; // par défaut true si non spécifié
+      const hasNote = doorCfg.hasNote !== false;
       if (hasNote && doorCfg.noteText && doorCfg.noteText.trim()) {
         const noteEl = document.createElement("div");
         noteEl.className = "door-note";
@@ -443,9 +404,7 @@
         });
       }
 
-      doorEl.addEventListener("mouseenter", () => {
-        playDoorHover();
-      });
+      doorEl.addEventListener("mouseenter", () => { playDoorHover(); });
 
       doorEl.addEventListener("click", (e) => {
         if (e.target.classList.contains("door-note")) return;
@@ -463,9 +422,7 @@
   function isDoorCodeFree(doorCfg) {
     if (!doorCfg) return false;
     const type = doorCfg.type || "temporal";
-    if (type === "exit" || type === "locked") {
-      return true;
-    }
+    if (type === "exit" || type === "locked") return true;
     return doorCfg.requireCode === false;
   }
 
@@ -478,27 +435,21 @@
       el.classList.toggle("selected", el.dataset.doorId === id);
     });
 
-    if (riddleTitleEl) {
-      riddleTitleEl.textContent = doorCfg.riddleTitle || doorCfg.name;
-    }
-    if (riddleTextEl) {
-      riddleTextEl.textContent = (doorCfg.riddleText || "").trim();
-    }
+    if (riddleTitleEl) riddleTitleEl.textContent = doorCfg.riddleTitle || doorCfg.name;
+    if (riddleTextEl)  riddleTextEl.textContent  = (doorCfg.riddleText || "").trim();
 
     const free = isDoorCodeFree(doorCfg);
-
     if (free) {
-      if (codeMode) codeMode.classList.add("hidden");
+      if (codeMode)  codeMode.classList.add("hidden");
       if (enterMode) enterMode.classList.remove("hidden");
     } else {
-      if (codeMode) codeMode.classList.remove("hidden");
+      if (codeMode)  codeMode.classList.remove("hidden");
       if (enterMode) enterMode.classList.add("hidden");
     }
 
     if (codeInput) {
       codeInput.placeholder =
-        doorCfg.placeholder ||
-        "Entrez le code associé à cette porte temporelle…";
+        doorCfg.placeholder || "Entrez le code associé à cette porte temporelle…";
       codeInput.value = "";
     }
 
@@ -510,9 +461,7 @@
 
   function triggerDoorShake() {
     if (!activeDoorId) return;
-    const doorEl = document.querySelector(
-      `.time-door[data-door-id="${activeDoorId}"]`
-    );
+    const doorEl = document.querySelector(`.time-door[data-door-id="${activeDoorId}"]`);
     if (!doorEl) return;
     doorEl.classList.remove("door-shake");
     void doorEl.offsetWidth;
@@ -521,8 +470,7 @@
 
   function setAccessTokenForDoor(doorId) {
     try {
-      const key = `dedale_access_${doorId}`;
-      sessionStorage.setItem(key, "1");
+      sessionStorage.setItem(`dedale_access_${doorId}`, "1");
     } catch (e) {
       console.warn("Impossible de stocker le token d'accès du dédale.", e);
     }
@@ -544,8 +492,7 @@
 
     if (!activeDoorId) {
       if (terminalOutput) {
-        terminalOutput.textContent =
-          "Aucune porte sélectionnée. Choisissez d'abord une porte.";
+        terminalOutput.textContent = "Aucune porte sélectionnée. Choisissez d'abord une porte.";
         terminalOutput.className = "terminal-output err";
       }
       playError();
@@ -554,15 +501,13 @@
 
     const doorCfg = getDoorConfig(activeDoorId);
     if (!doorCfg) return;
-
     if (blockIfNoBriefing(doorCfg)) return;
 
     const type = doorCfg.type || "temporal";
 
     if (isDoorCodeFree(doorCfg)) {
       if (terminalOutput) {
-        terminalOutput.textContent =
-          "Cette porte ne nécessite pas de code. Utilisez le bouton d'entrée.";
+        terminalOutput.textContent = "Cette porte ne nécessite pas de code. Utilisez le bouton d'entrée.";
         terminalOutput.className = "terminal-output err";
       }
       playError();
@@ -570,36 +515,27 @@
     }
 
     const norm = normalize(trimmed);
-    const valid = (doorCfg.validCodes || []).some(
-      (code) => normalize(code) === norm
-    );
+    const valid = (doorCfg.validCodes || []).some((code) => normalize(code) === norm);
 
     if (valid && doorCfg.redirectUrl && doorCfg.redirectUrl !== "#") {
       if (terminalOutput) {
-        terminalOutput.textContent =
-          "Code accepté. La porte se déverrouille... Accès à la destination.";
+        terminalOutput.textContent = "Code accepté. La porte se déverrouille... Accès à la destination.";
         terminalOutput.className = "terminal-output ok";
       }
-
       setAccessTokenForDoor(doorCfg.id);
       grantDoorFragment(doorCfg);
       playDoorOpen();
       playSuccess();
-
-      setTimeout(() => {
-        window.location.href = doorCfg.redirectUrl;
-      }, 1000);
+      setTimeout(() => { window.location.href = doorCfg.redirectUrl; }, 1000);
     } else if (valid) {
       if (terminalOutput) {
-        terminalOutput.textContent =
-          "Code accepté, mais aucune destination n'a encore été configurée pour cette porte.";
+        terminalOutput.textContent = "Code accepté, mais aucune destination n'a encore été configurée pour cette porte.";
         terminalOutput.className = "terminal-output ok";
       }
       playSuccess();
     } else {
       if (terminalOutput) {
-        terminalOutput.textContent =
-          "Code refusé. La serrure temporelle reste muette.";
+        terminalOutput.textContent = "Code refusé. La serrure temporelle reste muette.";
         terminalOutput.className = "terminal-output err";
       }
       triggerDoorShake();
@@ -610,8 +546,7 @@
   function enterDoor() {
     if (!activeDoorId) {
       if (terminalOutput) {
-        terminalOutput.textContent =
-          "Aucune porte sélectionnée. Choisissez d'abord une porte.";
+        terminalOutput.textContent = "Aucune porte sélectionnée. Choisissez d'abord une porte.";
         terminalOutput.className = "terminal-output err";
       }
       playError();
@@ -622,9 +557,7 @@
     if (!doorCfg) return;
     const type = doorCfg.type || "temporal";
 
-    // Porte verrouillée
     if (type === "locked") {
-      // La Porte Condamnée se descelle si le Sceau Temporel est obtenu.
       if (
         doorCfg.id === CONDAMNEE_ID &&
         State &&
@@ -633,16 +566,13 @@
         doorCfg.redirectUrl !== "#"
       ) {
         if (terminalOutput) {
-          terminalOutput.textContent =
-            "Le Sceau Temporel descelle la porte. La branche oubliée s'ouvre...";
+          terminalOutput.textContent = "Le Sceau Temporel descelle la porte. La branche oubliée s'ouvre...";
           terminalOutput.className = "terminal-output ok";
         }
         setAccessTokenForDoor(doorCfg.id);
         playDoorOpen();
         playSuccess();
-        setTimeout(() => {
-          window.location.href = doorCfg.redirectUrl;
-        }, 1000);
+        setTimeout(() => { window.location.href = doorCfg.redirectUrl; }, 1000);
         return;
       }
       if (terminalOutput) {
@@ -658,38 +588,29 @@
       return;
     }
 
-    // Sortie
     if (type === "exit" && doorCfg.redirectUrl) {
       if (terminalOutput) {
-        terminalOutput.textContent =
-          "Porte de sortie activée. Retour vers la surface...";
+        terminalOutput.textContent = "Porte de sortie activée. Retour vers la surface...";
         terminalOutput.className = "terminal-output ok";
       }
       playDoorOpen();
       playSuccess();
-      setTimeout(() => {
-        window.location.href = doorCfg.redirectUrl;
-      }, 900);
+      setTimeout(() => { window.location.href = doorCfg.redirectUrl; }, 900);
       return;
     }
 
-    // Autres portes sans code
     if (doorCfg.redirectUrl && doorCfg.redirectUrl !== "#") {
       if (terminalOutput) {
-        terminalOutput.textContent =
-          "La porte s’ouvre, un souffle de poussière temporelle vous frôle.";
+        terminalOutput.textContent = "La porte s'ouvre, un souffle de poussière temporelle vous frôle.";
         terminalOutput.className = "terminal-output ok";
       }
       setAccessTokenForDoor(doorCfg.id);
       playDoorOpen();
       playSuccess();
-      setTimeout(() => {
-        window.location.href = doorCfg.redirectUrl;
-      }, 900);
+      setTimeout(() => { window.location.href = doorCfg.redirectUrl; }, 900);
     } else {
       if (terminalOutput) {
-        terminalOutput.textContent =
-          "La porte semble active, mais aucune destination n'a encore été reliée.";
+        terminalOutput.textContent = "La porte semble active, mais aucune destination n'a encore été reliée.";
         terminalOutput.className = "terminal-output err";
       }
       playError();
@@ -709,7 +630,7 @@
     noteOverlay.classList.add("hidden");
   }
 
-  // --- Scroll horizontal par drag souris / touch (désactivé sur mobile via CSS) ---
+  /* --- Scroll horizontal par drag souris / touch --- */
 
   function setupDragScroll() {
     if (!doorZone) return;
@@ -724,57 +645,27 @@
       startX = e.pageX - doorZone.offsetLeft;
       scrollLeft = doorZone.scrollLeft;
     });
-
-    doorZone.addEventListener("mouseleave", () => {
-      isDown = false;
-      doorZone.classList.remove("dragging");
-    });
-
-    doorZone.addEventListener("mouseup", () => {
-      isDown = false;
-      doorZone.classList.remove("dragging");
-    });
-
+    doorZone.addEventListener("mouseleave", () => { isDown = false; doorZone.classList.remove("dragging"); });
+    doorZone.addEventListener("mouseup",    () => { isDown = false; doorZone.classList.remove("dragging"); });
     doorZone.addEventListener("mousemove", (e) => {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - doorZone.offsetLeft;
-      const walk = x - startX;
-      doorZone.scrollLeft = scrollLeft - walk;
+      doorZone.scrollLeft = scrollLeft - (x - startX);
     });
 
-    // Touch (mobile / trackpad tactile)
-    doorZone.addEventListener(
-      "touchstart",
-      (e) => {
-        const touch = e.touches[0];
-        isDown = true;
-        startX = touch.pageX - doorZone.offsetLeft;
-        scrollLeft = doorZone.scrollLeft;
-      },
-      { passive: true }
-    );
-
-    doorZone.addEventListener(
-      "touchend",
-      () => {
-        isDown = false;
-        doorZone.classList.remove("dragging");
-      },
-      { passive: true }
-    );
-
-    doorZone.addEventListener(
-      "touchmove",
-      (e) => {
-        if (!isDown) return;
-        const touch = e.touches[0];
-        const x = touch.pageX - doorZone.offsetLeft;
-        const walk = x - startX;
-        doorZone.scrollLeft = scrollLeft - walk;
-      },
-      { passive: true }
-    );
+    doorZone.addEventListener("touchstart", (e) => {
+      const touch = e.touches[0];
+      isDown = true;
+      startX = touch.pageX - doorZone.offsetLeft;
+      scrollLeft = doorZone.scrollLeft;
+    }, { passive: true });
+    doorZone.addEventListener("touchend", () => { isDown = false; doorZone.classList.remove("dragging"); }, { passive: true });
+    doorZone.addEventListener("touchmove", (e) => {
+      if (!isDown) return;
+      const touch = e.touches[0];
+      doorZone.scrollLeft = scrollLeft - (touch.pageX - doorZone.offsetLeft - startX);
+    }, { passive: true });
   }
 
   /* --- MENU DU SON --- */
@@ -785,56 +676,40 @@
   }
 
   function setupSoundMenu() {
-    const toggle = document.getElementById("soundToggle");
-    const panel = document.getElementById("soundPanel");
-    const close = document.getElementById("soundClose");
-    const ambient = document.getElementById("sndAmbient");
+    const toggle    = document.getElementById("soundToggle");
+    const panel     = document.getElementById("soundPanel");
+    const close     = document.getElementById("soundClose");
+    const ambient   = document.getElementById("sndAmbient");
     const ambientVol = document.getElementById("sndAmbientVol");
-    const sfx = document.getElementById("sndSfx");
-    const sfxVol = document.getElementById("sndSfxVol");
+    const sfx       = document.getElementById("sndSfx");
+    const sfxVol    = document.getElementById("sndSfxVol");
 
-    if (ambient) ambient.checked = audioSettings.ambient;
-    if (sfx) sfx.checked = audioSettings.sfx;
-    if (ambientVol) ambientVol.value = Math.round(audioSettings.ambientVol * 100);
-    if (sfxVol) sfxVol.value = Math.round(audioSettings.sfxVol * 100);
+    if (ambient)    ambient.checked    = audioSettings.ambient;
+    if (sfx)        sfx.checked        = audioSettings.sfx;
+    if (ambientVol) ambientVol.value   = Math.round(audioSettings.ambientVol * 100);
+    if (sfxVol)     sfxVol.value       = Math.round(audioSettings.sfxVol * 100);
     updateSoundIcon();
-    applyAudioSettings(); // pose l'état muet dès le chargement (sans lecture forcée)
+    applyAudioSettings();
 
-    if (toggle && panel) {
-      toggle.addEventListener("click", () => panel.classList.toggle("hidden"));
-    }
-    if (close && panel) {
-      close.addEventListener("click", () => panel.classList.add("hidden"));
-    }
-    if (ambient) {
-      ambient.addEventListener("change", () => {
-        audioSettings.ambient = ambient.checked;
-        saveAudioSettings();
-        applyAudioSettings();
-        updateSoundIcon();
-      });
-    }
-    if (sfx) {
-      sfx.addEventListener("change", () => {
-        audioSettings.sfx = sfx.checked;
-        saveAudioSettings();
-        applyAudioSettings();
-      });
-    }
-    if (ambientVol) {
-      ambientVol.addEventListener("input", () => {
-        audioSettings.ambientVol = (parseInt(ambientVol.value, 10) || 0) / 100;
-        saveAudioSettings();
-        applyAudioSettings();
-      });
-    }
-    if (sfxVol) {
-      sfxVol.addEventListener("input", () => {
-        audioSettings.sfxVol = (parseInt(sfxVol.value, 10) || 0) / 100;
-        saveAudioSettings();
-        applyAudioSettings();
-      });
-    }
+    if (toggle && panel) toggle.addEventListener("click", () => panel.classList.toggle("hidden"));
+    if (close  && panel) close.addEventListener("click",  () => panel.classList.add("hidden"));
+
+    if (ambient) ambient.addEventListener("change", () => {
+      audioSettings.ambient = ambient.checked;
+      saveAudioSettings(); applyAudioSettings(); updateSoundIcon();
+    });
+    if (sfx) sfx.addEventListener("change", () => {
+      audioSettings.sfx = sfx.checked;
+      saveAudioSettings(); applyAudioSettings();
+    });
+    if (ambientVol) ambientVol.addEventListener("input", () => {
+      audioSettings.ambientVol = (parseInt(ambientVol.value, 10) || 0) / 100;
+      saveAudioSettings(); applyAudioSettings();
+    });
+    if (sfxVol) sfxVol.addEventListener("input", () => {
+      audioSettings.sfxVol = (parseInt(sfxVol.value, 10) || 0) / 100;
+      saveAudioSettings(); applyAudioSettings();
+    });
   }
 
   // INIT
@@ -847,7 +722,7 @@
   setupLookNav();
 
   if (invToggle) invToggle.addEventListener("click", () => toggleInventory());
-  if (invClose) invClose.addEventListener("click", () => toggleInventory(false));
+  if (invClose)  invClose.addEventListener("click",  () => toggleInventory(false));
   if (itemClose) {
     itemClose.addEventListener("click", () => {
       if (itemOverlay) itemOverlay.classList.add("hidden");
@@ -859,31 +734,11 @@
     });
   }
 
-  if (config.doors && config.doors.length > 0) {
-    selectDoor(config.doors[0].id);
-  }
+  if (config.doors && config.doors.length > 0) selectDoor(config.doors[0].id);
 
-  if (submitCodeBtn) {
-    submitCodeBtn.addEventListener("click", checkCode);
-  }
-  if (codeInput) {
-    codeInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        checkCode();
-      }
-    });
-  }
-
-  if (enterDoorBtn) {
-    enterDoorBtn.addEventListener("click", enterDoor);
-  }
-
-  if (noteClose) {
-    noteClose.addEventListener("click", closeNoteOverlay);
-  }
-  if (noteOverlay) {
-    noteOverlay.addEventListener("click", (e) => {
-      if (e.target === noteOverlay) closeNoteOverlay();
-    });
-  }
+  if (submitCodeBtn) submitCodeBtn.addEventListener("click", checkCode);
+  if (codeInput) codeInput.addEventListener("keydown", (e) => { if (e.key === "Enter") checkCode(); });
+  if (enterDoorBtn) enterDoorBtn.addEventListener("click", enterDoor);
+  if (noteClose)   noteClose.addEventListener("click",   closeNoteOverlay);
+  if (noteOverlay) noteOverlay.addEventListener("click",  (e) => { if (e.target === noteOverlay) closeNoteOverlay(); });
 })();
