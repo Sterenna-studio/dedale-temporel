@@ -2,107 +2,29 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <title>Le Couloir des Dédales Temporels</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#08050a" />
+    <title>Le Couloir des Dédales Temporels</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
-    <style>
-      /* HUD des fragments du Sceau Temporel */
-      .frag-hud { display: flex; gap: 5px; margin: 4px 0; justify-content: flex-end; flex-wrap: wrap; }
-      .frag-hud .chip {
-        font-family: "Cinzel", serif; font-size: .8rem; width: 22px; height: 22px;
-        display: flex; align-items: center; justify-content: center; border-radius: 50%;
-        border: 1px solid var(--accent-brass-dark, #8a6a30); color: #4c4c4c; background: #0c0805;
-      }
-      .frag-hud .chip.has { color: var(--accent-emerald, #2dcf8a); border-color: var(--accent-emerald, #2dcf8a); text-shadow: 0 0 8px rgba(45,207,138,.5); }
-      .frag-hud .chip.sceau { color: var(--accent-brass, #c29b4b); border-color: var(--accent-brass, #c29b4b); width: auto; padding: 0 8px; border-radius: 11px; font-size: .68rem; letter-spacing: .08em; }
-
-      /* Indices à trouver dans le couloir */
-      .hallway { position: relative; }
-      .clue {
-        position: absolute; z-index: 6; cursor: pointer;
-        width: 30px; height: 26px; padding: 0; border: none; border-radius: 3px;
-        background: linear-gradient(160deg, #efe4c4 0%, #d8c79b 100%);
-        box-shadow: 0 3px 7px rgba(0,0,0,.6); opacity: .62;
-        transform: rotate(var(--rot, 0deg)); transition: opacity .2s, transform .12s, box-shadow .2s;
-      }
-      .clue::before { content: ""; position: absolute; inset: 3px; border-top: 1px solid #b7a06a; box-shadow: 0 4px 0 -3px #b7a06a, 0 8px 0 -3px #b7a06a, 0 12px 0 -3px #b7a06a; }
-      .clue:hover { opacity: 1; transform: rotate(var(--rot, 0deg)) scale(1.12); box-shadow: 0 0 12px rgba(45,207,138,.6); }
-      .clue .clue-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: .8rem; color: #6b5324; }
-      .clue .clue-tip {
-        position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
-        white-space: nowrap; font-family: "Space Mono", monospace; font-size: .62rem;
-        color: var(--text-main, #f4e5c1); background: #14100b; border: 1px solid var(--accent-brass-dark, #8a6a30);
-        padding: 3px 6px; border-radius: 4px; opacity: 0; pointer-events: none; transition: opacity .18s;
-      }
-      .clue:hover .clue-tip { opacity: 1; }
-      .clue.found { opacity: .32; filter: grayscale(.4); }
-      .clue.found::after { content: "✓"; position: absolute; top: -6px; right: -6px; font-size: .7rem; color: var(--accent-emerald, #2dcf8a); }
-
-      /* Carnet de bord */
-      .inv-toggle {
-        position: fixed; bottom: 16px; right: 16px; z-index: 40; cursor: pointer;
-        font-family: "Cinzel", serif; font-size: .82rem; color: #14100b;
-        background: linear-gradient(180deg, var(--accent-brass, #c29b4b), var(--accent-brass-dark, #8a6a30));
-        border: none; border-radius: 10px; padding: 9px 14px; box-shadow: 0 4px 12px rgba(0,0,0,.6);
-      }
-      .inv-badge {
-        display: inline-block; min-width: 18px; text-align: center; margin-left: 4px;
-        background: #14100b; color: var(--accent-emerald, #2dcf8a); border-radius: 9px; font-size: .72rem; padding: 0 5px;
-      }
-      .inv-panel {
-        position: fixed; bottom: 58px; right: 16px; z-index: 40; width: 300px; max-width: 90vw;
-        max-height: 60vh; overflow: auto; padding: 14px; border-radius: 12px;
-        border: 1px solid var(--accent-brass-dark, #8a6a30);
-        background: radial-gradient(circle at top, #2a2118 0, #14100b 70%);
-        box-shadow: 0 0 30px rgba(0,0,0,.85);
-      }
-      .inv-panel.hidden { display: none; }
-      .inv-head { display: flex; justify-content: space-between; align-items: center; font-family: "Cinzel", serif; color: var(--accent-brass, #c29b4b); font-size: .95rem; }
-      .inv-x { background: none; border: none; color: var(--text-dim, #b69a71); font-size: 1.3rem; cursor: pointer; line-height: 1; }
-      .inv-sub { font-family: "Space Mono", monospace; font-size: .68rem; color: var(--text-dim, #b69a71); margin: 4px 0 10px; }
-      .inv-empty { font-family: "Space Mono", monospace; font-size: .72rem; color: var(--text-dim, #b69a71); line-height: 1.5; }
-      .inv-item {
-        width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px;
-        font-family: "Space Mono", monospace; font-size: .74rem; text-align: left; cursor: pointer;
-        color: var(--text-main, #f4e5c1); background: #0c0805; border: 1px solid #3b2a1b;
-        border-radius: 7px; padding: 7px 9px; margin-bottom: 6px;
-      }
-      .inv-item:hover { border-color: var(--accent-emerald, #2dcf8a); }
-      .inv-item-code { color: var(--accent-emerald, #2dcf8a); font-size: .72rem; }
-      .item-reveal { margin-top: 10px; font-family: "Space Mono", monospace; font-size: .78rem; color: var(--text-dim, #b69a71); }
-      .item-reveal code { color: var(--accent-emerald, #2dcf8a); font-size: .9rem; background: #0c0805; padding: 1px 6px; border-radius: 4px; }
-
-      /* Réglages du son */
-      .sound-toggle {
-        position: fixed; bottom: 16px; left: 16px; z-index: 40; cursor: pointer;
-        font-size: 1rem; width: 40px; height: 40px; border-radius: 50%;
-        color: #14100b; background: linear-gradient(180deg, var(--accent-brass, #c29b4b), var(--accent-brass-dark, #8a6a30));
-        border: none; box-shadow: 0 4px 12px rgba(0,0,0,.6);
-      }
-      .sound-panel {
-        position: fixed; bottom: 62px; left: 16px; z-index: 40; width: 250px; max-width: 90vw;
-        padding: 14px; border-radius: 12px; border: 1px solid var(--accent-brass-dark, #8a6a30);
-        background: radial-gradient(circle at top, #2a2118 0, #14100b 70%);
-        box-shadow: 0 0 30px rgba(0,0,0,.85);
-      }
-      .sound-panel.hidden { display: none; }
-      .snd-row { display: flex; justify-content: space-between; align-items: center; font-family: "Space Mono", monospace; font-size: .78rem; color: var(--text-main, #f4e5c1); margin: 10px 0 4px; }
-      .snd-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent-emerald, #2dcf8a); cursor: pointer; }
-      .sound-panel input[type=range] { width: 100%; accent-color: var(--accent-brass, #c29b4b); }
-    </style>
+    <link rel="stylesheet" href="corridor-scene.css" />
   </head>
   <body>
     <div class="dedale-shell">
       <header class="dedale-header">
-        <div class="dedale-title">Le Couloir des Dédales Temporels</div>
+        <div>
+          <div class="dedale-kicker">Agence S.T.E.A.M. · Secteur de transit</div>
+          <div class="dedale-title">Le Couloir des Dédales Temporels</div>
+        </div>
         <div class="dedale-header-right">
-          <div class="dedale-subtitle">Section S.T.E.A.M. – Accès restreint</div>
+          <div class="dedale-subtitle">Grand mécanisme · Accès restreint</div>
           <div class="frag-hud" id="fragHud" title="Fragments du Sceau Temporel"></div>
-          <div class="header-lights">
+          <div class="header-lights" aria-hidden="true">
             <span class="led led-green"></span>
             <span class="led led-amber"></span>
             <span class="led led-red"></span>
@@ -111,276 +33,208 @@
       </header>
 
       <main class="dedale-main">
-        <!-- Partie gauche : scène engrenage -->
-        <section class="hallway">
-          <div class="hallway-perspective"></div>
-          <div class="hallway-floor"></div>
+        <section class="hallway" aria-label="Exploration du dédale">
+          <div class="hallway-perspective" aria-hidden="true"></div>
+          <div class="hallway-floor" aria-hidden="true"></div>
 
           <nav class="look-nav" id="lookNav" aria-label="Direction du regard">
-            <button type="button" class="look-btn active" data-view="devant">👁 Devant</button>
-            <button type="button" class="look-btn" data-view="sol">⬇ Sol</button>
-            <button type="button" class="look-btn" data-view="plafond">⬆ Plafond</button>
-            <button type="button" class="look-btn" data-view="derriere">↩ Derrière</button>
+            <button type="button" class="look-btn active" data-view="devant">Devant</button>
+            <button type="button" class="look-btn" data-view="sol">Sol</button>
+            <button type="button" class="look-btn" data-view="plafond">Plafond</button>
+            <button type="button" class="look-btn" data-view="derriere">Derrière</button>
           </nav>
 
-          <!-- Vue Devant : Grand Mécanisme d'Engrenage -->
           <div class="hallway-content view-panel active" id="viewDevant" data-view="devant">
             <div class="gear-scene" id="gearScene">
+              <div class="gear-ambient" aria-hidden="true">
+                <span class="gear-ambient__arc gear-ambient__arc--one"></span>
+                <span class="gear-ambient__arc gear-ambient__arc--two"></span>
+                <span class="gear-ambient__arc gear-ambient__arc--three"></span>
+              </div>
 
-              <!-- Engrenage décoratif de fond (rotation lente, non-interactif) -->
               <div class="gear-bg-wrap" aria-hidden="true">
                 <svg class="gear-bg-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
                   <defs>
-                    <radialGradient id="gearGrad" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%"   stop-color="#b8863c"/>
-                      <stop offset="40%"  stop-color="#7a5028"/>
-                      <stop offset="100%" stop-color="#2a1608"/>
+                    <radialGradient id="gearGrad" cx="42%" cy="35%" r="64%">
+                      <stop offset="0%" stop-color="#d6ad60" />
+                      <stop offset="34%" stop-color="#805526" />
+                      <stop offset="72%" stop-color="#321b0d" />
+                      <stop offset="100%" stop-color="#100806" />
                     </radialGradient>
-                    <radialGradient id="hubGrad" cx="40%" cy="35%" r="60%">
-                      <stop offset="0%"   stop-color="#d4a84e"/>
-                      <stop offset="100%" stop-color="#3a2010"/>
+                    <radialGradient id="hubGrad" cx="38%" cy="32%" r="68%">
+                      <stop offset="0%" stop-color="#edcb78" />
+                      <stop offset="42%" stop-color="#795028" />
+                      <stop offset="100%" stop-color="#211109" />
                     </radialGradient>
-                    <filter id="gearGlow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="4" result="blur"/>
-                      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    <filter id="gearGlow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
                     </filter>
                   </defs>
 
                   <g class="gear-bg-rotate" filter="url(#gearGlow)">
-                    <!-- Corps principal -->
-                    <circle cx="200" cy="200" r="170" fill="url(#gearGrad)" stroke="#c8a04e" stroke-width="3" opacity="0.9"/>
-
-                    <!-- 16 dents réparties uniformément -->
-                    <g fill="#9a7030" stroke="#c8a04e" stroke-width="1.2">
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(0   200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(22.5 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(45  200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(67.5 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(90  200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(112.5 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(135 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(157.5 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(180 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(202.5 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(225 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(247.5 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(270 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(292.5 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(315 200 200)"/>
-                      <rect x="193" y="14"  width="14" height="28" rx="3" transform="rotate(337.5 200 200)"/>
+                    <circle cx="200" cy="200" r="170" fill="url(#gearGrad)" stroke="#c8a04e" stroke-width="3" opacity="0.92" />
+                    <g fill="#8d642d" stroke="#d4b267" stroke-width="1.2">
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(0 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(22.5 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(45 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(67.5 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(90 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(112.5 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(135 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(157.5 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(180 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(202.5 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(225 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(247.5 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(270 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(292.5 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(315 200 200)" />
+                      <rect x="193" y="12" width="14" height="32" rx="3" transform="rotate(337.5 200 200)" />
                     </g>
-
-                    <!-- Anneaux décoratifs concentriques -->
-                    <circle cx="200" cy="200" r="150" fill="none" stroke="#c8a04e" stroke-width="1.5" opacity="0.55"/>
-                    <circle cx="200" cy="200" r="132" fill="none" stroke="#7a5028" stroke-width="1"   opacity="0.4"/>
-                    <circle cx="200" cy="200" r="108" fill="none" stroke="#c8a04e" stroke-width="0.8" opacity="0.3"/>
-
-                    <!-- 8 rivets sur l’anneau principal -->
-                    <circle cx="200" cy="52"  r="5" fill="#d4a84e" stroke="#7a5028" stroke-width="1"/>
-                    <circle cx="320" cy="80"  r="5" fill="#d4a84e" stroke="#7a5028" stroke-width="1"/>
-                    <circle cx="348" cy="200" r="5" fill="#d4a84e" stroke="#7a5028" stroke-width="1"/>
-                    <circle cx="320" cy="320" r="5" fill="#d4a84e" stroke="#7a5028" stroke-width="1"/>
-                    <circle cx="200" cy="348" r="5" fill="#d4a84e" stroke="#7a5028" stroke-width="1"/>
-                    <circle cx="80"  cy="320" r="5" fill="#d4a84e" stroke="#7a5028" stroke-width="1"/>
-                    <circle cx="52"  cy="200" r="5" fill="#d4a84e" stroke="#7a5028" stroke-width="1"/>
-                    <circle cx="80"  cy="80"  r="5" fill="#d4a84e" stroke="#7a5028" stroke-width="1"/>
-
-                    <!-- Rayons du moyeu -->
-                    <line x1="200" y1="120" x2="200" y2="280" stroke="#9a7030" stroke-width="2.5" opacity="0.5"/>
-                    <line x1="120" y1="200" x2="280" y2="200" stroke="#9a7030" stroke-width="2.5" opacity="0.5"/>
-                    <line x1="147" y1="147" x2="253" y2="253" stroke="#9a7030" stroke-width="1.8" opacity="0.38"/>
-                    <line x1="253" y1="147" x2="147" y2="253" stroke="#9a7030" stroke-width="1.8" opacity="0.38"/>
-
-                    <!-- Moyeu central -->
-                    <circle cx="200" cy="200" r="74" fill="url(#hubGrad)" stroke="#c8a04e" stroke-width="2.5"/>
-                    <circle cx="200" cy="200" r="54" fill="#100c08" stroke="#7a5028" stroke-width="1.5"/>
-                    <circle cx="200" cy="200" r="36" fill="none"  stroke="#c8a04e" stroke-width="1" opacity="0.55"/>
-                    <circle cx="200" cy="200" r="18" fill="#06040a" stroke="#9a7030" stroke-width="1"/>
+                    <circle cx="200" cy="200" r="148" fill="none" stroke="#d4b267" stroke-width="1.5" opacity="0.48" />
+                    <circle cx="200" cy="200" r="128" fill="none" stroke="#4d2e16" stroke-width="6" opacity="0.8" />
+                    <circle cx="200" cy="200" r="105" fill="none" stroke="#c8a04e" stroke-width="1" opacity="0.38" />
+                    <g fill="#e0bc6d" stroke="#68411e" stroke-width="1.4">
+                      <circle cx="200" cy="52" r="5" />
+                      <circle cx="305" cy="95" r="5" />
+                      <circle cx="348" cy="200" r="5" />
+                      <circle cx="305" cy="305" r="5" />
+                      <circle cx="200" cy="348" r="5" />
+                      <circle cx="95" cy="305" r="5" />
+                      <circle cx="52" cy="200" r="5" />
+                      <circle cx="95" cy="95" r="5" />
+                    </g>
+                    <path d="M200 112V288M112 200H288M138 138L262 262M262 138L138 262" stroke="#8d642d" stroke-width="3" opacity="0.48" />
+                    <circle cx="200" cy="200" r="74" fill="url(#hubGrad)" stroke="#d4b267" stroke-width="2.5" />
+                    <circle cx="200" cy="200" r="52" fill="#090609" stroke="#6e4722" stroke-width="2" />
+                    <circle cx="200" cy="200" r="34" fill="none" stroke="#c8a04e" stroke-width="1" opacity="0.62" />
+                    <circle cx="200" cy="200" r="14" fill="#020203" stroke="#8d642d" stroke-width="1.2" />
                   </g>
-
-                  <!-- Halo pulsant sur le moyeu (animé via CSS, hors du groupe rotatif) -->
-                  <circle cx="200" cy="200" r="62" fill="none" stroke="rgba(200,160,78,0.35)" stroke-width="10" class="gear-hub-pulse"/>
+                  <circle cx="200" cy="200" r="62" fill="none" stroke="rgba(200,160,78,0.28)" stroke-width="10" class="gear-hub-pulse" />
                 </svg>
               </div>
 
-              <!-- Zone des portes : position absolute, enfants positionnés en cercle par JS -->
-              <div class="door-zone" id="doorZone">
-                <!-- Portes générées dynamiquement par buildDoors() -->
+              <div class="gear-centerplate" aria-hidden="true">
+                <span class="gear-centerplate__eyebrow">Sélecteur orbital</span>
+                <strong id="gearSelectedName">Initialisation…</strong>
+                <span id="gearSelectedMeta">Synchronisation des portes</span>
               </div>
 
-              <!-- Halo projecteur tournant -->
+              <div class="door-zone" id="doorZone" aria-label="Portes du dédale"></div>
               <div class="gear-spotlight" aria-hidden="true"></div>
+              <div class="gear-smoke gear-smoke--left" aria-hidden="true"></div>
+              <div class="gear-smoke gear-smoke--right" aria-hidden="true"></div>
             </div>
 
             <div class="doors-hint">
-              Cliquez sur une porte pour la sélectionner. Chaque porte est un module fixé sur le Grand Mécanisme Temporel.
+              Faites tourner le mécanisme avec les flèches, la molette ou un glissement. Cliquez sur une porte pour consulter son dossier.
             </div>
           </div>
 
-          <!-- Vue Sol : plancher métallique en perspective -->
           <div class="view-panel scene-sol" id="viewSol" data-view="sol">
-            <div class="floor-perspective">
-              <div class="floor-plank"></div>
-              <div class="floor-plank"></div>
-              <div class="floor-plank"></div>
-              <div class="floor-plank"></div>
-              <div class="floor-plank"></div>
+            <div class="floor-perspective" aria-hidden="true">
+              <div class="floor-plank"></div><div class="floor-plank"></div><div class="floor-plank"></div><div class="floor-plank"></div><div class="floor-plank"></div>
               <div class="floor-grate">
-                <div class="floor-grate-line"></div>
-                <div class="floor-grate-line"></div>
-                <div class="floor-grate-line"></div>
-                <div class="steam-wisp"></div>
-                <div class="steam-wisp steam-wisp-2"></div>
+                <div class="floor-grate-line"></div><div class="floor-grate-line"></div><div class="floor-grate-line"></div>
+                <div class="steam-wisp"></div><div class="steam-wisp steam-wisp-2"></div>
               </div>
             </div>
             <div class="scene-caption">Le plancher de cuivre vibre doucement sous vos pieds.</div>
           </div>
 
-          <!-- Vue Plafond : tuyauterie et rouages suspendus -->
           <div class="view-panel scene-plafond" id="viewPlafond" data-view="plafond">
-            <div class="ceiling-pipes">
-              <div class="pipe pipe-h"></div>
-              <div class="pipe pipe-h pipe-h2"></div>
-              <div class="pipe pipe-v"></div>
-              <div class="pipe pipe-v pipe-v2"></div>
-              <svg class="ceiling-gear" viewBox="0 0 100 100" aria-hidden="true">
-                <path fill="currentColor" d="M50 8l5 10a35 35 0 0 1 8 3l11-3 7 7-3 11a35 35 0 0 1 3 8l10 5v10l-10 5a35 35 0 0 1-3 8l3 11-7 7-11-3a35 35 0 0 1-8 3l-5 10H40l-5-10a35 35 0 0 1-8-3l-11 3-7-7 3-11a35 35 0 0 1-3-8L-2 58V48l10-5a35 35 0 0 1 3-8L8 24l7-7 11 3a35 35 0 0 1 8-3l5-10z" transform="translate(5 5) scale(0.9)"/>
-                <circle cx="50" cy="50" r="14" fill="#0c0805"/>
+            <div class="ceiling-pipes" aria-hidden="true">
+              <div class="pipe pipe-h"></div><div class="pipe pipe-h pipe-h2"></div><div class="pipe pipe-v"></div><div class="pipe pipe-v pipe-v2"></div>
+              <svg class="ceiling-gear" viewBox="0 0 100 100">
+                <path fill="currentColor" d="M50 8l5 10a35 35 0 0 1 8 3l11-3 7 7-3 11a35 35 0 0 1 3 8l10 5v10l-10 5a35 35 0 0 1-3 8l3 11-7 7-11-3a35 35 0 0 1-8 3l-5 10H40l-5-10a35 35 0 0 1-8-3l-11 3-7-7 3-11a35 35 0 0 1-3-8L-2 58V48l10-5a35 35 0 0 1 3-8L8 24l7-7 11 3a35 35 0 0 1 8-3l5-10z" transform="translate(5 5) scale(.9)" />
+                <circle cx="50" cy="50" r="14" fill="#0c0805" />
               </svg>
               <div class="ceiling-lamp"></div>
             </div>
             <div class="scene-caption">Des tuyaux de cuivre serpentent au-dessus de vous, chargés de vapeur.</div>
           </div>
 
-          <!-- Vue Derrière : le couloir déjà parcouru -->
           <div class="view-panel scene-derriere" id="viewDerriere" data-view="derriere">
-            <div class="behind-corridor">
-              <div class="behind-arch"></div>
-              <div class="behind-arch behind-arch-2"></div>
-              <div class="behind-gate"></div>
+            <div class="behind-corridor" aria-hidden="true">
+              <div class="behind-arch"></div><div class="behind-arch behind-arch-2"></div><div class="behind-gate"></div>
             </div>
             <div class="scene-caption">Derrière vous, le couloir se referme sur lui-même. Aucune sortie visible ici.</div>
           </div>
         </section>
 
-        <!-- Partie droite : riddle panel + terminal -->
         <aside class="riddle-panel">
-          <!-- Panneau d'accueil par défaut -->
           <div class="riddle-card" id="riddleCard">
+            <div class="riddle-card__label">Dossier actif</div>
             <h2 id="riddleTitle">Bienvenue dans le Dédale</h2>
             <div class="riddle-text" id="riddleText">
               Vous venez de pénétrer dans l'un des couloirs perdus de l'agence S.T.E.A.M.
 
-              Ici, chaque porte est une anomalie temporelle ou l'accès à une salle de l'agence :
-              certaines sont encore utilisées par les agents, d'autres ont été condamnées,
-              parfois pour de bonnes raisons.
+              Chaque porte correspond à une anomalie temporelle ou à une salle de l'agence. Choisissez un module sur le Grand Mécanisme pour consulter son histoire et son protocole d'accès.
 
-              Choisissez une porte sur le Grand Mécanisme pour consulter son dossier d'énigme :
-              son histoire, son usage et le code qui permet de l'activer (si elle n'est pas verrouillée).
-
-              Ne vous perdez pas dans ces dédales : certaines portes mènent à des outils
-              essentiels, d'autres à des expériences oubliées… et l'une d'elles vous
-              ramènera vers la sortie de l'agence.
+              Certaines portes mènent à des outils essentiels, d'autres à des expériences oubliées… et l'une d'elles vous ramènera vers la sortie de l'agence.
             </div>
           </div>
 
           <div class="terminal-card">
             <div class="terminal-title">Console d'accès</div>
-            <div class="terminal-label">
-              Selon la porte sélectionnée, un code peut être requis, ou un simple passage.
-            </div>
-
-            <!-- Mode code : input + bouton -->
+            <div class="terminal-label">Selon la porte sélectionnée, un code peut être requis ou un simple passage autorisé.</div>
             <div class="code-input-row" id="codeMode">
-              <input
-                type="text"
-                id="codeInput"
-                placeholder="Choisissez une porte, puis entrez le nom de la « porte-temporelle »..."
-                autocomplete="off"
-              />
+              <input type="text" id="codeInput" placeholder="Choisissez une porte, puis entrez son code…" autocomplete="off" />
               <button id="submitCode">Valider</button>
             </div>
-
-            <!-- Mode entrée directe (portes sans code) -->
             <div class="code-enter-row hidden" id="enterMode">
               <button id="enterDoorBtn">Entrer dans cette porte</button>
             </div>
-
-            <div id="terminalOutput" class="terminal-output"></div>
+            <div id="terminalOutput" class="terminal-output" aria-live="polite"></div>
             <div class="hint-line">
-              Astuce : les codes ne s'inventent pas — ils se <em>trouvent</em>.
-              Regardez autour de vous avec <strong>Devant · Sol · Plafond · Derrière</strong> :
-              des agents ont laissé des notes oubliées, pas toujours devant vos yeux.
-              Ouvrez le <strong>Carnet de bord</strong> pour les reconsulter.
+              Les codes ne s'inventent pas : ils se trouvent. Explorez <strong>Devant · Sol · Plafond · Derrière</strong> puis consultez le <strong>Carnet de bord</strong>.
             </div>
           </div>
         </aside>
       </main>
 
       <footer class="dedale-footer">
-        <span>S.T.E.A.M. – Couloir des Dédales Temporels</span>
-        <span>Accès aux portes uniquement via ce dédale</span>
-        <div class="footer-lights">
-          <span class="led led-green"></span>
-          <span class="led led-amber"></span>
-          <span class="led led-red"></span>
-        </div>
+        <span>S.T.E.A.M. · Couloir des Dédales Temporels</span>
+        <span>Transit inter-modules sécurisé</span>
+        <div class="footer-lights" aria-hidden="true"><span class="led led-green"></span><span class="led led-amber"></span><span class="led led-red"></span></div>
       </footer>
     </div>
 
-    <!-- Carnet de bord (inventaire local des indices trouvés) -->
-    <button id="invToggle" class="inv-toggle" title="Carnet de bord">
-      🗒 Carnet <span class="inv-badge" id="invBadge">0</span>
-    </button>
+    <button id="invToggle" class="inv-toggle" title="Carnet de bord">Carnet <span class="inv-badge" id="invBadge">0</span></button>
     <aside id="invPanel" class="inv-panel hidden">
-      <div class="inv-head">
-        <span>Carnet de bord</span>
-        <button id="invClose" class="inv-x" aria-label="Fermer">×</button>
-      </div>
+      <div class="inv-head"><span>Carnet de bord</span><button id="invClose" class="inv-x" aria-label="Fermer">×</button></div>
       <div class="inv-sub">Notes et indices ramassés dans le couloir.</div>
       <div class="inv-list" id="invList"></div>
     </aside>
 
-    <!-- Réglages du son -->
-    <button id="soundToggle" class="sound-toggle" title="Réglages du son">🔈</button>
+    <button id="soundToggle" class="sound-toggle" title="Réglages du son" aria-label="Réglages du son">◖</button>
     <aside id="soundPanel" class="sound-panel hidden">
-      <div class="inv-head">
-        <span>Son du dédale</span>
-        <button id="soundClose" class="inv-x" aria-label="Fermer">×</button>
-      </div>
+      <div class="inv-head"><span>Son du dédale</span><button id="soundClose" class="inv-x" aria-label="Fermer">×</button></div>
       <div class="inv-sub">L'ambiance est coupée par défaut.</div>
-      <div class="snd-row">
-        <label for="sndAmbient">Ambiance</label>
-        <input type="checkbox" id="sndAmbient" />
-      </div>
+      <div class="snd-row"><label for="sndAmbient">Ambiance</label><input type="checkbox" id="sndAmbient" /></div>
       <input type="range" id="sndAmbientVol" min="0" max="100" value="30" />
-      <div class="snd-row">
-        <label for="sndSfx">Effets sonores</label>
-        <input type="checkbox" id="sndSfx" checked />
-      </div>
+      <div class="snd-row"><label for="sndSfx">Effets sonores</label><input type="checkbox" id="sndSfx" checked /></div>
       <input type="range" id="sndSfxVol" min="0" max="100" value="15" />
     </aside>
 
-    <!-- Overlay d'un élément trouvé -->
     <div id="itemOverlay" class="note-overlay hidden">
       <div class="note-card">
-        <h3 id="itemTitle"></h3>
-        <div class="note-text" id="itemText"></div>
-        <div class="item-reveal" id="itemReveal"></div>
+        <h3 id="itemTitle"></h3><div class="note-text" id="itemText"></div><div class="item-reveal" id="itemReveal"></div>
         <button class="note-close" id="itemClose">Ranger dans le carnet</button>
       </div>
     </div>
 
-    <!-- Overlay de la note en grand -->
     <div id="noteOverlay" class="note-overlay hidden">
       <div class="note-card">
-        <h3 id="noteTitle">Note épinglée sur la porte</h3>
-        <div class="note-text" id="noteText"></div>
+        <h3 id="noteTitle">Note épinglée sur la porte</h3><div class="note-text" id="noteText"></div>
         <button class="note-close" id="noteClose">Fermer</button>
       </div>
     </div>
 
-    <!-- Audio : fond + effets -->
     <audio id="bgMusic" src="sounds/bg/dedale_bg.mp3" loop class="audio-hidden"></audio>
     <audio id="sfxSuccess" src="sounds/ui/success.wav" class="audio-hidden"></audio>
     <audio id="sfxError" src="sounds/ui/error.wav" class="audio-hidden"></audio>
@@ -394,5 +248,6 @@
     <script src="js/clues.js"></script>
     <script src="config/config.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/gear-scene.js"></script>
   </body>
 </html>
