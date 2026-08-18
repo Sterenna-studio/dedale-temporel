@@ -1,5 +1,8 @@
-// Grand mécanisme orbital — couche de présentation du couloir.
-// La logique d'accès reste dans main.js ; ce module ne gère que la navigation visuelle.
+// Grand mécanisme orbital v7 — désormais dans la vue Sol.
+// Le sélecteur orbital fonctionne indépendamment de la vue active.
+// La centerplate est maintenant un <button> interactif : cliquer dessus
+// active la porte sélectionnée (même comportement que cliquer sur la porte
+// dans viewDevant).
 
 (function () {
   "use strict";
@@ -13,41 +16,17 @@
 
   const nameEl = document.getElementById("gearSelectedName");
   const metaEl = document.getElementById("gearSelectedMeta");
+  const centerplate = document.getElementById("gearCenterplate");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const mobileQuery = window.matchMedia("(max-width: 620px)");
 
-  let activeIndex = Math.max(0, doors.findIndex((door) => door.classList.contains("selected")));
+  let activeIndex = Math.max(0, doors.findIndex((d) => d.classList.contains("selected")));
   let pointerStartX = 0;
-  let pointerStartY = 0;
   let pointerId = null;
   let wheelLocked = false;
 
-  const desktopSlots = {
-    0:  { x: 50, y: 54, scale: 0.78, opacity: 1,    blur: 0,   rotate: 0,   z: 24, light: 1.08 },
-    1:  { x: 76, y: 55, scale: 0.57, opacity: 0.88, blur: 0,   rotate: 2.5, z: 18, light: 0.88 },
-    2:  { x: 91, y: 40, scale: 0.38, opacity: 0.58, blur: 0.5, rotate: 5,   z: 11, light: 0.7 },
-    3:  { x: 77, y: 19, scale: 0.27, opacity: 0.28, blur: 1.2, rotate: 7,   z: 6,  light: 0.58 },
-    "-1": { x: 24, y: 55, scale: 0.57, opacity: 0.88, blur: 0,   rotate: -2.5, z: 18, light: 0.88 },
-    "-2": { x: 9,  y: 40, scale: 0.38, opacity: 0.58, blur: 0.5, rotate: -5,   z: 11, light: 0.7 },
-    "-3": { x: 23, y: 19, scale: 0.27, opacity: 0.28, blur: 1.2, rotate: -7,   z: 6,  light: 0.58 },
-  };
-
-  const mobileSlots = {
-    0:  { x: 50, y: 56, scale: 0.64, opacity: 1,    blur: 0,   rotate: 0, z: 24, light: 1.05 },
-    1:  { x: 86, y: 41, scale: 0.35, opacity: 0.48, blur: 0.7, rotate: 4, z: 11, light: 0.72 },
-    "-1": { x: 14, y: 41, scale: 0.35, opacity: 0.48, blur: 0.7, rotate: -4, z: 11, light: 0.72 },
-  };
-
+  // ── Helpers ────────────────────────────────────────────────────
   function normalizeIndex(index) {
     return (index + doors.length) % doors.length;
-  }
-
-  function relativeOffset(index) {
-    let offset = index - activeIndex;
-    const half = doors.length / 2;
-    if (offset > half) offset -= doors.length;
-    if (offset < -half) offset += doors.length;
-    return offset;
   }
 
   function getDoorConfig(door) {
@@ -56,77 +35,57 @@
 
   function typeLabel(config) {
     if (!config) return "Module temporel";
-    if (config.type === "room") return "Salle de l'agence";
-    if (config.type === "exit") return "Sortie de l'agence";
+    if (config.type === "room")   return "Salle de l'agence";
+    if (config.type === "exit")   return "Sortie de l'agence";
     if (config.type === "locked") return "Accès condamné";
     return "Porte temporelle";
   }
 
-  function setDoorSlot(door, slot, hidden) {
-    door.classList.toggle("is-orbit-hidden", hidden);
-    door.setAttribute("aria-hidden", hidden ? "true" : "false");
-    door.tabIndex = hidden ? -1 : 0;
-
-    if (hidden) return;
-
-    door.style.setProperty("--door-x", slot.x + "%");
-    door.style.setProperty("--door-y", slot.y + "%");
-    door.style.setProperty("--door-scale", slot.scale);
-    door.style.setProperty("--door-opacity", slot.opacity);
-    door.style.setProperty("--door-blur", slot.blur + "px");
-    door.style.setProperty("--door-rotate", slot.rotate + "deg");
-    door.style.setProperty("--door-z", slot.z);
-    door.style.setProperty("--door-light", slot.light);
-  }
-
+  // ── Rendu ──────────────────────────────────────────────────────
   function render() {
-    const slots = mobileQuery.matches ? mobileSlots : desktopSlots;
-
     doors.forEach((door, index) => {
-      const offset = relativeOffset(index);
-      const slot = slots[offset];
-      const active = offset === 0;
-
-      door.classList.toggle("is-orbit-active", active);
-      setDoorSlot(door, slot || slots[0], !slot);
-      door.setAttribute("aria-label", (getDoorConfig(door)?.name || "Porte") + (active ? ", sélectionnée" : ""));
+      const active = index === activeIndex;
+      door.classList.toggle("selected", active);
+      door.setAttribute("aria-label",
+        (getDoorConfig(door)?.name || "Porte") + (active ? ", sélectionnée" : "")
+      );
     });
 
-    const currentDoor = doors[activeIndex];
-    const currentConfig = getDoorConfig(currentDoor);
-
+    const currentConfig = getDoorConfig(doors[activeIndex]);
     if (nameEl) nameEl.textContent = currentConfig?.name || "Module inconnu";
     if (metaEl) metaEl.textContent = typeLabel(currentConfig);
 
     const counterCurrent = controls.querySelector("[data-counter-current]");
     if (counterCurrent) counterCurrent.textContent = String(activeIndex + 1).padStart(2, "0");
 
-    scene.style.setProperty("--orbit-progress", activeIndex / Math.max(1, doors.length - 1));
+    // Sync scroll du door-zone vers la porte active
+    const activeDoor = doors[activeIndex];
+    if (activeDoor && zone) {
+      const doorLeft = activeDoor.offsetLeft;
+      const doorWidth = activeDoor.offsetWidth;
+      const zoneWidth = zone.offsetWidth;
+      zone.scrollTo({ left: doorLeft - zoneWidth / 2 + doorWidth / 2, behavior: "smooth" });
+    }
   }
 
-  function selectActiveDoor(options) {
-    const opts = options || {};
+  function activateCurrentDoor() {
     const current = doors[activeIndex];
-    if (!current) return;
-
-    if (opts.dispatch !== false) current.click();
-    if (opts.focus) current.focus({ preventScroll: true });
+    if (current) current.click();
   }
 
-  function move(delta, options) {
-    const opts = options || {};
+  function move(delta) {
     activeIndex = normalizeIndex(activeIndex + delta);
     render();
-    selectActiveDoor({ dispatch: opts.dispatch !== false, focus: !!opts.focus });
+    activateCurrentDoor();
   }
 
-  function focusDoor(index, options) {
-    const opts = options || {};
+  function focusDoor(index) {
     activeIndex = normalizeIndex(index);
     render();
-    selectActiveDoor({ dispatch: opts.dispatch !== false, focus: !!opts.focus });
+    activateCurrentDoor();
   }
 
+  // ── Contrôles ──────────────────────────────────────────────────
   const controls = document.createElement("div");
   controls.className = "gear-controls";
   controls.setAttribute("aria-label", "Navigation entre les portes");
@@ -139,91 +98,79 @@
   `;
   scene.appendChild(controls);
 
-  controls.querySelector("[data-gear-prev]").addEventListener("click", (event) => {
-    event.stopPropagation();
-    move(-1, { focus: true });
+  controls.querySelector("[data-gear-prev]").addEventListener("click", (e) => {
+    e.stopPropagation();
+    move(-1);
+  });
+  controls.querySelector("[data-gear-next]").addEventListener("click", (e) => {
+    e.stopPropagation();
+    move(1);
   });
 
-  controls.querySelector("[data-gear-next]").addEventListener("click", (event) => {
-    event.stopPropagation();
-    move(1, { focus: true });
-  });
+  // Clic sur la centerplate = activer la porte courante
+  if (centerplate) {
+    centerplate.addEventListener("click", (e) => {
+      e.stopPropagation();
+      activateCurrentDoor();
+    });
+    centerplate.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        activateCurrentDoor();
+      }
+    });
+  }
 
+  // Clic sur les portes dans door-zone : sync l'index
   doors.forEach((door, index) => {
     door.setAttribute("role", "button");
     door.addEventListener("click", () => {
-      if (index !== activeIndex) focusDoor(index, { dispatch: false });
+      if (index !== activeIndex) { activeIndex = index; render(); }
     });
-    door.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        door.click();
-      }
+    door.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); door.click(); }
     });
   });
 
+  // Clavier sur la gear-scene
   scene.tabIndex = 0;
-  scene.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      move(-1, { focus: true });
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      move(1, { focus: true });
-    } else if (event.key === "Home") {
-      event.preventDefault();
-      focusDoor(0, { focus: true });
-    } else if (event.key === "End") {
-      event.preventDefault();
-      focusDoor(doors.length - 1, { focus: true });
-    }
+  scene.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft")  { e.preventDefault(); move(-1); }
+    if (e.key === "ArrowRight") { e.preventDefault(); move(1); }
+    if (e.key === "Home") { e.preventDefault(); focusDoor(0); }
+    if (e.key === "End")  { e.preventDefault(); focusDoor(doors.length - 1); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activateCurrentDoor(); }
   });
 
-  scene.addEventListener("wheel", (event) => {
-    if (wheelLocked || Math.abs(event.deltaY) < 8) return;
-    event.preventDefault();
+  // Molette
+  scene.addEventListener("wheel", (e) => {
+    if (wheelLocked || Math.abs(e.deltaY) < 8) return;
+    e.preventDefault();
     wheelLocked = true;
-    move(event.deltaY > 0 ? 1 : -1);
+    move(e.deltaY > 0 ? 1 : -1);
     window.setTimeout(() => { wheelLocked = false; }, reducedMotion.matches ? 40 : 420);
   }, { passive: false });
 
-  scene.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0 || event.target.closest("button, input, .door-note")) return;
-    pointerId = event.pointerId;
-    pointerStartX = event.clientX;
-    pointerStartY = event.clientY;
+  // Drag / swipe
+  scene.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0 || e.target.closest("button, input")) return;
+    pointerId = e.pointerId;
+    pointerStartX = e.clientX;
     scene.classList.add("is-dragging");
     scene.setPointerCapture(pointerId);
   });
-
-  scene.addEventListener("pointerup", (event) => {
-    if (pointerId !== event.pointerId) return;
-    const deltaX = event.clientX - pointerStartX;
-    const deltaY = event.clientY - pointerStartY;
+  scene.addEventListener("pointerup", (e) => {
+    if (pointerId !== e.pointerId) return;
+    const deltaX = e.clientX - pointerStartX;
     scene.classList.remove("is-dragging");
-
-    if (Math.abs(deltaX) > 42 && Math.abs(deltaX) > Math.abs(deltaY)) {
-      move(deltaX < 0 ? 1 : -1);
-    }
-
+    if (Math.abs(deltaX) > 42) move(deltaX < 0 ? 1 : -1);
     if (scene.hasPointerCapture(pointerId)) scene.releasePointerCapture(pointerId);
     pointerId = null;
   });
-
   scene.addEventListener("pointercancel", () => {
     scene.classList.remove("is-dragging");
     pointerId = null;
   });
-
-  function handleMediaChange() {
-    render();
-  }
-
-  if (typeof mobileQuery.addEventListener === "function") {
-    mobileQuery.addEventListener("change", handleMediaChange);
-  } else {
-    mobileQuery.addListener(handleMediaChange);
-  }
 
   render();
   requestAnimationFrame(() => scene.classList.add("is-ready"));

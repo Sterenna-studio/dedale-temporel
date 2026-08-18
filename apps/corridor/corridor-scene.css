@@ -1,12 +1,14 @@
-/* Couloir v6 — grand mécanisme orbital
-   Complète la refonte visuelle sans modifier les énigmes ni leur logique. */
+/* Couloir v7 — Grand Mécanisme dans la vue Sol
+   L'engrenage orbital est désormais le plancher interactif.
+   La vue Devant revient à un couloir pur (door-zone scrollable). */
 
 :root {
   --panel-glass: rgba(12, 8, 7, 0.9);
   --panel-line: rgba(200, 160, 78, 0.36);
-  --gear-size: clamp(300px, 49vw, 590px);
+  --gear-size: clamp(280px, 46vw, 540px);
 }
 
+/* ─── Kicker & HUD fragments ─────────────────────────────────── */
 .dedale-kicker {
   margin-bottom: 2px;
   color: rgba(200, 160, 78, 0.62);
@@ -54,6 +56,7 @@
   letter-spacing: 0.08em;
 }
 
+/* ─── Indices (clues) ────────────────────────────────────────── */
 .hallway { position: relative; }
 
 .clue {
@@ -128,6 +131,7 @@
   font-size: 0.7rem;
 }
 
+/* ─── Boutons flottants (carnet + son) ───────────────────────── */
 .inv-toggle,
 .sound-toggle {
   position: fixed;
@@ -257,6 +261,7 @@
 .sound-panel input[type="range"] { width: 100%; accent-color: var(--accent-brass, #c29b4b); }
 .code-input-row.hidden { display: none; }
 
+/* ─── Layout principal ───────────────────────────────────────── */
 main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr); }
 .hallway { padding: 10px 14px 12px; }
 .riddle-panel { position: relative; z-index: 12; box-shadow: -18px 0 48px rgba(0, 0, 0, 0.38); }
@@ -270,53 +275,72 @@ main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr
 
 #viewDevant { min-height: 0; padding-top: 38px; }
 
+/* ─── VUE DEVANT — couloir pur ───────────────────────────────── */
+/* La door-zone dans viewDevant revient au comportement scrollable standard.
+   Les styles .time-door restent dans styles.css, pas de surcharge ici. */
+
+/* ─── VUE SOL — Grand Mécanisme Orbital ─────────────────────── */
+.scene-sol {
+  padding-top: 28px;
+  perspective: 900px;
+  perspective-origin: 50% -20%;
+}
+
 .gear-scene {
   position: relative;
   flex: 1;
-  min-height: 470px;
+  width: 100%;
+  max-width: 680px;
+  min-height: 420px;
   overflow: hidden;
-  border: 1px solid rgba(200, 160, 78, 0.18);
-  border-radius: 22px 22px 12px 12px;
+  border: 1px solid rgba(200, 160, 78, 0.22);
+  border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 52%, rgba(136, 80, 20, 0.17) 0 17%, transparent 42%),
-    linear-gradient(180deg, rgba(8, 5, 8, 0.18), rgba(0, 0, 0, 0.34));
+    radial-gradient(circle at 50% 50%, rgba(136, 80, 20, 0.22) 0 18%, transparent 50%),
+    linear-gradient(180deg, rgba(8, 5, 8, 0.12), rgba(0, 0, 0, 0.5));
   box-shadow:
-    inset 0 0 90px rgba(0, 0, 0, 0.76),
-    inset 0 0 0 1px rgba(255, 220, 145, 0.025),
-    0 18px 38px rgba(0, 0, 0, 0.4);
+    inset 0 0 90px rgba(0, 0, 0, 0.82),
+    inset 0 0 0 1px rgba(255, 220, 145, 0.03),
+    0 0 60px rgba(180, 120, 30, 0.18),
+    0 28px 56px rgba(0, 0, 0, 0.55);
   isolation: isolate;
-  perspective: 1200px;
+  /* Perspective sol : incliné vers le joueur */
+  transform: rotateX(52deg) scale(1.08);
+  transform-origin: 50% 60%;
   touch-action: pan-y;
   user-select: none;
+  /* Transition douce lors du changement de vue */
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
 }
 
-.gear-scene::before,
+/* Grille perspective embarquée dans l'engrenage */
+.gear-scene::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(90deg, rgba(200, 160, 78, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(200, 160, 78, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.5;
+  border-radius: 50%;
+}
+
+/* Fondu bas */
 .gear-scene::after {
   position: absolute;
-  z-index: -1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 28%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88), transparent);
   pointer-events: none;
   content: "";
 }
 
-.gear-scene::before {
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(200, 160, 78, 0.03) 1px, transparent 1px),
-    linear-gradient(rgba(200, 160, 78, 0.025) 1px, transparent 1px);
-  background-size: 54px 54px;
-  opacity: 0.44;
-  transform: perspective(500px) rotateX(58deg) scale(1.7) translateY(18%);
-  transform-origin: 50% 100%;
-}
-
-.gear-scene::after {
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 31%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.92), transparent);
-}
-
+/* ─── Engrenage SVG background ───────────────────────────────── */
 .gear-bg-wrap {
   position: absolute;
   top: 50%;
@@ -324,10 +348,10 @@ main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr
   z-index: 1;
   width: var(--gear-size);
   height: var(--gear-size);
-  opacity: 0.88;
-  filter: drop-shadow(0 30px 26px rgba(0, 0, 0, 0.8));
+  opacity: 0.92;
+  filter: drop-shadow(0 24px 22px rgba(0, 0, 0, 0.75));
   pointer-events: none;
-  transform: translate(-50%, -50%) rotateX(8deg);
+  transform: translate(-50%, -50%);
 }
 
 .gear-bg-svg { display: block; width: 100%; height: 100%; overflow: visible; }
@@ -336,166 +360,129 @@ main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr
 
 @keyframes grandGearTurn { to { transform: rotate(360deg); } }
 @keyframes hubPulse {
-  0%, 100% { opacity: 0.28; transform: scale(0.92); }
-  50% { opacity: 0.7; transform: scale(1.08); }
+  0%, 100% { opacity: 0.22; transform: scale(0.90); }
+  50% { opacity: 0.68; transform: scale(1.1); }
 }
 
+/* ─── Arcs orbitaux ──────────────────────────────────────────── */
 .gear-ambient { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .gear-ambient__arc {
   position: absolute;
   top: 50%;
   left: 50%;
-  border: 1px solid rgba(200, 160, 78, 0.14);
+  border: 1px solid rgba(200, 160, 78, 0.16);
   border-right-color: transparent;
-  border-bottom-color: rgba(45, 224, 152, 0.08);
+  border-bottom-color: rgba(45, 224, 152, 0.09);
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
-.gear-ambient__arc--one { width: calc(var(--gear-size) + 70px); height: calc(var(--gear-size) + 70px); animation: arcTurn 34s linear infinite; }
-.gear-ambient__arc--two { width: calc(var(--gear-size) + 135px); height: calc(var(--gear-size) + 135px); animation: arcTurnReverse 52s linear infinite; }
-.gear-ambient__arc--three { width: calc(var(--gear-size) + 205px); height: calc(var(--gear-size) + 205px); opacity: 0.42; animation: arcTurn 70s linear infinite; }
+.gear-ambient__arc--one { width: calc(var(--gear-size) + 60px); height: calc(var(--gear-size) + 60px); animation: arcTurn 34s linear infinite; }
+.gear-ambient__arc--two { width: calc(var(--gear-size) + 120px); height: calc(var(--gear-size) + 120px); animation: arcTurnReverse 52s linear infinite; }
+.gear-ambient__arc--three { width: calc(var(--gear-size) + 185px); height: calc(var(--gear-size) + 185px); opacity: 0.38; animation: arcTurn 70s linear infinite; }
 @keyframes arcTurn { to { transform: translate(-50%, -50%) rotate(360deg); } }
 @keyframes arcTurnReverse { to { transform: translate(-50%, -50%) rotate(-360deg); } }
 
+/* ─── Centerplate — écran interactif ────────────────────────── */
 .gear-centerplate {
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 3;
+  z-index: 10;
   display: flex;
-  width: clamp(132px, 19vw, 190px);
-  min-height: 86px;
+  width: clamp(120px, 17vw, 178px);
+  min-height: 80px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 4px;
-  padding: 12px 16px;
-  border: 1px solid rgba(200, 160, 78, 0.5);
+  gap: 5px;
+  padding: 14px 16px;
+  border: 1px solid rgba(200, 160, 78, 0.55);
   border-radius: 50%;
-  background: radial-gradient(circle at 42% 35%, rgba(69, 43, 20, 0.96), rgba(9, 6, 7, 0.98) 72%);
+  background: radial-gradient(circle at 42% 35%, rgba(69, 43, 20, 0.97), rgba(9, 6, 7, 0.99) 72%);
   box-shadow:
-    0 0 0 7px rgba(36, 20, 10, 0.84),
-    0 0 0 8px rgba(200, 160, 78, 0.18),
-    0 0 34px rgba(200, 160, 78, 0.22),
-    inset 0 0 22px rgba(0, 0, 0, 0.85);
-  pointer-events: none;
+    0 0 0 7px rgba(36, 20, 10, 0.88),
+    0 0 0 8px rgba(200, 160, 78, 0.22),
+    0 0 38px rgba(200, 160, 78, 0.28),
+    inset 0 0 22px rgba(0, 0, 0, 0.9);
+  /* Interactif */
+  cursor: pointer;
+  pointer-events: auto;
   text-align: center;
   transform: translate(-50%, -50%);
+  /* Annuler le rotateX du parent pour que le texte reste lisible */
+  /* (compensé visuellement — l'écran doit sembler plat dans le sol) */
+  transition:
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
+}
+
+.gear-centerplate:hover,
+.gear-centerplate:focus-visible {
+  border-color: var(--accent-brass, #c29b4b);
+  box-shadow:
+    0 0 0 7px rgba(36, 20, 10, 0.88),
+    0 0 0 9px rgba(200, 160, 78, 0.38),
+    0 0 54px rgba(200, 160, 78, 0.45),
+    inset 0 0 22px rgba(0, 0, 0, 0.9);
+  outline: none;
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.gear-centerplate:active {
+  transform: translate(-50%, -50%) scale(0.97);
 }
 
 .gear-centerplate__eyebrow {
-  color: rgba(200, 160, 78, 0.54);
-  font-size: 0.48rem;
+  color: rgba(200, 160, 78, 0.58);
+  font-size: 0.46rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  font-family: "Space Mono", monospace;
 }
 
 .gear-centerplate strong {
-  max-width: 160px;
+  max-width: 150px;
   overflow: hidden;
   color: var(--text-main);
   font-family: "Cinzel", serif;
-  font-size: clamp(0.62rem, 1vw, 0.82rem);
+  font-size: clamp(0.58rem, 0.9vw, 0.78rem);
   letter-spacing: 0.04em;
   text-overflow: ellipsis;
-  text-shadow: 0 0 10px rgba(200, 160, 78, 0.32);
+  text-shadow: 0 0 10px rgba(200, 160, 78, 0.36);
   white-space: nowrap;
 }
 
 .gear-centerplate > span:last-child {
   color: var(--accent-emerald);
-  font-size: 0.48rem;
+  font-size: 0.44rem;
   letter-spacing: 0.04em;
-  opacity: 0.75;
+  opacity: 0.78;
+  font-family: "Space Mono", monospace;
 }
 
-.gear-scene .door-zone {
+/* Label d'action au survol */
+.gear-centerplate::after {
+  content: "ACTIVER";
   position: absolute;
-  inset: 0;
-  z-index: 10;
-  display: block;
-  overflow: visible;
-  padding: 0;
-  cursor: grab;
-  opacity: 1;
-  scrollbar-width: none;
-  transition: opacity 0.25s ease;
-}
-.gear-scene .door-zone::-webkit-scrollbar { display: none; }
-.gear-scene:not(.is-ready) .door-zone { opacity: 0; }
-.gear-scene.is-dragging .door-zone { cursor: grabbing; }
-
-.gear-scene .time-door {
-  --door-x: 50%;
-  --door-y: 56%;
-  --door-scale: 0.72;
-  --door-opacity: 1;
-  --door-blur: 0px;
-  --door-rotate: 0deg;
-  position: absolute;
-  top: var(--door-y);
-  left: var(--door-x);
-  z-index: var(--door-z, 5);
-  flex: none;
-  margin: 0;
-  opacity: var(--door-opacity);
-  filter: blur(var(--door-blur)) brightness(var(--door-light, 1));
-  transform: translate(-50%, -50%) scale(var(--door-scale)) rotate(var(--door-rotate));
-  transform-origin: 50% 54%;
-  transition:
-    top 0.58s cubic-bezier(0.2, 0.78, 0.2, 1),
-    left 0.58s cubic-bezier(0.2, 0.78, 0.2, 1),
-    transform 0.58s cubic-bezier(0.2, 0.78, 0.2, 1),
-    opacity 0.42s ease,
-    filter 0.42s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s ease;
-  animation: none;
-  will-change: top, left, transform, opacity;
-}
-
-.gear-scene .time-door:hover,
-.gear-scene .time-door:focus-visible {
-  outline: none;
-  border-color: var(--accent-brass);
-  box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.98),
-    0 0 24px rgba(200, 160, 78, 0.55),
-    inset 0 0 24px rgba(0, 0, 0, 0.9);
-  transform: translate(-50%, -50%) scale(calc(var(--door-scale) * 1.035)) rotate(var(--door-rotate));
-}
-
-.gear-scene .time-door.is-orbit-active,
-.gear-scene .time-door.selected {
-  border-color: var(--accent-emerald);
-  box-shadow:
-    0 18px 52px rgba(0, 0, 0, 0.98),
-    0 0 24px var(--accent-emerald-glow),
-    0 0 54px rgba(200, 160, 78, 0.2),
-    inset 0 0 22px rgba(0, 0, 0, 0.9);
-}
-
-.gear-scene .time-door.is-orbit-hidden {
-  visibility: hidden;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Space Mono", monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  color: rgba(200, 160, 78, 0);
+  white-space: nowrap;
+  transition: color 0.22s ease;
   pointer-events: none;
 }
 
-.gear-scene .time-door:not(.is-orbit-active) .door-note { pointer-events: none; }
-.gear-scene .time-door.is-orbit-active .door-note { pointer-events: auto; }
-
-.gear-scene .time-door::after {
-  position: absolute;
-  right: 16px;
-  bottom: -26px;
-  left: 16px;
-  height: 24px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.78), transparent 70%);
-  content: "";
-  pointer-events: none;
-  transform: scaleY(0.45);
+.gear-centerplate:hover::after,
+.gear-centerplate:focus-visible::after {
+  color: rgba(200, 160, 78, 0.72);
 }
 
+/* ─── Contrôles orbitaux ────────────────────────────────────── */
 .gear-controls {
   position: absolute;
   right: 50%;
@@ -507,7 +494,7 @@ main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr
   padding: 5px 7px;
   border: 1px solid rgba(200, 160, 78, 0.32);
   border-radius: 999px;
-  background: rgba(7, 5, 6, 0.84);
+  background: rgba(7, 5, 6, 0.88);
   box-shadow: 0 7px 20px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(200, 160, 78, 0.04);
   backdrop-filter: blur(8px);
   transform: translateX(50%);
@@ -538,24 +525,7 @@ main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr
 }
 .gear-counter strong { color: var(--accent-emerald); font-size: 0.76rem; }
 
-.gear-spotlight {
-  position: absolute;
-  top: -28%;
-  left: 50%;
-  z-index: 4;
-  width: 38%;
-  height: 105%;
-  background: linear-gradient(to bottom, rgba(255, 217, 143, 0.075), transparent 72%);
-  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
-  filter: blur(10px);
-  mix-blend-mode: screen;
-  opacity: 0.5;
-  pointer-events: none;
-  transform: translateX(-50%);
-  animation: spotlightSway 14s ease-in-out infinite alternate;
-}
-@keyframes spotlightSway { from { transform: translateX(-56%) rotate(-4deg); } to { transform: translateX(-44%) rotate(4deg); } }
-
+/* ─── Vapeur (smoke) ────────────────────────────────────────── */
 .gear-smoke {
   position: absolute;
   bottom: -8%;
@@ -577,18 +547,18 @@ main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr
   position: relative;
   z-index: 20;
   flex: none;
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   color: rgba(160, 136, 96, 0.82);
-  font-size: 0.66rem;
+  font-size: 0.64rem;
   line-height: 1.45;
   text-align: center;
 }
 
+/* ─── Responsive ────────────────────────────────────────────── */
 @media (max-width: 1120px) {
-  :root { --gear-size: clamp(300px, 52vw, 500px); }
+  :root { --gear-size: clamp(260px, 46vw, 460px); }
   main.dedale-main { grid-template-columns: minmax(0, 1.45fr) minmax(290px, 0.85fr); }
-  .gear-scene { min-height: 440px; }
-  .gear-centerplate { opacity: 0.88; }
+  .gear-scene { min-height: 380px; }
 }
 
 @media (max-width: 900px) {
@@ -596,18 +566,16 @@ main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr
   .dedale-shell { width: 100%; height: auto; min-height: 100vh; overflow: visible; }
   main.dedale-main { display: block; overflow: visible; }
   .hallway { min-height: min(680px, 82vh); }
-  #viewDevant { min-height: 560px; }
-  .gear-scene { min-height: 520px; }
+  #viewDevant { min-height: 480px; }
+  .gear-scene { min-height: 340px; transform: rotateX(46deg) scale(1.05); }
   .riddle-panel { min-height: 430px; border-top: 2px solid var(--accent-brass-dark); box-shadow: 0 -16px 38px rgba(0, 0, 0, 0.38); }
-  .gear-scene .door-zone { display: block; overflow: visible; }
-  .gear-scene .time-door { width: 228px; height: 390px; }
-  .gear-centerplate { width: 126px; min-height: 74px; padding: 9px 12px; }
+  .gear-centerplate { width: 118px; min-height: 70px; padding: 9px 12px; }
   .gear-centerplate__eyebrow { display: none; }
   footer.dedale-footer { position: relative; }
 }
 
 @media (max-width: 620px) {
-  :root { --gear-size: min(88vw, 390px); }
+  :root { --gear-size: min(82vw, 360px); }
   header.dedale-header { align-items: flex-start; gap: 8px; }
   .dedale-title { max-width: 68vw; font-size: 0.92rem; line-height: 1.25; }
   .dedale-subtitle { display: none; }
@@ -615,11 +583,11 @@ main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr
   .header-lights { display: none; }
   .look-nav { width: calc(100% - 16px); justify-content: center; }
   .look-btn { flex: 1; padding: 5px 3px; }
-  .hallway { min-height: 610px; padding: 8px; }
-  #viewDevant { min-height: 520px; padding-top: 34px; }
-  .gear-scene { min-height: 490px; border-radius: 16px 16px 9px 9px; }
-  .gear-centerplate { top: 47%; width: 106px; min-height: 62px; }
-  .gear-centerplate strong { max-width: 90px; font-size: 0.58rem; }
+  .hallway { min-height: 580px; padding: 8px; }
+  #viewDevant { min-height: 460px; padding-top: 34px; }
+  .gear-scene { min-height: 300px; border-radius: 50%; transform: rotateX(42deg) scale(1.04); }
+  .gear-centerplate { top: 50%; width: 100px; min-height: 58px; }
+  .gear-centerplate strong { max-width: 82px; font-size: 0.54rem; }
   .gear-centerplate > span:last-child { display: none; }
   .gear-controls { bottom: 10px; }
   .doors-hint { padding: 0 8px; font-size: 0.58rem; }
@@ -631,7 +599,5 @@ main.dedale-main { grid-template-columns: minmax(0, 1.72fr) minmax(310px, 0.78fr
   .gear-bg-rotate,
   .gear-hub-pulse,
   .gear-ambient__arc,
-  .gear-spotlight,
   .gear-smoke { animation: none !important; }
-  .gear-scene .time-door { transition-duration: 0.01ms; }
 }

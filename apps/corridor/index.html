@@ -44,7 +44,20 @@
             <button type="button" class="look-btn" data-view="derriere">Derrière</button>
           </nav>
 
+          <!-- ═══════════════════════════════════════════════════════════
+               VUE DEVANT — portes en rangée scrollable
+          ═══════════════════════════════════════════════════════════ -->
           <div class="hallway-content view-panel active" id="viewDevant" data-view="devant">
+            <div class="door-zone" id="doorZone" aria-label="Portes du dédale"></div>
+            <div class="doors-hint">
+              Faites défiler ou glissez pour parcourir les portes. Regardez le <strong>Sol</strong> pour tourner le Grand Mécanisme.
+            </div>
+          </div>
+
+          <!-- ═══════════════════════════════════════════════════════════
+               VUE SOL — Grand Mécanisme Orbital
+          ═══════════════════════════════════════════════════════════ -->
+          <div class="view-panel scene-sol" id="viewSol" data-view="sol">
             <div class="gear-scene" id="gearScene">
               <div class="gear-ambient" aria-hidden="true">
                 <span class="gear-ambient__arc gear-ambient__arc--one"></span>
@@ -118,34 +131,22 @@
                 </svg>
               </div>
 
-              <div class="gear-centerplate" aria-hidden="true">
+              <button class="gear-centerplate" id="gearCenterplate" title="Activer la porte sélectionnée" aria-label="Activer la porte sélectionnée">
                 <span class="gear-centerplate__eyebrow">Sélecteur orbital</span>
                 <strong id="gearSelectedName">Initialisation…</strong>
                 <span id="gearSelectedMeta">Synchronisation des portes</span>
-              </div>
+              </button>
 
-              <div class="door-zone" id="doorZone" aria-label="Portes du dédale"></div>
-              <div class="gear-spotlight" aria-hidden="true"></div>
               <div class="gear-smoke gear-smoke--left" aria-hidden="true"></div>
               <div class="gear-smoke gear-smoke--right" aria-hidden="true"></div>
             </div>
 
-            <div class="doors-hint">
-              Faites tourner le mécanisme avec les flèches, la molette ou un glissement. Cliquez sur une porte pour consulter son dossier.
-            </div>
+            <div class="scene-caption">Le plancher orbital tourne lentement sous vos pieds. Utilisez les flèches ou la molette pour naviguer, cliquez au centre pour activer la porte.</div>
           </div>
 
-          <div class="view-panel scene-sol" id="viewSol" data-view="sol">
-            <div class="floor-perspective" aria-hidden="true">
-              <div class="floor-plank"></div><div class="floor-plank"></div><div class="floor-plank"></div><div class="floor-plank"></div><div class="floor-plank"></div>
-              <div class="floor-grate">
-                <div class="floor-grate-line"></div><div class="floor-grate-line"></div><div class="floor-grate-line"></div>
-                <div class="steam-wisp"></div><div class="steam-wisp steam-wisp-2"></div>
-              </div>
-            </div>
-            <div class="scene-caption">Le plancher de cuivre vibre doucement sous vos pieds.</div>
-          </div>
-
+          <!-- ═══════════════════════════════════════════════════════════
+               VUE PLAFOND
+          ═══════════════════════════════════════════════════════════ -->
           <div class="view-panel scene-plafond" id="viewPlafond" data-view="plafond">
             <div class="ceiling-pipes" aria-hidden="true">
               <div class="pipe pipe-h"></div><div class="pipe pipe-h pipe-h2"></div><div class="pipe pipe-v"></div><div class="pipe pipe-v pipe-v2"></div>
@@ -158,6 +159,9 @@
             <div class="scene-caption">Des tuyaux de cuivre serpentent au-dessus de vous, chargés de vapeur.</div>
           </div>
 
+          <!-- ═══════════════════════════════════════════════════════════
+               VUE DERRIÈRE
+          ═══════════════════════════════════════════════════════════ -->
           <div class="view-panel scene-derriere" id="viewDerriere" data-view="derriere">
             <div class="behind-corridor" aria-hidden="true">
               <div class="behind-arch"></div><div class="behind-arch behind-arch-2"></div><div class="behind-gate"></div>
