@@ -1,0 +1,15 @@
+{
+  "name": "spectrocrypt",
+  "version": "1.0.0",
+  "description": "Steampunk web app to encrypt/decrypt hidden messages in audio + visualize via spectrogram.",
+  "license": "MIT",
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "serve": "python -m http.server 8000"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

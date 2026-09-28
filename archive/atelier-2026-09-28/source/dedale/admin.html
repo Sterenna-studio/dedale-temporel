@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin • Ateliers S.T.E.A.M.</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body class="admin-page">
+  <div id="bg" aria-hidden="true"><div id="bgLayer" class="bg-layer"></div></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">⚙</div>
+      <div class="brand-text">
+        <div class="kicker">Sterenna / base / steam</div>
+        <div class="title">Admin • Scan & Portes</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="btn" href="./">Retour hub</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>Accès admin</h2>
+      <p class="muted">Code requis pour scanner et sauvegarder : <strong>REDACTED_ARCHIVE_ADMIN_CODE</strong> (côté PHP).</p>
+      <div class="row">
+        <input id="adminCode" class="input" placeholder="Code admin" type="password" />
+        <button id="btnSaveCode" class="btn">Déverrouiller</button>
+        <button id="btnLock" class="btn ghost">Verrouiller</button>
+      </div>
+      <div id="adminState" class="muted" style="margin-top:8px">État : verrouillé</div>
+    </section>
+
+    <section class="grid2">
+      <section class="card">
+        <h2>Scan serveur</h2>
+        <p class="muted">Liste les sous-dossiers présents, et te propose de créer automatiquement une <strong>Porte</strong> et/ou un <strong>Projet</strong>.</p>
+        <div class="row">
+          <button id="btnScan" class="btn">Scanner dossiers</button>
+          <button id="btnReload" class="btn ghost">Recharger JSON</button>
+        </div>
+        <div id="scanResults" class="scan-results"></div>
+      </section>
+
+      <section class="card">
+        <h2>Édition rapide</h2>
+        <p class="muted">(Beta) Édition directe des JSON, utile pour faire un merge rapide.</p>
+        <div class="row" style="align-items:flex-start">
+          <div style="flex:1">
+            <div class="muted">steam_projects.json</div>
+            <textarea id="taProjects" class="ta" rows="14"></textarea>
+            <div class="row">
+              <button id="btnSaveProjects" class="btn">Sauver projets</button>
+            </div>
+          </div>
+          <div style="flex:1">
+            <div class="muted">steam_doors.json</div>
+            <textarea id="taDoors" class="ta" rows="14"></textarea>
+            <div class="row">
+              <button id="btnSaveDoors" class="btn">Sauver portes</button>
+            </div>
+          </div>
+        </div>
+        <pre id="adminLog" class="log"></pre>
+      </section>
+    </section>
+  </main>
+
+  <script src="./admin.js"></script>
+</body>
+</html>

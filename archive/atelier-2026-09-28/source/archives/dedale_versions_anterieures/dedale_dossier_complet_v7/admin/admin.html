@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin – Dédale temporel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+      body {
+        background: #050304;
+      }
+      .admin-shell {
+        max-width: 1100px;
+        margin: 16px auto;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1px solid #3b2a1b;
+        background: radial-gradient(circle at top, #2a2118 0, #14100b 60%);
+        box-shadow:
+          0 0 20px rgba(0, 0, 0, 0.85),
+          inset 0 0 14px rgba(0, 0, 0, 0.9);
+      }
+      .admin-title {
+        font-family: "Cinzel", serif;
+        font-size: 1.2rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-brass);
+        margin-bottom: 10px;
+      }
+      .admin-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 2.5fr) minmax(0, 2fr);
+        gap: 12px;
+      }
+      .admin-panel {
+        border-radius: 8px;
+        border: 1px solid var(--accent-brass-dark);
+        padding: 8px 10px;
+        background: #120e09;
+        font-size: 0.78rem;
+      }
+      .admin-panel h2 {
+        font-family: "Cinzel", serif;
+        font-size: 0.9rem;
+        margin: 0 0 6px;
+        color: var(--accent-emerald);
+      }
+      .door-list {
+        max-height: 300px;
+        overflow: auto;
+        border: 1px solid #3b2a1b;
+        border-radius: 6px;
+        padding: 4px;
+        background: #0c0805;
+      }
+      .door-item {
+        padding: 4px 6px;
+        margin-bottom: 4px;
+        border-radius: 4px;
+        border: 1px solid #3b2a1b;
+        cursor: pointer;
+      }
+      .door-item.active {
+        border-color: var(--accent-emerald);
+        background: #182018;
+      }
+      .door-controls button {
+        margin-right: 4px;
+        margin-top: 4px;
+        font-size: 0.7rem;
+      }
+      .admin-field {
+        margin-bottom: 4px;
+      }
+      .admin-field label {
+        display: block;
+        font-size: 0.7rem;
+        color: var(--text-dim);
+      }
+      .admin-field input,
+      .admin-field textarea,
+      .admin-field select {
+        width: 100%;
+        font-size: 0.75rem;
+        font-family: "Space Mono", monospace;
+        padding: 3px 4px;
+        border-radius: 4px;
+        border: 1px solid #3b2a1b;
+        background: #070504;
+        color: var(--text-main);
+      }
+      .admin-field textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+      .admin-actions {
+        margin-top: 6px;
+      }
+      .admin-actions button {
+        margin-right: 6px;
+        font-size: 0.75rem;
+      }
+      .admin-log {
+        margin-top: 6px;
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        white-space: pre-wrap;
+      }
+      @media (max-width: 900px) {
+        .admin-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+    <body>
+    <script>
+      (function() {
+        try {
+          var allowed = sessionStorage.getItem("dedale_access_porte-admin");
+          if (allowed !== "1") {
+            // Si accès direct sans passer par le dédale, on renvoie à l'entrée du couloir
+            window.location.href = "../index.html";
+          }
+        } catch (e) {
+          window.location.href = "../index.html";
+        }
+      })();
+    </script>
+
+    <div class="admin-shell">
+      <div class="admin-title">Panneau d'administration – Dédale temporel</div>
+      <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 0;">
+        Ici tu peux gérer les portes du couloir : type (temporelle, salle, verrouillée, sortie),
+        ordre, noms, URLs cibles, codes, textes d’énigme, notes, cadrans et pancartes.
+        La configuration générée est à coller dans
+        <code>config/config.js</code> ou à envoyer à un petit script backend.
+      </p>
+
+      <div class="admin-grid">
+        <div class="admin-panel">
+          <h2>Portes existantes</h2>
+          <div class="door-list" id="doorList"></div>
+          <div class="door-controls">
+            <button id="btnAddDoor">Ajouter une porte</button>
+            <button id="btnAddLockedDoor">Ajouter porte verrouillée</button>
+            <button id="btnRemoveDoor">Supprimer la porte sélectionnée</button>
+            <button id="btnMoveUp">Monter</button>
+            <button id="btnMoveDown">Descendre</button>
+          </div>
+        </div>
+
+        <div class="admin-panel">
+          <h2>Détails de la porte sélectionnée</h2>
+          <div id="doorDetail">
+            <div class="admin-field">
+              <label for="fieldId">ID</label>
+              <input id="fieldId" />
+            </div>
+            <div class="admin-field">
+              <label for="fieldName">Nom</label>
+              <input id="fieldName" />
+            </div>
+            <div class="admin-field">
+              <label for="fieldType">Type</label>
+              <select id="fieldType">
+                <option value="temporal">Porte temporelle</option>
+                <option value="room">Salle de l'agence</option>
+                <option value="exit">Porte de sortie</option>
+                <option value="locked">Porte verrouillée / grisée</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="fieldFolder">Sous-dossier (ex: portemachine)</label>
+              <input id="fieldFolder" />
+            </div>
+            <div class="admin-field">
+              <label for="fieldRedirect">URL de redirection</label>
+              <input id="fieldRedirect" />
+            </div>
+            <div class="admin-field">
+              <label for="fieldRequireCode">Code requis ?</label>
+              <select id="fieldRequireCode">
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="fieldCodes">Codes valides (séparés par virgule)</label>
+              <input id="fieldCodes" />
+            </div>
+            <div class="admin-field">
+              <label for="fieldPlaceholder">Placeholder console</label>
+              <input id="fieldPlaceholder" />
+            </div>
+            <div class="admin-field">
+              <label for="fieldRiddleTitle">Titre énigme</label>
+              <input id="fieldRiddleTitle" />
+            </div>
+            <div class="admin-field">
+              <label for="fieldRiddleText">Texte énigme</label>
+              <textarea id="fieldRiddleText"></textarea>
+            </div>
+
+            <hr style="border-color:#3b2a1b;margin:6px 0;" />
+
+            <div class="admin-field">
+              <label for="fieldHasNote">Note présente ?</label>
+              <select id="fieldHasNote">
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="fieldNoteText">Texte de la note</label>
+              <textarea id="fieldNoteText"></textarea>
+            </div>
+            <div class="admin-field">
+              <label for="fieldNotePos">Position note (JSON simple : {"top":"20px","left":"10px"})</label>
+              <input id="fieldNotePos" />
+            </div>
+
+            <hr style="border-color:#3b2a1b;margin:6px 0;" />
+
+            <div class="admin-field">
+              <label for="fieldDialLabel">Cadran (année / valeur affichée)</label>
+              <input id="fieldDialLabel" />
+            </div>
+            <div class="admin-field">
+              <label for="fieldSignText">Pancarte au-dessus de la porte</label>
+              <input id="fieldSignText" />
+            </div>
+          </div>
+
+          <div class="admin-actions">
+            <button id="btnSaveDoor">Enregistrer porte</button>
+            <button id="btnExportConfig">Exporter config</button>
+          </div>
+          <div class="admin-log" id="adminLog"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../config/config.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
+</html>

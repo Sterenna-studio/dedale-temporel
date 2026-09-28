@@ -1,0 +1,45 @@
+{
+  "id": "telegraph_clicks",
+  "name": "Telegraph Clicks",
+  "tags": [
+    "machine",
+    "ticks"
+  ],
+  "carrier": {
+    "durationSec": 6,
+    "layers": [
+      {
+        "type": "pulseTrain",
+        "freq": 12,
+        "gain": 0.15,
+        "env": {
+          "attack": 0.001,
+          "decay": 0.02,
+          "sustain": 0.0,
+          "release": 0.02
+        }
+      },
+      {
+        "type": "noise",
+        "color": "white",
+        "gain": 0.04,
+        "filter": {
+          "type": "bandpass",
+          "freq": 1800,
+          "q": 2.2
+        }
+      }
+    ]
+  },
+  "secret": {
+    "mode": "FSK",
+    "symbolRate": 50,
+    "f0": 1500,
+    "f1": 1900,
+    "redundancy": 1
+  },
+  "mix": {
+    "carrierGain": 1.0,
+    "secretGain": 0.25
+  }
+}

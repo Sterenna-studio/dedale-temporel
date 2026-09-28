@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Le Couloir des Dédales Temporels</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-wall: #090607;
+        --bg-floor: #050304;
+        --accent-brass: #c29b4b;
+        --accent-brass-dark: #8a6a30;
+        --accent-emerald: #2dcf8a;
+        --accent-red: #e44b4b;
+        --text-main: #f4e5c1;
+        --text-dim: #b69a71;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Space Mono", monospace;
+        background: radial-gradient(circle at top, #241914 0, #050304 60%);
+        color: var(--text-main);
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+      }
+
+      .dedale-shell {
+        width: 100%;
+        max-width: 1200px;
+        margin: 12px;
+        border-radius: 16px;
+        border: 3px solid #000;
+        box-shadow:
+          0 0 0 2px var(--accent-brass-dark),
+          0 0 35px rgba(0, 0, 0, 0.95),
+          inset 0 0 25px rgba(0, 0, 0, 0.9);
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 55%),
+          radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.85), #050403 100%);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      header.dedale-header {
+        padding: 12px 18px;
+        border-bottom: 2px solid var(--accent-brass-dark);
+        background: linear-gradient(135deg, #291f16, #18120d);
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+
+      .dedale-title {
+        font-family: "Cinzel", serif;
+        font-size: 1.4rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent-brass);
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+      }
+
+      .dedale-subtitle {
+        font-size: 0.8rem;
+        color: var(--text-dim);
+        text-align: right;
+      }
+
+      main.dedale-main {
+        flex: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr);
+        background: radial-gradient(circle at center, #15100c 0, #050304 60%);
+      }
+
+      /* Couloir + porte */
+
+      .hallway {
+        position: relative;
+        padding: 14px 18px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at top, #34241c 0, #120d09 40%, #050304 100%);
+      }
+
+      .hallway-perspective {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.35;
+        background:
+          linear-gradient(to right, transparent 0, rgba(255, 255, 255, 0.05) 50%, transparent 100%),
+          repeating-linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.04) 0,
+            rgba(255, 255, 255, 0.04) 1px,
+            transparent 2px,
+            transparent 6px
+          );
+      }
+
+      .hallway-floor {
+        position: absolute;
+        left: -10%;
+        right: -10%;
+        bottom: -10px;
+        height: 60%;
+        background: radial-gradient(circle at top, transparent 0, #050304 40%, #000 100%);
+      }
+
+      .hallway-content {
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .door-zone {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .time-door {
+        position: relative;
+        width: 260px;
+        height: 420px;
+        border-radius: 18px;
+        background: radial-gradient(circle at top, #503322 0, #20140e 40%, #080504 100%);
+        border: 3px solid var(--accent-brass-dark);
+        box-shadow:
+          0 0 16px rgba(0, 0, 0, 0.9),
+          inset 0 0 20px rgba(0, 0, 0, 0.9);
+        cursor: pointer;
+        transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+      }
+
+      .time-door:hover {
+        transform: translateY(-4px);
+        box-shadow:
+          0 0 22px rgba(0, 0, 0, 0.95),
+          0 0 14px rgba(194, 155, 75, 0.7),
+          inset 0 0 18px rgba(0, 0, 0, 0.9);
+      }
+
+      .door-inner {
+        position: absolute;
+        inset: 14px 16px;
+        border-radius: 12px;
+        border: 2px solid #3b2a1b;
+        background:
+          repeating-linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.04) 0,
+            rgba(255, 255, 255, 0.04) 4px,
+            transparent 5px,
+            transparent 10px
+          );
+        overflow: hidden;
+      }
+
+      .door-arch {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 200%;
+        height: 200px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        border: 2px solid rgba(194, 155, 75, 0.35);
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+        opacity: 0.7;
+      }
+
+      .door-center-core {
+        position: absolute;
+        inset: 90px 42px 120px;
+        border-radius: 8px;
+        background: radial-gradient(circle at center, #171a1a 0, #020303 70%);
+        box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .door-core-display {
+        width: 80%;
+        height: 70%;
+        border-radius: 6px;
+        border: 1px solid #1aff7c55;
+        background: radial-gradient(circle at center, #082012 0, #020704 80%);
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.9);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .door-core-display::before {
+        content: "ENTRÉE CODE";
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.7rem;
+        letter-spacing: 0.15em;
+        color: rgba(200, 255, 220, 0.8);
+      }
+
+      .door-core-lines {
+        position: absolute;
+        inset: 0;
+        background:
+          repeating-linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.45) 0,
+            rgba(0, 0, 0, 0.45) 1px,
+            transparent 2px,
+            transparent 3px
+          );
+        opacity: 0.8;
+      }
+
+      .door-handle {
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 14px;
+        height: 54px;
+        border-radius: 7px;
+        background: radial-gradient(circle at top, #f1c477 0, #7a5428 50%, #2a1a0f 100%);
+        box-shadow:
+          0 0 6px rgba(0, 0, 0, 0.9),
+          inset 0 0 4px rgba(0, 0, 0, 0.8);
+      }
+
+      .door-rivets {
+        position: absolute;
+        inset: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .door-rivet-col {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .door-rivet {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #6b4c27;
+        box-shadow:
+          0 0 2px rgba(0, 0, 0, 0.8),
+          0 0 4px rgba(255, 220, 160, 0.2);
+      }
+
+      .door-caption {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--text-dim);
+      }
+
+      .door-caption span {
+        color: var(--accent-emerald);
+      }
+
+      .door-shake {
+        animation: doorShake 0.2s ease-in-out 0s 2;
+      }
+
+      @keyframes doorShake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-4px);
+        }
+        50% {
+          transform: translateX(4px);
+        }
+        75% {
+          transform: translateX(-4px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      /* Petite note sur la porte */
+
+      .door-note {
+        position: absolute;
+        bottom: 18px;
+        left: 22px;
+        padding: 4px 6px;
+        max-width: 96px;
+        background: #f7f1dd;
+        color: #3a2b18;
+        font-size: 0.6rem;
+        border-radius: 3px;
+        box-shadow:
+          0 0 4px rgba(0, 0, 0, 0.6),
+          0 0 6px rgba(255, 255, 255, 0.4);
+        transform: rotate(-6deg);
+        cursor: pointer;
+      }
+
+      .door-note::before {
+        content: "NOTE";
+        display: block;
+        font-weight: bold;
+        font-size: 0.6rem;
+        margin-bottom: 2px;
+        letter-spacing: 0.12em;
+      }
+
+      /* Panneau d'énigme / terminal */
+
+      .riddle-panel {
+        border-left: 2px solid var(--accent-brass-dark);
+        padding: 14px 16px;
+        background: linear-gradient(180deg, #1f1811 0%, #130f0a 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .riddle-card {
+        border-radius: 12px;
+        border: 1px solid var(--accent-brass-dark);
+        background: radial-gradient(circle at top left, #2a2118 0, #15100b 70%);
+        padding: 10px 12px;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+      }
+
+      .riddle-card h2 {
+        font-family: "Cinzel", serif;
+        font-size: 1rem;
+        margin: 0 0 6px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-emerald);
+      }
+
+      .riddle-text {
+        font-size: 0.75rem;
+        color: var(--text-main);
+        white-space: pre-line;
+      }
+
+      .riddle-text strong {
+        color: var(--accent-brass);
+      }
+
+      .terminal-card {
+        border-radius: 12px;
+        border: 1px solid var(--accent-brass-dark);
+        background: radial-gradient(circle at top, #221a11 0, #120d09 70%);
+        padding: 10px 12px;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+        font-size: 0.8rem;
+      }
+
+      .terminal-title {
+        font-size: 0.85rem;
+        color: var(--accent-emerald);
+        margin-bottom: 8px;
+      }
+
+      .terminal-label {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        margin-bottom: 4px;
+      }
+
+      .code-input-row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      #codeInput {
+        flex: 1;
+        padding: 4px 6px;
+        border-radius: 4px;
+        border: 1px solid #3b2a1b;
+        background: #080705;
+        color: var(--text-main);
+        font-family: "Space Mono", monospace;
+        font-size: 0.8rem;
+      }
+
+      #codeInput:focus {
+        outline: 1px solid var(--accent-emerald);
+        box-shadow: 0 0 6px rgba(45, 207, 138, 0.6);
+      }
+
+      #submitCode {
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--accent-brass-dark);
+        background: linear-gradient(135deg, #382819, #24170f);
+        color: var(--text-main);
+        cursor: pointer;
+        font-size: 0.75rem;
+      }
+
+      #submitCode:hover {
+        background: linear-gradient(135deg, #44301f, #2a1b11);
+      }
+
+      .terminal-output {
+        margin-top: 6px;
+        font-size: 0.7rem;
+        min-height: 1em;
+      }
+
+      .terminal-output.ok {
+        color: var(--accent-emerald);
+      }
+      .terminal-output.err {
+        color: var(--accent-red);
+      }
+
+      .hint-line {
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        margin-top: 4px;
+      }
+
+      footer.dedale-footer {
+        border-top: 2px solid var(--accent-brass-dark);
+        padding: 4px 10px 6px;
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        display: flex;
+        justify-content: space-between;
+        background: #100c08;
+      }
+
+      /* Overlay de la note en grand */
+
+      .note-overlay {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 200;
+      }
+
+      .note-overlay.hidden {
+        display: none;
+      }
+
+      .note-card {
+        max-width: 520px;
+        max-height: 80vh;
+        background: #1b1510;
+        color: var(--text-main);
+        border-radius: 12px;
+        border: 1px solid var(--accent-brass-dark);
+        padding: 14px 16px;
+        box-shadow:
+          0 0 20px rgba(0, 0, 0, 0.9),
+          0 0 10px rgba(255, 255, 255, 0.1);
+        overflow: auto;
+        font-size: 0.8rem;
+      }
+
+      .note-card h3 {
+        margin: 0 0 8px;
+        font-family: "Cinzel", serif;
+        font-size: 0.95rem;
+        color: var(--accent-emerald);
+      }
+
+      .note-text {
+        white-space: pre-line;
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
+
+      .note-close {
+        margin-top: 10px;
+        padding: 3px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--accent-brass-dark);
+        background: #2b2217;
+        color: var(--text-main);
+        font-size: 0.75rem;
+        cursor: pointer;
+      }
+
+      @media (max-width: 900px) {
+        main.dedale-main {
+          grid-template-columns: 1fr;
+        }
+        .riddle-panel {
+          border-left: none;
+          border-top: 2px solid var(--accent-brass-dark);
+        }
+        .time-door {
+          transform: scale(0.9);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dedale-shell">
+      <header class="dedale-header">
+        <div class="dedale-title">Le Couloir des Dédales Temporels</div>
+        <div class="dedale-subtitle">Section S.T.E.A.M. – Accès restreint</div>
+      </header>
+
+      <main class="dedale-main">
+        <!-- Partie gauche : la porte -->
+        <section class="hallway">
+          <div class="hallway-perspective"></div>
+          <div class="hallway-floor"></div>
+
+          <div class="hallway-content">
+            <div class="door-zone">
+              <div class="time-door" id="timeDoor">
+                <div class="door-inner">
+                  <div class="door-arch"></div>
+                  <div class="door-center-core">
+                    <div class="door-core-display">
+                      <div class="door-core-lines"></div>
+                    </div>
+                  </div>
+                  <div class="door-rivets">
+                    <div class="door-rivet-col">
+                      <div class="door-rivet"></div>
+                      <div class="door-rivet"></div>
+                      <div class="door-rivet"></div>
+                      <div class="door-rivet"></div>
+                    </div>
+                    <div class="door-rivet-col">
+                      <div class="door-rivet"></div>
+                      <div class="door-rivet"></div>
+                      <div class="door-rivet"></div>
+                      <div class="door-rivet"></div>
+                    </div>
+                  </div>
+                  <div class="door-handle"></div>
+
+                  <!-- La petite note cliquable -->
+                  <div class="door-note" id="doorNote">
+                    Cliquer pour lire
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="door-caption">
+              Cliquez sur la <span>porte temporelle</span> pour tenter un code.
+            </div>
+          </div>
+        </section>
+
+        <!-- Partie droite : énigme + terminal -->
+        <aside class="riddle-panel">
+          <div class="riddle-card">
+            <h2>Transmission spectrale</h2>
+            <div class="riddle-text">
+              <strong>Agents,</strong>
+
+              Vous avez intercepté un fragment sonore sans voix, sans mots,
+              seulement un chaos de fréquences. Pourtant, les archives
+              mentionnent un dispositif ancien&nbsp;:
+              le <strong>Décrypteur Temporel Interlangage</strong>.
+
+              On raconte qu’une de ces machines a été verrouillée derrière une porte.
+              Tant que vous voyez une porte, vous ne voyez pas la machine.
+
+              Observez les <strong>rivets</strong>, les <strong>engrenages</strong>,
+              la forme même de ce battant.
+              Demandez-vous si cette porte ne serait pas déjà un mécanisme de décodage.
+
+              Quand vous aurez trouvé comment la nommer, entrez ce nom comme
+              <strong>code d’accès</strong>.
+            </div>
+          </div>
+
+          <div class="terminal-card">
+            <div class="terminal-title">Console d’accès</div>
+            <div class="terminal-label">
+              Code attendu (un seul mot, espaces autorisés, insensible à la casse) :
+            </div>
+            <div class="code-input-row">
+              <input
+                type="text"
+                id="codeInput"
+                placeholder="Entrez le nom de la « porte-temporelle »..."
+                autocomplete="off"
+              />
+              <button id="submitCode">Valider</button>
+            </div>
+            <div id="terminalOutput" class="terminal-output"></div>
+            <div class="hint-line">
+              Astuce : parfois, la porte n'est pas <em>devant</em> la machine…
+              elle <em>est</em> la machine.
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="dedale-footer">
+        <span>S.T.E.A.M. – Couloir des Dédales Temporels</span>
+        <span>Accès au décrypteur sur code valide uniquement</span>
+      </footer>
+    </div>
+
+    <!-- Overlay de la note en grand -->
+    <div id="noteOverlay" class="note-overlay hidden">
+      <div class="note-card">
+        <h3>Note épinglée sur la porte</h3>
+        <div class="note-text">
+Plus tu regardes une porte comme une simple barrière,
+Ô moins tu remarques les détails qui la rendent unique.
+Regarde ses engrenages, ses rivets, ses cadrans :
+Tout semble immobile, pourtant tout est prêt à s’animer.
+Ecoute les vibrations dans le métal quand on l’effleure.
+
+Méfie-toi : certaines portes ne ferment rien…
+Au contraire, ce sont elles qui décodent le monde.
+Ce que tu prends pour un battant est peut-être un écran,
+Habillé de symboles, de chiffres, de stries étranges.
+Il suffit parfois d’un bon réglage pour qu’elle “parle”.
+Ne demande pas « où est la machine ? »
+Elle est sous tes yeux.
+        </div>
+        <button class="note-close" id="noteClose">Fermer</button>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const door = document.getElementById("timeDoor");
+        const input = document.getElementById("codeInput");
+        const btn = document.getElementById("submitCode");
+        const out = document.getElementById("terminalOutput");
+
+        const noteOverlay = document.getElementById("noteOverlay");
+        const noteClose = document.getElementById("noteClose");
+        const doorNote = document.getElementById("doorNote");
+
+        const TARGET_URL =
+          "https://sterenna.fr/base/steam/decrypteur/portemachine/";
+
+        function normalizeCode(str) {
+          return str.toLowerCase().replace(/\s+/g, "");
+        }
+
+        function checkCode() {
+          const raw = input.value.trim();
+          const norm = normalizeCode(raw);
+
+          if (!raw) {
+            out.textContent = "Aucun code reçu. Le couloir attend.";
+            out.className = "terminal-output err";
+            return;
+          }
+
+          if (norm === "portemachine") {
+            out.textContent =
+              "Code accepté. La porte se déverrouille... Accès au Décrypteur.";
+            out.className = "terminal-output ok";
+            setTimeout(() => {
+              window.location.href = TARGET_URL;
+            }, 1000);
+          } else {
+            out.textContent = "Code refusé. La serrure temporelle reste muette.";
+            out.className = "terminal-output err";
+            triggerDoorShake();
+          }
+        }
+
+        function triggerDoorShake() {
+          if (!door) return;
+          door.classList.remove("door-shake");
+          void door.offsetWidth;
+          door.classList.add("door-shake");
+        }
+
+        if (door) {
+          door.addEventListener("click", () => {
+            input.focus();
+          });
+        }
+
+        if (btn) {
+          btn.addEventListener("click", checkCode);
+        }
+
+        if (input) {
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              checkCode();
+            }
+          });
+        }
+
+        // Gestion de la note
+        if (doorNote && noteOverlay) {
+          doorNote.addEventListener("click", (e) => {
+            e.stopPropagation();
+            noteOverlay.classList.remove("hidden");
+          });
+        }
+
+        if (noteClose && noteOverlay) {
+          noteClose.addEventListener("click", () => {
+            noteOverlay.classList.add("hidden");
+          });
+        }
+
+        if (noteOverlay) {
+          noteOverlay.addEventListener("click", (e) => {
+            if (e.target === noteOverlay) {
+              noteOverlay.classList.add("hidden");
+            }
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

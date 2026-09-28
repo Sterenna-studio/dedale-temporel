@@ -1,0 +1,47 @@
+{
+  "id": "frog_chorus",
+  "name": "Frog Chorus",
+  "tags": [
+    "animal",
+    "night"
+  ],
+  "carrier": {
+    "durationSec": 6,
+    "layers": [
+      {
+        "type": "fm",
+        "carrierHz": 220,
+        "modHz": 35,
+        "index": 2.2,
+        "gain": 0.08,
+        "env": {
+          "attack": 0.02,
+          "decay": 0.25,
+          "sustain": 0.2,
+          "release": 0.3
+        }
+      },
+      {
+        "type": "noise",
+        "color": "brown",
+        "gain": 0.03,
+        "filter": {
+          "type": "bandpass",
+          "freq": 300,
+          "q": 1.0
+        }
+      }
+    ]
+  },
+  "secret": {
+    "mode": "FSK",
+    "symbolRate": 40,
+    "f0": 1350,
+    "f1": 1700,
+    "redundancy": 3
+  },
+  "mix": {
+    "carrierGain": 1.0,
+    "secretGain": 0.25
+  }
+}

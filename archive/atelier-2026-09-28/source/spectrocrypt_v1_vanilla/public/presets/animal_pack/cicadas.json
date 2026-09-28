@@ -1,0 +1,46 @@
+{
+  "id": "cicadas",
+  "name": "Cicadas",
+  "tags": [
+    "animal",
+    "insects"
+  ],
+  "carrier": {
+    "durationSec": 6,
+    "layers": [
+      {
+        "type": "chirp",
+        "fStart": 2800,
+        "fEnd": 5200,
+        "gain": 0.08,
+        "env": {
+          "attack": 0.01,
+          "decay": 0.1,
+          "sustain": 0.2,
+          "release": 0.2
+        }
+      },
+      {
+        "type": "noise",
+        "color": "pink",
+        "gain": 0.04,
+        "filter": {
+          "type": "bandpass",
+          "freq": 4000,
+          "q": 1.8
+        }
+      }
+    ]
+  },
+  "secret": {
+    "mode": "FSK",
+    "symbolRate": 40,
+    "f0": 1650,
+    "f1": 2050,
+    "redundancy": 3
+  },
+  "mix": {
+    "carrierGain": 1.0,
+    "secretGain": 0.25
+  }
+}

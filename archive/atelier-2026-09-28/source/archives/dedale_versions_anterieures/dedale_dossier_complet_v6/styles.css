@@ -1,0 +1,824 @@
+/* styles.css - Couloir des Dédales Temporels v4 */
+
+:root {
+  --bg-wall: #090607;
+  --bg-floor: #050304;
+  --accent-brass: #c29b4b;
+  --accent-brass-dark: #8a6a30;
+  --accent-emerald: #2dcf8a;
+  --accent-red: #e44b4b;
+  --text-main: #f4e5c1;
+  --text-dim: #b69a71;
+  --locked-gray: #4c4c4c;
+  --locked-dark: #2b2b2b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Space Mono", monospace;
+  background: radial-gradient(circle at top, #241914 0, #050304 60%);
+  color: var(--text-main);
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* FULL SCREEN SHELL */
+
+.dedale-shell {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  border: 3px solid #000;
+  box-shadow:
+    0 0 0 2px var(--accent-brass-dark),
+    0 0 35px rgba(0, 0, 0, 0.95),
+    inset 0 0 25px rgba(0, 0, 0, 0.9);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.85), #050403 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+header.dedale-header {
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--accent-brass-dark);
+  background: linear-gradient(135deg, #291f16, #18120d);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dedale-title {
+  font-family: "Cinzel", serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-brass);
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
+.dedale-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.dedale-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+.header-lights,
+.footer-lights {
+  display: flex;
+  gap: 4px;
+}
+
+.led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow:
+    0 0 6px rgba(0, 0, 0, 0.8),
+    inset 0 0 3px rgba(0, 0, 0, 0.8);
+}
+.led-green {
+  background: #35e082;
+  animation: ledBlinkGreen 2.8s infinite;
+}
+.led-amber {
+  background: #ffbe55;
+  animation: ledBlinkAmber 3.4s infinite;
+}
+.led-red {
+  background: #ff6868;
+  animation: ledBlinkRed 4.1s infinite;
+}
+
+@keyframes ledBlinkGreen {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+  }
+  10%,
+  40% {
+    opacity: 1;
+  }
+}
+@keyframes ledBlinkAmber {
+  0%,
+  60%,
+  100% {
+    opacity: 0.2;
+  }
+  20%,
+  38% {
+    opacity: 1;
+  }
+}
+@keyframes ledBlinkRed {
+  0%,
+  50%,
+  100% {
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+main.dedale-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr);
+  background: radial-gradient(circle at center, #15100c 0, #050304 60%);
+}
+
+/* Couloir + portes */
+
+.hallway {
+  position: relative;
+  padding: 10px 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top, #34241c 0, #120d09 40%, #050304 100%);
+}
+
+.hallway-perspective {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background:
+    linear-gradient(to right, transparent 0, rgba(255, 255, 255, 0.05) 50%, transparent 100%),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.04) 0,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 2px,
+      transparent 6px
+    );
+  animation: hallwayGlow 12s ease-in-out infinite alternate;
+}
+
+@keyframes hallwayGlow {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.45;
+  }
+}
+
+.hallway-floor {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -10px;
+  height: 60%;
+  background: radial-gradient(circle at top, transparent 0, #050304 40%, #000 100%);
+}
+
+.hallway-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Zone des portes : slider horizontal, drag à la souris */
+
+.door-zone {
+  flex: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  align-items: center;
+  padding: 6px 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+}
+
+.door-zone.dragging {
+  cursor: grabbing;
+}
+
+.door-zone::-webkit-scrollbar {
+  height: 8px;
+}
+.door-zone::-webkit-scrollbar-track {
+  background: #100b07;
+}
+.door-zone::-webkit-scrollbar-thumb {
+  background: #3a2b1b;
+}
+
+/* hint */
+
+.doors-hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+.doors-hint span {
+  color: var(--accent-emerald);
+}
+
+/* Porte de base : taille fixe */
+
+.time-door {
+  position: relative;
+  flex: 0 0 220px;
+  width: 220px;
+  height: 380px;
+  border-radius: 18px;
+  border: 3px solid var(--accent-brass-dark);
+  cursor: pointer;
+  transition: transform 0.18s ease-out, box-shadow 0.18s ease-out, border-color 0.2s,
+    filter 0.2s;
+  box-shadow:
+    0 0 16px rgba(0, 0, 0, 0.9),
+    inset 0 0 20px rgba(0, 0, 0, 0.9);
+}
+
+/* Type : porte temporelle */
+
+.time-door--temporal {
+  background: radial-gradient(circle at top, #503322 0, #20140e 40%, #080504 100%);
+}
+
+/* Type : salle de l'agence */
+
+.time-door--room {
+  background: radial-gradient(circle at top, #3c2f22 0, #22170f 40%, #090605 100%);
+  border-color: #b07c3a;
+}
+
+/* Type : porte de sortie (peut être salle particulière) */
+
+.time-door--exit {
+  background: radial-gradient(circle at top, #264133 0, #15241b 40%, #050605 100%);
+  border-color: #3fbf8a;
+}
+
+/* Type : porte verrouillée / grisée */
+
+.time-door--locked {
+  background: radial-gradient(circle at top, var(--locked-gray) 0, var(--locked-dark) 40%, #050505 100%);
+  border-color: #2a2a2a;
+  filter: grayscale(0.8);
+}
+
+/* Effets hover */
+
+.time-door:not(.time-door--locked):hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 22px rgba(0, 0, 0, 0.95),
+    0 0 14px rgba(194, 155, 75, 0.7),
+    inset 0 0 18px rgba(0, 0, 0, 0.9);
+}
+
+.time-door.selected {
+  border-color: var(--accent-emerald);
+  box-shadow:
+    0 0 24px rgba(0, 0, 0, 0.95),
+    0 0 14px rgba(45, 207, 138, 0.7),
+    inset 0 0 18px rgba(0, 0, 0, 0.9);
+}
+
+/* contenu porte */
+
+.door-inner {
+  position: absolute;
+  inset: 26px 16px 14px;
+  border-radius: 12px;
+  border: 2px solid #3b2a1b;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.04) 0,
+      rgba(255, 255, 255, 0.04) 4px,
+      transparent 5px,
+      transparent 10px
+    );
+  overflow: hidden;
+}
+
+/* PANCARTE AU-DESSUS DE LA PORTE */
+
+.door-sign {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 140px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 2px solid #cfa76b;
+  background: linear-gradient(135deg, #3a2a18, #20160d);
+  color: var(--text-main);
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
+  text-align: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow:
+    0 0 4px rgba(0, 0, 0, 0.9),
+    inset 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+/* arche / corps de porte */
+
+.door-arch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 200%;
+  height: 200px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 2px solid rgba(194, 155, 75, 0.35);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+  opacity: 0.7;
+}
+
+.door-center-core {
+  position: absolute;
+  inset: 80px 32px 110px;
+  border-radius: 8px;
+  background: radial-gradient(circle at center, #171a1a 0, #020303 70%);
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.door-core-display {
+  width: 80%;
+  height: 70%;
+  border-radius: 6px;
+  border: 1px solid #1aff7c55;
+  background: radial-gradient(circle at center, #082012 0, #020704 80%);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.9);
+  position: relative;
+  overflow: hidden;
+}
+
+.door-core-display::before {
+  content: "ACCÈS";
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: rgba(200, 255, 220, 0.8);
+}
+
+.time-door--temporal .door-core-display::before {
+  content: "TEMPORAL";
+}
+
+.time-door--room .door-core-display::before {
+  content: "SALLE";
+}
+
+.time-door--exit .door-core-display::before {
+  content: "SORTIE";
+}
+
+.time-door--locked .door-core-display::before {
+  content: "CONDAMNÉE";
+  color: #ffaaaa;
+}
+
+.door-core-lines {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.45) 0,
+      rgba(0, 0, 0, 0.45) 1px,
+      transparent 2px,
+      transparent 3px
+    );
+  opacity: 0.8;
+}
+
+/* CADRAN ANCIEN SUR LA PORTE */
+
+.door-dial {
+  position: absolute;
+  top: 62px;
+  left: 22px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid #c7ab6d;
+  background: radial-gradient(circle at center, #f4ebd1 0, #d4c29b 50%, #8a6d39 100%);
+  box-shadow:
+    0 0 6px rgba(0, 0, 0, 0.9),
+    inset 0 0 4px rgba(0, 0, 0, 0.5);
+  font-size: 0.62rem;
+  color: #3a2b18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* poignée + rivets */
+
+.door-handle {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 54px;
+  border-radius: 7px;
+  background: radial-gradient(circle at top, #f1c477 0, #7a5428 50%, #2a1a0f 100%);
+  box-shadow:
+    0 0 6px rgba(0, 0, 0, 0.9),
+    inset 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.door-rivets {
+  position: absolute;
+  inset: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.door-rivet-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.door-rivet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6b4c27;
+  box-shadow:
+    0 0 2px rgba(0, 0, 0, 0.8),
+    0 0 4px rgba(255, 220, 160, 0.2);
+}
+
+/* étiquette de porte en bas */
+
+.door-label {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.door-label span {
+  color: var(--accent-emerald);
+}
+
+/* icône de verrou pour portes fermées */
+
+.door-lock-icon {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid #d8d8d8;
+  box-shadow:
+    0 0 8px rgba(0, 0, 0, 0.9),
+    inset 0 0 6px rgba(0, 0, 0, 0.7);
+  background: radial-gradient(circle at center, #999, #555);
+}
+
+.door-lock-icon::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 26px;
+  border-radius: 15px 15px 6px 6px;
+  border: 3px solid #f0f0f0;
+  border-bottom: none;
+}
+
+.door-lock-icon::after {
+  content: "";
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 24px;
+  border-radius: 4px;
+  background: #222;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+/* shake quand mauvais code */
+
+.door-shake {
+  animation: doorShake 0.2s ease-in-out 0s 2;
+}
+
+@keyframes doorShake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Notes sur les portes */
+
+.door-note {
+  position: absolute;
+  padding: 4px 6px;
+  max-width: 96px;
+  background: #f7f1dd;
+  color: #3a2b18;
+  font-size: 0.6rem;
+  border-radius: 3px;
+  box-shadow:
+    0 0 4px rgba(0, 0, 0, 0.6),
+    0 0 6px rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.door-note::before {
+  content: "NOTE";
+  display: block;
+  font-weight: bold;
+  font-size: 0.6rem;
+  margin-bottom: 2px;
+  letter-spacing: 0.12em;
+}
+
+/* Panneau d'énigme / terminal */
+
+.riddle-panel {
+  border-left: 2px solid var(--accent-brass-dark);
+  padding: 10px 12px;
+  background: linear-gradient(180deg, #1f1811 0, #130f0a 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.riddle-card {
+  border-radius: 12px;
+  border: 1px solid var(--accent-brass-dark);
+  background: radial-gradient(circle at top left, #2a2118 0, #15100b 70%);
+  padding: 10px 12px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+}
+
+.riddle-card h2 {
+  font-family: "Cinzel", serif;
+  font-size: 1rem;
+  margin: 0 0 6px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-emerald);
+}
+
+.riddle-text {
+  font-size: 0.75rem;
+  color: var(--text-main);
+  white-space: pre-line;
+}
+
+.riddle-text strong {
+  color: var(--accent-brass);
+}
+
+.terminal-card {
+  border-radius: 12px;
+  border: 1px solid var(--accent-brass-dark);
+  background: radial-gradient(circle at top, #221a11 0, #120d09 70%);
+  padding: 10px 12px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+  font-size: 0.8rem;
+}
+
+.terminal-title {
+  font-size: 0.85rem;
+  color: var(--accent-emerald);
+  margin-bottom: 8px;
+}
+
+.terminal-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.code-input-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.code-enter-row {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.code-enter-row.hidden {
+  display: none;
+}
+
+#codeInput {
+  flex: 1;
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid #3b2a1b;
+  background: #080705;
+  color: var(--text-main);
+  font-family: "Space Mono", monospace;
+  font-size: 0.8rem;
+}
+
+#codeInput:focus {
+  outline: 1px solid var(--accent-emerald);
+  box-shadow: 0 0 6px rgba(45, 207, 138, 0.6);
+}
+
+#submitCode,
+#enterDoorBtn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-brass-dark);
+  background: linear-gradient(135deg, #382819, #24170f);
+  color: var(--text-main);
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+#submitCode:hover,
+#enterDoorBtn:hover {
+  background: linear-gradient(135deg, #44301f, #2a1b11);
+}
+
+.terminal-output {
+  margin-top: 6px;
+  font-size: 0.7rem;
+  min-height: 1em;
+}
+
+.terminal-output.ok {
+  color: var(--accent-emerald);
+}
+.terminal-output.err {
+  color: var(--accent-red);
+}
+
+.hint-line {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+footer.dedale-footer {
+  border-top: 2px solid var(--accent-brass-dark);
+  padding: 4px 10px 6px;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #100c08;
+}
+
+/* Overlay note */
+
+.note-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 200;
+}
+
+.note-overlay.hidden {
+  display: none;
+}
+
+.note-card {
+  max-width: 520px;
+  max-height: 80vh;
+  background: #1b1510;
+  color: var(--text-main);
+  border-radius: 12px;
+  border: 1px solid var(--accent-brass-dark);
+  padding: 14px 16px;
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.9),
+    0 0 10px rgba(255, 255, 255, 0.1);
+  overflow: auto;
+  font-size: 0.8rem;
+}
+
+.note-card h3 {
+  margin: 0 0 8px;
+  font-family: "Cinzel", serif;
+  font-size: 0.95rem;
+  color: var(--accent-emerald);
+}
+
+.note-text {
+  white-space: pre-line;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.note-close {
+  margin-top: 10px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-brass-dark);
+  background: #2b2217;
+  color: var(--text-main);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+/* Audio hidden */
+
+.audio-hidden {
+  display: none;
+}
+
+/* MOBILE / VERTICAL VIEW */
+
+@media (max-width: 900px) {
+  main.dedale-main {
+    grid-template-columns: 1fr;
+  }
+  .riddle-panel {
+    border-left: none;
+    border-top: 2px solid var(--accent-brass-dark);
+  }
+
+  /* Portes empilées verticalement */
+  .door-zone {
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    cursor: default;
+  }
+  .door-zone.dragging {
+    cursor: default;
+  }
+
+  .time-door {
+    flex: 0 0 auto;
+    width: 210px;
+    height: 360px;
+  }
+
+  .hallway {
+    padding: 8px;
+  }
+}

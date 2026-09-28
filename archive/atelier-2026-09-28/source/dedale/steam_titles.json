@@ -1,0 +1,64 @@
+{
+  "manual": [
+    {
+      "id": "TECH",
+      "name": "Technicien de Rouage",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    },
+    {
+      "id": "OPERATEUR",
+      "name": "Opérateur de Mission",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    },
+    {
+      "id": "AIGUILLE",
+      "name": "Maître des Aiguilles",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    },
+    {
+      "id": "CHRONO",
+      "name": "Gardien du Chronomètre",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    },
+    {
+      "id": "ALCHIMISTE",
+      "name": "Alchimiste de Cuivre",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    },
+    {
+      "id": "MECANO",
+      "name": "Mécano des Brumes",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    },
+    {
+      "id": "MAITREJEU",
+      "name": "Maître d’Atelier",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    },
+    {
+      "id": "CARTER",
+      "name": "Inspecteur Carter",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    },
+    {
+      "id": "ARCHIVEUR",
+      "name": "Archiveur S.T.E.A.M.",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    },
+    {
+      "id": "REDACTEUR",
+      "name": "Rédacteur de Gazette",
+      "hint": "Débloqué manuellement.",
+      "type": "manual"
+    }
+  ]
+}

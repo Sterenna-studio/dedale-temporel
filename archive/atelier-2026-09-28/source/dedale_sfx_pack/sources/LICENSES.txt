@@ -1,0 +1,16 @@
+LICENSE NOTES
+
+This pack is intended to be safe for commercial use.
+
+1) OpenGameArt assets used here are marked CC0 on their respective pages:
+- rubberduck: 30 CC0 SFX loops (CC0)
+- rubberduck: 100 CC0 metal and wood SFX (CC0)
+- Luckius: Various Paper Sound Effects (CC0)
+
+2) Kenney UI Audio sounds are CC0 (via Kenney), here obtained through:
+- https://github.com/Calinou/kenney-ui-audio (CC0 per repo/license)
+
+3) Generated sounds:
+- success.wav, error.wav are newly generated for this pack and are released as CC0 by the pack authoring process.
+
+No attribution is required for CC0, but it's appreciated.

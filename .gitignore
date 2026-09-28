@@ -16,3 +16,6 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Original intake archives may contain credentials and dependencies.
+/local-private/

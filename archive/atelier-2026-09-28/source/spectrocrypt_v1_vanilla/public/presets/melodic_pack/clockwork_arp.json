@@ -1,0 +1,60 @@
+{
+  "id": "clockwork_arp",
+  "name": "Clockwork Arp",
+  "tags": [
+    "melodic",
+    "arp"
+  ],
+  "carrier": {
+    "durationSec": 6,
+    "layers": [
+      {
+        "type": "melody",
+        "wave": "triangle",
+        "baseHz": 220,
+        "steps": [
+          0,
+          7,
+          12,
+          7,
+          0,
+          7,
+          12,
+          14,
+          12,
+          7,
+          0,
+          7
+        ],
+        "gain": 0.1,
+        "env": {
+          "attack": 0.01,
+          "decay": 0.1,
+          "sustain": 0.35,
+          "release": 0.25
+        }
+      },
+      {
+        "type": "noise",
+        "color": "pink",
+        "gain": 0.02,
+        "filter": {
+          "type": "bandpass",
+          "freq": 800,
+          "q": 1.2
+        }
+      }
+    ]
+  },
+  "secret": {
+    "mode": "FSK",
+    "symbolRate": 40,
+    "f0": 1450,
+    "f1": 1750,
+    "redundancy": 1
+  },
+  "mix": {
+    "carrierGain": 1.0,
+    "secretGain": 0.25
+  }
+}

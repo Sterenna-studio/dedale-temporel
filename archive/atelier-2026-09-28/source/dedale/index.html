@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sterenna • S.T.E.A.M. Atelier</title>
+  <link rel="stylesheet" href="./style.css" />
+  <meta name="theme-color" content="#1b1410" />
+</head>
+<body>
+  <div id="bg" aria-hidden="true">
+    <div id="bgLayer" class="bg-layer"><!-- Procedural SVG background injected by JS --></div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">⚙</div>
+      <div class="brand-text">
+        <div class="kicker">Sterenna / base / steam</div>
+        <div class="title">Ateliers S.T.E.A.M.</div>
+      </div>
+    </div>
+
+    <div class="agent-topwide" aria-label="Identité d’agent">
+      <div id="hudAgentTopName" class="agent-topline cinzel-steam-700">AGENT —</div>
+      <div id="hudAgentTopTitle" class="agent-topsub">—</div>
+    </div>
+
+    <div class="top-actions">
+      <button id="btn-audio" class="btn btn-primary" type="button">
+        <span class="btn-ico" aria-hidden="true">🔊</span>
+        <span>Activer l’ambiance</span>
+      </button>
+      <button id="btn-mute" class="btn" type="button" hidden>
+        <span class="btn-ico" aria-hidden="true">🔇</span>
+        <span>Muet</span>
+      </button>
+
+      <a class="btn" href="./admin.html" title="Administration (scan / config)">Admin</a>
+      <button id="btn-kiosk" class="btn btn-warn" type="button" title="Ouvrir STEAM Escape (mode kiosk)">
+        <span class="btn-ico" aria-hidden="true">🏭</span>
+        <span>STEAM Escape Limoges</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Dossier d’Agent</div>
+        <div class="panel-sub">Profil local (un code = une sauvegarde navigateur)</div>
+      </div>
+
+      <div class="panel-body">
+        <div class="grid-2">
+          <div class="field">
+            <label for="agentSelect">Agent (code)</label>
+            <select id="agentSelect"></select>
+            <div class="hint">Chaque code (4 hex) correspond à un profil local.</div>
+          </div>
+
+          <div class="field">
+            <label>Code</label>
+            <div class="inline">
+              <input id="agentCode" type="text" value="----" readonly />
+              <button id="btn-new-code" class="btn" type="button" title="Créer un nouveau profil (nouveau code)">Nouveau</button>
+              <button id="btn-copy-code" class="btn" type="button" title="Copier le code">Copier</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="agentName">Prénom</label>
+            <input id="agentName" type="text" placeholder="ex: Pierre" autocomplete="off" />
+            <div class="hint">Sans caractères spéciaux. Lettres, chiffres, espace, tiret, underscore.</div>
+          </div>
+
+          <div class="field">
+            <label for="affiliation">Affiliation</label>
+            <select id="affiliation">
+              <option value="LIMOGES">Agence de Limoges</option>
+              <option value="VICHY">Agence de Vichy</option>
+              <option value="COURNON">Agence de Cournon</option>
+            </select>
+            <div class="hint">Choisir une affiliation débloque un titre correspondant.</div>
+          </div>
+
+          <div class="field span-2">
+            <label for="equippedTitle">Titre équipé</label>
+            <select id="equippedTitle"></select>
+            <div class="hint" id="titleHint"></div>
+          </div>
+
+          <div class="field span-2">
+            <div class="inline">
+              <button id="btn-save-agent" class="btn btn-primary" type="button">Sauvegarder</button>
+              <button id="btn-reset-agent" class="btn btn-danger" type="button" title="Réinitialise ce profil local (ce code)">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="agent-banner">
+          <div class="agent-badge">
+            <div class="badge-ring" aria-hidden="true"></div>
+            <div class="agent-lines">
+              <div class="agent-line-1" id="hudAgentLine1">Agent inconnu</div>
+              <div class="agent-line-2" id="hudAgentLine2">—</div>
+            </div>
+          </div>
+          <div class="agent-side">
+            <div class="side-title">Événements</div>
+            <div id="eventLog" class="event-log"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Ateliers détectés</div>
+        <div class="panel-sub">Scan serveur • liens directs vers les sous-dossiers</div>
+      </div>
+
+      <div class="panel-body">
+        <div class="toolbar">
+          <input id="search" type="search" placeholder="Rechercher (titre / tags)..." />
+          <select id="filterStatus">
+            <option value="ALL">Tous</option>
+            <option value="STABLE">Stable</option>
+            <option value="DEV">En dev</option>
+          </select>
+          <button id="btn-refresh" class="btn" type="button" title="Recharger la liste">Rafraîchir</button>
+        </div>
+
+        <div id="projects" class="projects"></div>
+
+        <footer class="credits">
+          <div class="credits-left">
+            <span class="sep">•</span>
+            <span id="easter-directors" class="micro">Directeurs S.T.E.A.M. Limoges : <span class="muted">Yoan & Nicolas</span></span>
+          </div>
+          <div class="credits-right">
+            <span class="micro">Powered by <strong>Sterenna</strong></span>
+            <span class="sep">•</span>
+            <a class="micro" href="https://github.com/mutenrock" target="_blank" rel="noreferrer">GitHub @mutenrock</a>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <!-- Easter eggs -->
+  <div id="gift" class="gift" hidden title="🎁 Attrape-moi !"></div>
+
+  <div id="crankBox" class="crank" title="Manivelle (roulette souris ou clic)">
+    <div class="crank-label">MANIVELLE</div>
+    <button id="crankBtn" type="button" aria-label="Tourner la manivelle"></button>
+    <div class="crank-meter">
+      <div id="crankFill" class="crank-fill"></div>
+    </div>
+    <div id="crankHint" class="crank-hint">Tourne… doucement.</div>
+  </div>
+
+  <!-- Mini panneau de commandes (blip/bloup) -->
+  <div id="controlPanel" class="control-panel" aria-label="Panneau de commandes"></div>
+
+  <!-- Mini panneau de commande (blip bloup) -->
+  <div id="controlPanel" class="control-panel" aria-label="Panneau de commande"></div>
+
+  <audio id="bgm" loop preload="none"></audio>
+
+  <script src="./app.js"></script>
+</body>
+</html>

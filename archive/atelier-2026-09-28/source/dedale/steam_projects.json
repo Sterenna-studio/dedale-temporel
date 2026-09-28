@@ -1,0 +1,13 @@
+[
+  {
+    "id": "dedale",
+    "folder": "dedale",
+    "title": "Dédale Temporel",
+    "description": "Couloir de portes • accès aux ateliers via une interface narrative.",
+    "tags": ["hub", "dedale", "temporal"],
+    "icon": "🧭",
+    "status": "stable",
+    "order": 10,
+    "directUrl": "./dedale/"
+  }
+]
