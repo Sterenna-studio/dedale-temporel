@@ -1,0 +1,533 @@
+/* STEAM • Atelier industriel gras/rouillé */
+/* Fonts (Google Fonts)
+   If you prefer fully-offline fonts, restore @font-face blocks and ship .woff2 files.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@400;700&display=swap');
+
+/* Requested helper classes
+   (the user asked for .cinzel-<uniquifier> …). Using a concrete "steam" uniquifier.
+*/
+.cinzel-steam {
+  font-family: "Cinzel", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+.cinzel-steam-700 {
+  font-family: "Cinzel", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+:root{
+  --bg0:#0f0b09;
+  --bg1:#17100d;
+  --panel:#1b1410cc;
+  --panel2:#120d0a99;
+  --ink:#f3e8d6;
+  --muted:#d0c2aa;
+  --rust:#b0652a;
+  --brass:#c9a35a;
+  --oil:#2a221c;
+  --warn:#e0b04b;
+  --danger:#d55b4b;
+
+  --r:16px;
+  --shadow: 0 12px 40px rgba(0,0,0,.45);
+  --stroke: rgba(255,232,201,.10);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  color:var(--ink);
+  background: radial-gradient(1200px 800px at 20% 10%, #2a1c15 0%, var(--bg0) 60%, #070505 100%);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Cinzel", serif;
+  overflow-x:hidden;
+}
+
+a{color:inherit}
+.muted{opacity:.75}
+.micro{font-size:12px; letter-spacing:.02em}
+.sep{opacity:.35; margin:0 10px}
+
+#bg{
+  position:fixed; inset:0;
+  z-index:-2;
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,.6));
+  opacity:.9;
+  pointer-events:none;
+}
+
+.bg-layer{
+  position:absolute;
+  inset:-60px;
+  animation: bgDrift 18s ease-in-out infinite;
+}
+
+#bg svg{
+  width: calc(100% + 120px);
+  height: calc(100% + 120px);
+  display:block;
+  transform: translate(var(--parX, 0px), var(--parY, 0px)) scale(1.06);
+  transition: transform 140ms ease-out;
+}
+
+@keyframes bgDrift{
+  0%,100% { transform: translate3d(0px, 0px, 0px); }
+  50%      { transform: translate3d(18px, -12px, 0px); }
+}
+
+.topbar{
+  position:sticky; top:0;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:16px 18px;
+  background: linear-gradient(180deg, rgba(20,14,12,.92), rgba(20,14,12,.55));
+  backdrop-filter: blur(8px);
+  border-bottom:1px solid var(--stroke);
+}
+
+.brand{display:flex; align-items:center; gap:12px}
+.brand-mark{
+  width:44px; height:44px;
+  display:grid; place-items:center;
+  border-radius:14px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,220,160,.18), rgba(0,0,0,.15));
+  border:1px solid rgba(255,220,160,.16);
+  box-shadow: var(--shadow);
+  font-size:20px;
+}
+.brand-text .kicker{
+  font-size:12px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  opacity:.75;
+  font-family:"Cinzel Decorative","Cinzel",serif;
+}
+.brand-text .title{
+  font-size:20px;
+  letter-spacing:.02em;
+  font-family:"Cinzel Decorative","Cinzel",serif;
+}
+
+/* Wide agent nameplate (top HUD) */
+.agent-topwide{
+  flex:1;
+  max-width: 560px;
+  min-width: 220px;
+  padding:12px 14px;
+  border-radius: 18px;
+  border:1px solid rgba(201,163,90,.22);
+  background: linear-gradient(180deg, rgba(32,24,19,.78), rgba(14,10,8,.58));
+  box-shadow: 0 16px 40px rgba(0,0,0,.28);
+  position:relative;
+  overflow:hidden;
+}
+.agent-topwide:before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    radial-gradient(500px 140px at 18% 30%, rgba(201,163,90,.18), rgba(0,0,0,0)),
+    linear-gradient(90deg, rgba(255,232,201,.10), rgba(0,0,0,0));
+  opacity:.55;
+  pointer-events:none;
+}
+.agent-topline{
+  position:relative;
+  font-size:16px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.agent-topsub{
+  position:relative;
+  margin-top:2px;
+  font-size:12px;
+  opacity:.86;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.agent-topsub .muted{opacity:.75}
+
+.top-actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.btn{
+  appearance:none;
+  border:1px solid rgba(255,232,201,.14);
+  background: linear-gradient(180deg, rgba(40,30,24,.82), rgba(18,12,10,.72));
+  color:var(--ink);
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  user-select:none;
+}
+.btn:hover{transform: translateY(-1px); border-color: rgba(255,232,201,.24)}
+.btn:active{transform: translateY(0px); opacity:.92}
+.btn-ico{opacity:.9}
+.btn-primary{
+  border-color: rgba(201,163,90,.35);
+  background: linear-gradient(180deg, rgba(201,163,90,.24), rgba(18,12,10,.72));
+}
+.btn-warn{
+  border-color: rgba(224,176,75,.38);
+  background: linear-gradient(180deg, rgba(224,176,75,.22), rgba(18,12,10,.72));
+}
+.btn-danger{
+  border-color: rgba(213,91,75,.40);
+  background: linear-gradient(180deg, rgba(213,91,75,.18), rgba(18,12,10,.72));
+}
+
+.layout{
+  display:grid;
+  grid-template-columns: 420px 1fr;
+  gap:16px;
+  padding:16px;
+  max-width: 1300px;
+  margin:0 auto;
+}
+
+.panel{
+  background: linear-gradient(180deg, rgba(33,24,18,.78), rgba(14,10,8,.58));
+  border:1px solid var(--stroke);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+}
+
+.panel-header{
+  padding:14px 16px;
+  border-bottom:1px solid var(--stroke);
+  background: linear-gradient(180deg, rgba(18,12,10,.70), rgba(18,12,10,.35));
+}
+.panel-title{
+  font-family:"Cinzel Decorative","Cinzel",serif;
+  letter-spacing:.04em;
+  font-size:16px;
+}
+.panel-sub{
+  margin-top:4px;
+  font-size:12px;
+  opacity:.75;
+}
+
+.panel-body{padding:14px 16px}
+
+.grid-2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+.field label{
+  display:block;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.9;
+  margin-bottom:6px;
+  font-family:"Cinzel Decorative","Cinzel",serif;
+}
+input, select, textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,232,201,.14);
+  background: linear-gradient(180deg, rgba(16,11,9,.88), rgba(10,7,6,.85));
+  color:var(--ink);
+  outline:none;
+}
+input:focus, select:focus, textarea:focus{
+  border-color: rgba(201,163,90,.40);
+}
+.hint{font-size:12px; opacity:.7; margin-top:6px}
+.inline{display:flex; gap:10px; align-items:center}
+.inline > input{flex:1}
+
+.span-2{grid-column: 1 / -1}
+
+.agent-banner{
+  margin-top:12px;
+  border-radius: 18px;
+  border:1px solid rgba(255,232,201,.12);
+  background: radial-gradient(circle at 20% 20%, rgba(201,163,90,.18), rgba(0,0,0,.10));
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  overflow:hidden;
+}
+.agent-badge{
+  padding:14px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  min-height:110px;
+}
+.badge-ring{
+  width:68px;height:68px;border-radius:50%;
+  border:2px solid rgba(201,163,90,.34);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,232,201,.08), rgba(0,0,0,.18)),
+    repeating-conic-gradient(from 0deg, rgba(201,163,90,.18) 0 8deg, transparent 8deg 16deg);
+  box-shadow: inset 0 0 0 10px rgba(0,0,0,.10);
+  animation: ring 8s linear infinite;
+}
+@keyframes ring{to{transform:rotate(360deg)}}
+
+.agent-lines{display:flex; flex-direction:column; gap:6px}
+.agent-line-1{font-size:18px; font-family:"Cinzel Decorative","Cinzel",serif}
+.agent-line-2{font-size:12px; opacity:.8}
+
+.agent-side{
+  padding:14px;
+  border-left:1px solid rgba(255,232,201,.10);
+  background: linear-gradient(180deg, rgba(10,7,6,.2), rgba(10,7,6,.55));
+}
+.side-title{
+  font-size:12px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  opacity:.8;
+  margin-bottom:8px;
+  font-family:"Cinzel Decorative","Cinzel",serif;
+}
+.event-log{
+  font-size:12px;
+  line-height:1.45;
+  max-height: 94px;
+  overflow:auto;
+}
+.event{
+  padding:6px 8px;
+  border-radius:12px;
+  border:1px solid rgba(255,232,201,.10);
+  background: rgba(0,0,0,.15);
+  margin-bottom:8px;
+}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom:12px;
+  flex-wrap:wrap;
+}
+.toolbar input[type="search"]{flex:1; min-width:240px}
+
+.projects{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap:12px;
+}
+
+.card{
+  border-radius: 18px;
+  border:1px solid rgba(255,232,201,.12);
+  background: linear-gradient(180deg, rgba(14,10,8,.50), rgba(14,10,8,.70));
+  overflow:hidden;
+  position:relative;
+}
+.card::before{
+  content:"";
+  position:absolute; inset:-2px;
+  background: radial-gradient(600px 180px at 20% 10%, rgba(201,163,90,.18), transparent 60%);
+  pointer-events:none;
+}
+.card-inner{position:relative; padding:12px}
+.card-top{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+}
+.card-title{
+  font-family:"Cinzel Decorative","Cinzel",serif;
+  font-size:14px;
+  letter-spacing:.04em;
+}
+.badge{
+  font-size:11px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,232,201,.12);
+  background: rgba(0,0,0,.20);
+  opacity:.9;
+}
+.badge.dev{border-color: rgba(224,176,75,.28)}
+.badge.stable{border-color: rgba(201,163,90,.32)}
+.card-desc{
+  margin-top:8px;
+  font-size:12px;
+  opacity:.8;
+  min-height: 36px;
+}
+.tags{
+  margin-top:10px;
+  display:flex; flex-wrap:wrap; gap:6px;
+}
+.tag{
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid rgba(255,232,201,.10);
+  background: rgba(0,0,0,.16);
+  opacity:.85;
+}
+.card-actions{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+.card-actions a{flex:1; justify-content:center}
+
+.credits{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px dashed rgba(255,232,201,.14);
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+/* Gift easter egg */
+.gift{
+  position:fixed;
+  width:48px; height:48px;
+  left: 20px;
+  top: -60px;
+  background:
+    linear-gradient(90deg, rgba(201,163,90,.0), rgba(201,163,90,.35), rgba(201,163,90,.0)),
+    radial-gradient(circle at 30% 30%, rgba(255,232,201,.18), rgba(0,0,0,.18)),
+    linear-gradient(180deg, rgba(176,101,42,.45), rgba(18,12,10,.65));
+  border:1px solid rgba(255,232,201,.14);
+  border-radius:14px;
+  box-shadow: var(--shadow);
+  cursor:pointer;
+  z-index:30;
+}
+.gift::before{
+  content:"";
+  position:absolute; inset:8px 20px;
+  background: rgba(224,176,75,.35);
+  border-radius:999px;
+}
+.gift::after{
+  content:"";
+  position:absolute; inset:20px 8px;
+  background: rgba(224,176,75,.35);
+  border-radius:999px;
+}
+@keyframes fall{
+  to{ transform: translateY(calc(100vh + 100px)) rotate(240deg); }
+}
+
+/* Crank */
+.crank{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  width: 210px;
+  border-radius: 20px;
+  border:1px solid rgba(255,232,201,.12);
+  background: linear-gradient(180deg, rgba(26,18,14,.80), rgba(10,7,6,.80));
+  box-shadow: var(--shadow);
+  padding:10px;
+  z-index:25;
+}
+.crank-label{
+  font-family:"Cinzel Decorative","Cinzel",serif;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  opacity:.8;
+}
+#crankBtn{
+  width:100%;
+  margin-top:8px;
+  height:58px;
+  border-radius: 18px;
+  border:1px solid rgba(201,163,90,.28);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,232,201,.10), rgba(0,0,0,.18)),
+    linear-gradient(180deg, rgba(201,163,90,.16), rgba(18,12,10,.75));
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+}
+#crankBtn::before{
+  content:"";
+  position:absolute;
+  left:-40px; top: -40px;
+  width:120px; height:120px;
+  border-radius:50%;
+  border:2px solid rgba(201,163,90,.22);
+  box-shadow: inset 0 0 0 10px rgba(0,0,0,.10);
+  transform: rotate(0deg);
+  animation: gearspin 5s linear infinite;
+  opacity:.85;
+}
+@keyframes gearspin{to{transform:rotate(360deg)}}
+.crank-meter{
+  margin-top:10px;
+  height:12px;
+  border-radius: 999px;
+  border:1px solid rgba(255,232,201,.12);
+  background: rgba(0,0,0,.22);
+  overflow:hidden;
+}
+.crank-fill{
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, rgba(201,163,90,.22), rgba(224,176,75,.45), rgba(213,91,75,.35));
+  border-right:1px solid rgba(255,232,201,.10);
+}
+.crank-hint{
+  margin-top:8px;
+  font-size:12px;
+  opacity:.75;
+}
+
+/* Mini control panel (SVG buttons) */
+.control-panel{
+  position:fixed;
+  left:16px;
+  bottom:16px;
+  width: 260px;
+  height: 170px;
+  z-index:25;
+  border-radius: 20px;
+  border:1px solid rgba(255,232,201,.12);
+  background: linear-gradient(180deg, rgba(26,18,14,.78), rgba(10,7,6,.82));
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  padding:10px;
+}
+.control-panel .cp-title{
+  font-family:"Cinzel Decorative","Cinzel",serif;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  opacity:.8;
+  margin-bottom:8px;
+}
+.control-panel svg{width:100%; height: calc(100% - 22px); display:block;}
+.control-panel .cp-btn{cursor:pointer;}
+.control-panel .cp-btn circle{transition: transform 90ms ease-out, opacity 120ms ease-out;}
+.control-panel .cp-btn:hover circle{opacity:1;}
+.control-panel .cp-btn:active circle{transform: scale(0.96);}
+.control-panel .cp-btn.cp-active circle{filter: drop-shadow(0 0 8px rgba(201,163,90,.55));}
+.control-panel .cp-small{font-size:8px; letter-spacing:.18em; text-transform:uppercase; opacity:.65}
+
+/* Responsive */
+@media (max-width: 980px){
+  .layout{grid-template-columns: 1fr}
+}

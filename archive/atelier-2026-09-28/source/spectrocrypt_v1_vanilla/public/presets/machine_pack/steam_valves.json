@@ -1,0 +1,59 @@
+{
+  "id": "steam_valves",
+  "name": "Steam Valves",
+  "tags": [
+    "machine",
+    "steam",
+    "ambient"
+  ],
+  "carrier": {
+    "durationSec": 6,
+    "layers": [
+      {
+        "type": "noise",
+        "color": "pink",
+        "gain": 0.16,
+        "filter": {
+          "type": "bandpass",
+          "freq": 420,
+          "q": 1.1
+        }
+      },
+      {
+        "type": "pulseTrain",
+        "freq": 6,
+        "gain": 0.08,
+        "env": {
+          "attack": 0.002,
+          "decay": 0.05,
+          "sustain": 0.0,
+          "release": 0.02
+        }
+      },
+      {
+        "type": "fm",
+        "carrierHz": 110,
+        "modHz": 55,
+        "index": 1.6,
+        "gain": 0.06,
+        "env": {
+          "attack": 0.02,
+          "decay": 0.2,
+          "sustain": 0.25,
+          "release": 0.3
+        }
+      }
+    ]
+  },
+  "secret": {
+    "mode": "FSK",
+    "symbolRate": 40,
+    "f0": 1450,
+    "f1": 1750,
+    "redundancy": 3
+  },
+  "mix": {
+    "carrierGain": 1.0,
+    "secretGain": 0.25
+  }
+}

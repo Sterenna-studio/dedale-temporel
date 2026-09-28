@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Décrypteur Temporel Interlangage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-frame">
+      <header class="app-header">
+        <div class="app-title">Décrypteur Temporel Interlangage</div>
+        <div class="app-subtitle">Analyse spectrale de signaux cryptés</div>
+      </header>
+
+      <main class="app-main">
+        <!-- PANNEAU GAUCHE : POTARDS + BOUTONS -->
+        <aside class="controls-panel">
+          <!-- Source audio -->
+          <section class="panel-section">
+            <h2>Source audio</h2>
+            <p>Charge un fichier WAV ou MP3 encodé.</p>
+            <div class="file-row">
+              <input type="file" id="fileInput" accept="audio/*" />
+            </div>
+            <div class="small-label" id="fileInfo">(aucun fichier chargé)</div>
+          </section>
+
+          <!-- Potards principaux -->
+          <section class="panel-section">
+            <h2>Réglages visuels</h2>
+            <div class="knob-group">
+              <div class="knob-container">
+                <div class="knob dented" id="brightnessKnob">
+                  <div class="pointer"></div>
+                </div>
+                <input type="range" id="brightness" min="-100" max="100" value="0" />
+                <div class="knob-label">Lum</div>
+              </div>
+              <div class="knob-container">
+                <div class="knob dented" id="contrastKnob">
+                  <div class="pointer"></div>
+                </div>
+                <input type="range" id="contrast" min="50" max="250" value="100" />
+                <div class="knob-label">Contr</div>
+              </div>
+              <div class="knob-container">
+                <div class="knob dented" id="gammaKnob">
+                  <div class="pointer"></div>
+                </div>
+                <input type="range" id="gamma" min="50" max="250" value="100" />
+                <div class="knob-label">Gamma</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Potards de zoom + position curseur -->
+          <section class="panel-section">
+            <h2>Zoom & Curseur</h2>
+            <div class="knob-group">
+              <div class="knob-container">
+                <div class="knob dented" id="zoomKnob">
+                  <div class="pointer"></div>
+                </div>
+                <input type="range" id="zoom" min="50" max="250" value="100" />
+                <div class="knob-label">Zoom</div>
+              </div>
+              <div class="knob-container">
+                <div class="knob dented" id="posXKnob">
+                  <div class="pointer"></div>
+                </div>
+                <input type="range" id="posX" min="0" max="100" value="50" />
+                <div class="knob-label">Pos X</div>
+              </div>
+              <div class="knob-container">
+                <div class="knob dented" id="posYKnob">
+                  <div class="pointer"></div>
+                </div>
+                <input type="range" id="posY" min="0" max="100" value="50" />
+                <div class="knob-label">Pos Y</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Panel de boutons principaux (invert, grayscale, flipY) -->
+          <section class="panel-section">
+            <h2>Décrypteurs</h2>
+            <p class="small-label">Boutons anonymes (décode la machine...)</p>
+            <div class="button-panel" id="buttonPanel">
+              <button class="toggle-btn" id="btnInvert" data-toggle="invert"></button>
+              <button class="toggle-btn" id="btnGrayscale" data-toggle="grayscale"></button>
+              <button class="toggle-btn" id="btnFlipY" data-toggle="flipY"></button>
+            </div>
+          </section>
+
+          <!-- Panel séparé pour les boutons fun -->
+          <section class="panel-section">
+            <h2>Pilote temporel</h2>
+            <p class="small-label">Boutons “fun” (machine expérimentale)</p>
+            <div class="fun-button-panel" id="funButtons">
+              <button class="fun-btn" id="funDrop" data-fun="drop"></button>
+              <button class="fun-btn" id="funMelody" data-fun="melody"></button>
+              <button class="fun-btn" id="funLeds" data-fun="leds"></button>
+              <button class="fun-btn" id="funSpin" data-fun="spin"></button>
+              <button class="fun-btn" id="funPower" data-fun="power"></button>
+              <button class="fun-btn" id="funPrint" data-fun="print"></button>
+            </div>
+          </section>
+        </aside>
+
+        <!-- MONITEUR -->
+        <section class="monitor-panel">
+          <div class="monitor-frame" id="monitorFrame">
+            <div class="monitor-inner" id="monitorInner">
+              <!-- écran fixe -->
+              <div class="monitor-layout">
+                <div class="monitor-screen">
+                  <div class="monitor-screen-frame">
+                    <canvas id="spectroCanvas"></canvas>
+
+                    <!-- Curseur rétro -->
+                    <div id="retroMouse" class="retro-mouse"></div>
+
+                    <!-- Overlay analyse avec engrenages -->
+                    <div id="analysisOverlay" class="analysis-overlay hidden">
+                      <div class="analysis-content">
+                        <div class="gear gear-large"></div>
+                        <div class="gear gear-small"></div>
+                        <div class="steam puff"></div>
+                        <div class="analysis-text">Analyse en cours…</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- HUD à droite : légende -->
+                <div class="monitor-hud">
+                  <div class="monitor-overlay-corner" id="overlayCorner">
+                    SPECTRE : N/A
+                  </div>
+                  <div class="legend-area">
+                    <div class="legend-title">Légende</div>
+                    <label class="legend-row">
+                      <input type="checkbox" id="legendInvert" disabled />
+                      <span>NEG</span>
+                    </label>
+                    <label class="legend-row">
+                      <input type="checkbox" id="legendGrayscale" disabled />
+                      <span>GRIS</span>
+                    </label>
+                    <label class="legend-row">
+                      <input type="checkbox" id="legendFlipY" disabled />
+                      <span>FLIP Y</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="monitor-scanlines"></div>
+              <div class="monitor-glow"></div>
+              <div class="monitor-overlay-text">FREQ / TEMPS</div>
+            </div>
+
+            <!-- Slot d'impression sous le moniteur -->
+            <div class="print-slot">
+              <button id="printButton" class="print-btn" title="Imprimer le spectrogramme"></button>
+              <div class="print-mouth"></div>
+            </div>
+          </div>
+
+          <!-- LEDs machine -->
+          <div class="machine-lights" id="machineLights">
+            <div class="machine-light"></div>
+            <div class="machine-light red"></div>
+            <div class="machine-light blue"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <span>Laboratoire S.T.E.A.M. — Section Chronophonie</span>
+        <span>Prototype multi-fichiers complet — v3.0</span>
+      </footer>
+    </div>
+
+    <!-- Popup connaissance de la machine -->
+    <div id="knowledgePopup" class="popup hidden">
+      <div class="popup-content">
+        <h3>Connaissance de la machine acquise</h3>
+        <p>
+          Les secrets du Décrypteur sont révélés.<br />
+          Les potards et boutons sont désormais légendés.
+        </p>
+        <button id="closeKnowledgePopup">Compris</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

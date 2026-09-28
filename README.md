@@ -44,6 +44,11 @@ publiées (exclues du build), mais conservées pour l'historique du projet.
 
 ## Déploiement
 
+L'ancien dossier ATELIER est conservé dans
+[`archive/atelier-2026-09-28`](archive/atelier-2026-09-28/README.md), avec ses
+variantes et un manifeste d'intégrité. La copie intégrale privée est ignorée
+dans `local-private/`. Aucun de ces dossiers n'entre dans le site déployé.
+
 `.github/workflows/deploy-nitro.yml` assemble couloir + salles + sons en un seul
 arbre et le pousse via rsync SSH vers `~/nitro/dedale/`. Déclenché à chaque push
 touchant l'un des dossiers déployés (voir `paths:` dans le workflow), `assets/sfx/sounds/**`

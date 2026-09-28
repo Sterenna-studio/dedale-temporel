@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "presets": [
+    {
+      "id": "steam_valves",
+      "name": "Steam Valves",
+      "tags": [
+        "machine",
+        "steam",
+        "ambient"
+      ],
+      "path": "./presets/machine_pack/steam_valves.json"
+    },
+    {
+      "id": "telegraph_clicks",
+      "name": "Telegraph Clicks",
+      "tags": [
+        "machine",
+        "ticks"
+      ],
+      "path": "./presets/machine_pack/telegraph_clicks.json"
+    },
+    {
+      "id": "cicadas",
+      "name": "Cicadas",
+      "tags": [
+        "animal",
+        "insects"
+      ],
+      "path": "./presets/animal_pack/cicadas.json"
+    },
+    {
+      "id": "frog_chorus",
+      "name": "Frog Chorus",
+      "tags": [
+        "animal",
+        "night"
+      ],
+      "path": "./presets/animal_pack/frog_chorus.json"
+    },
+    {
+      "id": "clockwork_arp",
+      "name": "Clockwork Arp",
+      "tags": [
+        "melodic",
+        "arp"
+      ],
+      "path": "./presets/melodic_pack/clockwork_arp.json"
+    },
+    {
+      "id": "radio_glitch",
+      "name": "Radio Glitch",
+      "tags": [
+        "glitch",
+        "radio"
+      ],
+      "path": "./presets/glitch_pack/radio_glitch.json"
+    }
+  ]
+}

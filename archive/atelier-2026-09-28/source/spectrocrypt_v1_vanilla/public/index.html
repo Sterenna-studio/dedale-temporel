@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SpectroCrypt — Machine de cryptage audio</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandTitle">SpectroCrypt</div>
+      <div class="brandSub">Crypter & décrypter des messages cachés dans le son • + spectrogramme “CRT”</div>
+    </div>
+    <div class="tabs">
+      <button id="tabEncrypt" class="tab active">Crypter</button>
+      <button id="tabDecrypt" class="tab">Décrypter</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="panel">
+        <div class="panelTitle">Preset Packs</div>
+        <div class="panelHint">Choisis un “skin” sonore (machine / animal / mélodique…).</div>
+        <div id="presetList" class="presetList"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panelTitle">Affichage CRT</div>
+
+        <label class="row">
+          <span>Brightness</span>
+          <input id="kBrightness" type="range" min="-0.8" max="0.8" step="0.02" value="0" />
+          <span class="val" id="val_kBrightness"></span>
+        </label>
+
+        <label class="row">
+          <span>Contrast</span>
+          <input id="kContrast" type="range" min="0.4" max="2.6" step="0.02" value="1" />
+          <span class="val" id="val_kContrast"></span>
+        </label>
+
+        <label class="row">
+          <span>Gamma</span>
+          <input id="kGamma" type="range" min="0.4" max="2.6" step="0.02" value="1" />
+          <span class="val" id="val_kGamma"></span>
+        </label>
+
+        <label class="row">
+          <span>Invert</span>
+          <input id="kInvert" type="checkbox" />
+          <span class="val"></span>
+        </label>
+      </div>
+    </aside>
+
+    <section class="center">
+      <div class="crtFrame">
+        <canvas id="crtCanvas" width="900" height="520"></canvas>
+        <div class="crtBezel">
+          <div class="meta">
+            <div>Preset: <b id="currentPreset">—</b></div>
+            <div id="metaInfo" class="muted">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel statusbar">
+        <div id="genStatus" class="muted">Prêt.</div>
+        <div id="decStatus" class="muted"></div>
+      </div>
+
+      <!-- Encrypt panel -->
+      <div id="panelEncrypt" class="panel">
+        <div class="panelTitle">Machine de cryptage</div>
+        <div class="grid2">
+          <label>
+            Message secret
+            <textarea id="secretMessage" rows="3" placeholder="ex: CODE-STEAM-42"></textarea>
+          </label>
+
+          <div>
+            <label>
+              Mode
+              <select id="secretMode">
+                <option value="SPECTROGLYPH">SpectroGlyph (message visible au spectrogramme)</option>
+                <option value="FSK">FSK (robuste & décodable automatiquement)</option>
+              </select>
+            </label>
+
+            <label class="row">
+              <span>Durée (sec)</span>
+              <input id="durationSec" type="number" min="2" max="30" step="1" value="6" />
+            </label>
+
+            <label class="row">
+              <span>Carrier gain</span>
+              <input id="carrierGain" type="range" min="0" max="1.2" step="0.02" value="1.0" />
+            </label>
+
+            <label class="row">
+              <span>Secret gain</span>
+              <input id="secretGain" type="range" min="0" max="1.2" step="0.02" value="0.25" />
+            </label>
+
+            <label class="row">
+              <span>Hybrid FSK (en +, léger)</span>
+              <input id="hybridFsk" type="checkbox" checked />
+            </label>
+
+            <div class="btnRow">
+              <button id="btnGenerate" class="btn primary">Generate</button>
+              <a id="btnDownload" class="btn" href="#" download>Download WAV</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="panelHint">
+          Astuce: lance un preset “Machine”, mets un message court, puis clique Generate → tu verras le secret dans le spectrogramme.
+        </div>
+
+        <audio id="audioPreview" controls class="audio"></audio>
+      </div>
+
+      <!-- Decrypt panel -->
+      <div id="panelDecrypt" class="panel hidden">
+        <div class="panelTitle">Machine de décryptage</div>
+
+        <div class="grid2">
+          <div>
+            <label>
+              Décrypter un fichier
+              <input id="fileDecrypt" type="file" accept="audio/*" />
+            </label>
+
+            <div class="panelHint">
+              Dépose un WAV/MP3 généré par SpectroCrypt (FSK ou Hybrid) pour un décodage automatique.
+            </div>
+          </div>
+
+          <div>
+            <div class="btnRow">
+              <button id="btnMic" class="btn primary">Start Mic</button>
+            </div>
+            <div class="panelHint">
+              Mode micro = nécessite HTTPS (ok sur sterenna.fr) ou localhost.
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelTitle">Message décodé</div>
+          <pre id="decodedMessage" class="decoded">(rien pour l’instant)</pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Core scripts (no build) -->
+  <script src="./js/crc16.js"></script>
+  <script src="./js/goertzel.js"></script>
+  <script src="./js/spectrogram.js"></script>
+  <script src="./js/fsk.js"></script>
+  <script src="./js/spectroglyph.js"></script>
+  <script src="./js/presets.js"></script>
+  <script src="./js/wav.js"></script>
+  <script src="./js/carrier.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

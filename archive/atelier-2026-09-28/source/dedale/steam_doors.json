@@ -1,0 +1,40 @@
+{
+  "basePath": ".",
+  "exitUrl": "https://steamescape.fr/limoges/",
+  "doors": [
+    {
+      "id": "porte-dedale",
+      "name": "Dédale Temporel",
+      "type": "temporal",
+      "folder": "dedale",
+      "redirectUrl": "./dedale/",
+      "requireCode": false,
+      "validCodes": [],
+      "placeholder": "—",
+      "riddleTitle": "Accès",
+      "riddleText": "Porte d'entrée vers le dédale.",
+      "hasNote": true,
+      "noteText": "Bienvenue, agent.",
+      "notePosition": {"bottom":"18px","left":"18px","rotate":"-6deg"},
+      "dialLabel": "",
+      "signText": "Atelier"
+    },
+    {
+      "id": "porte-sortie",
+      "name": "Sortie",
+      "type": "exit",
+      "folder": null,
+      "redirectUrl": "https://steamescape.fr/limoges/",
+      "requireCode": false,
+      "validCodes": [],
+      "placeholder": "Cliquez sur valider pour quitter…",
+      "riddleTitle": "Retour",
+      "riddleText": "Retour au site de l'agence.",
+      "hasNote": false,
+      "noteText": "",
+      "notePosition": {},
+      "dialLabel": "",
+      "signText": "Sortie"
+    }
+  ]
+}

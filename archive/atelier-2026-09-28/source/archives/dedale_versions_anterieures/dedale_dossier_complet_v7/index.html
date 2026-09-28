@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Le Couloir des Dédales Temporels</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="dedale-shell">
+      <header class="dedale-header">
+        <div class="dedale-title">Le Couloir des Dédales Temporels</div>
+        <div class="dedale-header-right">
+          <div class="dedale-subtitle">Section S.T.E.A.M. – Accès restreint</div>
+          <div class="header-lights">
+            <span class="led led-green"></span>
+            <span class="led led-amber"></span>
+            <span class="led led-red"></span>
+          </div>
+        </div>
+      </header>
+
+      <main class="dedale-main">
+        <!-- Partie gauche : le couloir de portes -->
+        <section class="hallway">
+          <div class="hallway-perspective"></div>
+          <div class="hallway-floor"></div>
+
+          <div class="hallway-content">
+            <div class="door-zone" id="doorZone">
+              <!-- Portes générées dynamiquement -->
+            </div>
+            <div class="doors-hint">
+              Faites glisser le couloir à la souris ou avec le doigt pour explorer toutes les portes.
+              Sur mobile, les portes s'alignent dans la profondeur du couloir.
+            </div>
+          </div>
+        </section>
+
+        <!-- Partie droite : riddle panel + terminal -->
+        <aside class="riddle-panel">
+          <!-- Panneau d'accueil par défaut -->
+          <div class="riddle-card" id="riddleCard">
+            <h2 id="riddleTitle">Bienvenue dans le Dédale</h2>
+            <div class="riddle-text" id="riddleText">
+              Vous venez de pénétrer dans l’un des couloirs perdus de l’agence S.T.E.A.M.
+
+              Ici, chaque porte est une anomalie temporelle ou l’accès à une salle de l’agence :
+              certaines sont encore utilisées par les agents, d’autres ont été condamnées,
+              parfois pour de bonnes raisons.
+
+              Faites coulisser le couloir pour toutes les voir.
+              En choisissant une porte, vous consultez son dossier d’énigme :
+              son histoire, son usage et le code qui permet de l’activer (si elle n’est pas verrouillée).
+
+              Ne vous perdez pas dans ces dédales : certaines portes mènent à des outils
+              essentiels, d’autres à des expériences oubliées… et l’une d’elles vous
+              ramènera vers la sortie de l’agence.
+            </div>
+          </div>
+
+          <div class="terminal-card">
+            <div class="terminal-title">Console d’accès</div>
+            <div class="terminal-label">
+              Selon la porte sélectionnée, un code peut être requis, ou un simple passage.
+            </div>
+
+            <!-- Mode code : input + bouton -->
+            <div class="code-input-row" id="codeMode">
+              <input
+                type="text"
+                id="codeInput"
+                placeholder="Choisissez une porte, puis entrez le nom de la « porte-temporelle »..."
+                autocomplete="off"
+              />
+              <button id="submitCode">Valider</button>
+            </div>
+
+            <!-- Mode entrée directe (portes sans code) -->
+            <div class="code-enter-row hidden" id="enterMode">
+              <button id="enterDoorBtn">Entrer dans cette porte</button>
+            </div>
+
+            <div id="terminalOutput" class="terminal-output"></div>
+            <div class="hint-line">
+              Astuce : parfois, la porte n'est pas <em>devant</em> la machine…
+              elle <em>est</em> la machine.
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="dedale-footer">
+        <span>S.T.E.A.M. – Couloir des Dédales Temporels</span>
+        <span>Accès aux portes uniquement via ce dédale</span>
+        <div class="footer-lights">
+          <span class="led led-green"></span>
+          <span class="led led-amber"></span>
+          <span class="led led-red"></span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Overlay de la note en grand -->
+    <div id="noteOverlay" class="note-overlay hidden">
+      <div class="note-card">
+        <h3 id="noteTitle">Note épinglée sur la porte</h3>
+        <div class="note-text" id="noteText"></div>
+        <button class="note-close" id="noteClose">Fermer</button>
+      </div>
+    </div>
+
+    <!-- Audio : fond + effets -->
+    <audio id="bgMusic" src="sounds/bg/dedale_bg.mp3" loop class="audio-hidden"></audio>
+    <audio id="sfxSuccess" src="sounds/ui/success.wav" class="audio-hidden"></audio>
+    <audio id="sfxError" src="sounds/ui/error.wav" class="audio-hidden"></audio>
+    <audio id="sfxDoorOpen" src="sounds/doors/door_open.wav" class="audio-hidden"></audio>
+    <audio id="sfxDoorHover" src="sounds/doors/door_hover.wav" class="audio-hidden"></audio>
+    <audio id="sfxDoorLocked" src="sounds/doors/door_locked.wav" class="audio-hidden"></audio>
+    <audio id="sfxNote" src="sounds/lore/note_rustle.wav" class="audio-hidden"></audio>
+    <audio id="sfxConsole" src="sounds/ui/console_beep.wav" class="audio-hidden"></audio>
+
+    <script src="config/config.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

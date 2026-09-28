@@ -1,0 +1,46 @@
+{
+  "id": "radio_glitch",
+  "name": "Radio Glitch",
+  "tags": [
+    "glitch",
+    "radio"
+  ],
+  "carrier": {
+    "durationSec": 6,
+    "layers": [
+      {
+        "type": "noise",
+        "color": "white",
+        "gain": 0.08,
+        "filter": {
+          "type": "bandpass",
+          "freq": 1400,
+          "q": 0.9
+        }
+      },
+      {
+        "type": "chirp",
+        "fStart": 1800,
+        "fEnd": 600,
+        "gain": 0.05,
+        "env": {
+          "attack": 0.01,
+          "decay": 0.2,
+          "sustain": 0.1,
+          "release": 0.25
+        }
+      }
+    ]
+  },
+  "secret": {
+    "mode": "FSK",
+    "symbolRate": 50,
+    "f0": 1200,
+    "f1": 2200,
+    "redundancy": 3
+  },
+  "mix": {
+    "carrierGain": 1.0,
+    "secretGain": 0.25
+  }
+}
