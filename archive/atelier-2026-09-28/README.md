@@ -10,7 +10,8 @@ S.T.E.A.M. et ses versions successives ; les applications actuelles restent dans
 - `manifest.json` : chemin, SHA-256 original, SHA-256 archivé, indicateur de nettoyage.
 - Copie intégrale privée : `../../local-private/atelier-2026-09-28/`, 5 605 fichiers
   originaux vérifiés par SHA-256, plus son manifeste. Ce dossier est ignoré par Git.
-- La source dans `toCheck` reste intacte.
+- Le lot dans `toCheck` a été retiré après une nouvelle comparaison intégrale des
+  fichiers et dossiers avec la copie privée. Les originaux y restent conservés.
 
 Les anciens identifiants d'administration ont été neutralisés dans six fichiers
 du hub PHP ; les originaux exacts sont préservés uniquement dans la copie privée.
