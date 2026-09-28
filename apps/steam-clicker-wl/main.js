@@ -556,16 +556,22 @@ function spawnCoins(cx,cy){
 
 // ── MODE ─────────────────────────────────────────────────────
 function switchMode(m){
+  if(m==='workshop' && state.steamTotal<10_000_000){
+    toast('L’atelier se débloque à 10 M de vapeur totale.');
+    return;
+  }
   state.mode=m;
   $('etabliMode').classList.toggle('active',  m==='etabli');
   $('workshopMode').classList.toggle('active',m==='workshop');
   $('gearView').classList.toggle('hidden',    m!=='etabli');
   $('workshopView').classList.toggle('hidden',m!=='workshop');
-  $('instruction').classList.toggle('hidden', m==='workshop');
+  $('workshopView').classList.toggle('active',m==='workshop');
+  $('instruction').classList.toggle('hidden', m==='workshop' || state.firstClick);
 }
 
 // fullRefresh = rebuild complet (load / reset / refund uniquement)
 function fullRefresh(){
+  switchMode(state.mode==='workshop' && state.steamTotal>=10_000_000 ? 'workshop' : 'etabli');
   recalc(); renderStats(); renderShop(); renderWorkbench(); renderGearLayers();
 }
 
@@ -602,7 +608,7 @@ $('mainGear').addEventListener('click',e=>{
   floatText(e.clientX,e.clientY,'+'+fmt(gain)+' 💨');
 });
 
-$('shopList').addEventListener('click',e=>{
+function handleAction(e){
   const btn=e.target.closest('button[data-buy],button[data-art],button[data-gold],button[data-auto],button[data-conv],button[data-claim-q]');
   if(!btn)return;
   const bulk=state.bulk==='max'?null:+state.bulk;
@@ -661,7 +667,9 @@ $('shopList').addEventListener('click',e=>{
       renderQuests(btn.dataset.qt);
     }
   }
-});
+}
+$('shopList').addEventListener('click',handleAction);
+$('questGrid').addEventListener('click',handleAction);
 
 $('buyFactorBtns').addEventListener('click',e=>{
   const b=e.target.closest('[data-bulk]'); if(!b)return;
@@ -686,7 +694,7 @@ $('rightToggle').onclick=()=>{
   $('rightToggle').textContent=state.rightCollapsed?'◀':'▶';
 };
 $('etabliMode').onclick  =()=>switchMode('etabli');
-$('workshopMode').onclick=()=>{ if(state.steamTotal>=10_000_000)switchMode('workshop'); };
+$('workshopMode').onclick=()=>switchMode('workshop');
 $('achBtn').onclick  =()=>{ $('achievementModal').classList.remove('hidden'); renderAchievements(); };
 $('questBtn').onclick=()=>{ $('questModal').classList.remove('hidden'); renderQuests('daily'); };
 $('closeAch').onclick  =()=>$('achievementModal').classList.add('hidden');
