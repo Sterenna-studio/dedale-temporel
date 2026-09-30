@@ -8,3 +8,5 @@ SHA-256 values were checked against the cleanup manifest.
 
 These are historical source snapshots. The active game remains at the parent
 `steam-clicker-wl` directory. The Nitro deploy workflow excludes `old.vers/`.
+
+The apeur/ directory preserves the compatible minimal-interface variant from this same lab snapshot.

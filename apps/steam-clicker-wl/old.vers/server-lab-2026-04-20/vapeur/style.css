@@ -1,0 +1,218 @@
+/* Styles minimalistes pour Vapeur Clicker */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #1c1c1c;
+    color: #f5f5f5;
+}
+
+#app {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    text-align: center;
+}
+
+.title {
+    margin-top: 0;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Zone centrale */
+#central-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.central-gear {
+    width: 96px;
+    height: 96px;
+    cursor: pointer;
+    animation: rotate 8s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+.crank-display {
+    font-size: 1rem;
+    color: #ffbf00;
+}
+
+.boost-display {
+    font-size: 0.9rem;
+    color: #58a6ff;
+}
+
+.gold-display {
+    font-size: 1rem;
+    color: #d4af37;
+}
+
+.extra-text {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.page-actions {
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+}
+
+.nav {
+    margin: 1rem 0;
+}
+
+.page-btn {
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border: none;
+    border-radius: 4px;
+    background: #444;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.page-btn.active {
+    background: #0066cc;
+}
+
+/* Bouton pour le facteur d'achat (mêmes styles qu'un onglet, sans toggler de page) */
+.factor-btn {
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border: none;
+    border-radius: 4px;
+    background: #444;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+}
+.factor-btn:hover {
+    background: #555;
+}
+
+/* Animation d'effort pour les artisans
+   L'icône pulse légèrement pour représenter le travail. La durée est définie dynamiquement en JS. */
+@keyframes effort {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.effort {
+    animation-name: effort;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #333;
+}
+
+.item-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.item-info img {
+    width: 36px;
+    height: 36px;
+}
+
+.small-text {
+    font-size: 0.8rem;
+    color: #bbb;
+}
+
+.item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.buy-btn {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background: #0066cc;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.buy-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
+.actions {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.action-btn {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 4px;
+    background: #444;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.action-btn:hover {
+    background: #555;
+}
