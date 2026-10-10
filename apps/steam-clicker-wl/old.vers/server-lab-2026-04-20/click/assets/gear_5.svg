@@ -1,0 +1,41 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="aetherGrad" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#e6e6fa;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#dda0dd;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#9370db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4b0082;stop-opacity:1" />
+    </radialGradient>
+    <filter id="etherealGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Energy field -->
+  <circle cx="20" cy="20" r="19" fill="#1e1e2e" opacity="0.8"/>
+  <!-- Mystical teeth -->
+  <g fill="url(#aetherGrad)" filter="url(#etherealGlow)">
+    <path d="M20,1 L18,0 Q20,3 22,0 L20,1 Q18,5 22,5 L20,1 Z"/>
+    <path d="M35,13 L37,10 Q35,13 39,11 L35,13 Q31,15 35,17 L35,13 Z" transform="rotate(45 20 20)"/>
+    <path d="M39,20 L40,18 Q37,20 40,22 L39,20 Q35,18 35,22 L39,20 Z"/>
+    <path d="M35,27 L39,29 Q35,27 37,30 L35,27 Q35,23 31,25 L35,27 Z" transform="rotate(135 20 20)"/>
+    <path d="M20,39 L22,40 Q20,37 18,40 L20,39 Q22,35 18,35 L20,39 Z"/>
+    <path d="M5,27 L3,30 Q5,27 1,29 L5,27 Q9,25 5,23 L5,27 Z" transform="rotate(225 20 20)"/>
+    <path d="M1,20 L0,22 Q3,20 0,18 L1,20 Q5,22 5,18 L1,20 Z"/>
+    <path d="M5,13 L1,11 Q5,13 3,10 L5,13 Q5,17 9,15 L5,13 Z" transform="rotate(315 20 20)"/>
+  </g>
+  <!-- Ethereal core -->
+  <circle cx="20" cy="20" r="15" fill="url(#aetherGrad)" filter="url(#etherealGlow)" opacity="0.9"/>
+  <circle cx="20" cy="20" r="10" fill="#9370db" opacity="0.7"/>
+  <circle cx="20" cy="20" r="6" fill="#dda0dd" opacity="0.8"/>
+  <!-- Energy center -->
+  <g stroke="#e6e6fa" stroke-width="1" fill="none" opacity="0.9">
+    <circle cx="20" cy="20" r="3"/>
+    <path d="M17,20 Q20,17 23,20 Q20,23 17,20"/>
+    <path d="M20,17 Q23,20 20,23 Q17,20 20,17"/>
+  </g>
+  <circle cx="20" cy="20" r="1" fill="#ffffff" opacity="0.9"/>
+</svg>

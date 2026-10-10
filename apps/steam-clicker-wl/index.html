@@ -1124,13 +1124,11 @@
             cursor: not-allowed;
         }
     </style>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="stylesheet" href="runtime.css">
 </head>
 <body>
 
-    <div id="authWarning" class="auth-warning hidden">
-        <span>⚠️ Authentification requise pour utiliser le système d'or de l'atelier</span>
-        <button onclick="window.location.href='/lab/login.html'">Se connecter</button>
-    </div>
+
 
     <div class="relative min-h-screen flex flex-col">
 
@@ -1160,7 +1158,7 @@
                     </div>
                 </div>
 
-                <div class="gold-display" onclick="refreshGoldDisplay()" title="Actualiser le trésor">
+                <div class="gold-display" title="Actualiser le trésor">
                     <span style="font-size: 1.5rem;">💰</span>
                     <div>
                         <span id="goldCounter">0</span>
@@ -1169,13 +1167,13 @@
                 </div>
 
                 <div class="hud-section">
-                    <button onclick="showQuestModal()" class="panel-toggle" title="Ouvrir les Quêtes" style="width: 45px; height: 45px; font-size: 20px;">
+                    <button id="questBtn" class="panel-toggle" title="Ouvrir les Quêtes" style="width: 45px; height: 45px; font-size: 20px;">
                         📜
                     </button>
-                    <button onclick="showAchievementsModal()" class="panel-toggle" title="Ouvrir les Succès" style="width: 45px; height: 45px; font-size: 20px;">
+                    <button id="achBtn" class="panel-toggle" title="Ouvrir les Succès" style="width: 45px; height: 45px; font-size: 20px;">
                         🏆
                     </button>
-                    <div class="username-display" onclick="openPlayerShop()" id="username-display" title="Boutique du Joueur">
+                    <div class="username-display" id="username-display" title="Partie locale">
                         Maître Inventeur
                     </div>
                 </div>
@@ -1186,43 +1184,18 @@
 
             <div class="left-panel" id="leftPanel">
                 <div class="panel-header">
-                    <div class="panel-title" id="leftPanelTitle">⚙️ Boutique d'Inventeur</div>
+                    <button class="panel-toggle" id="leftToggle" aria-label="Replier la boutique">◀</button><div class="panel-title" id="leftPanelTitle">⚙️ Boutique d'Inventeur</div>
                 </div>
 
                 <div class="panel-content" id="leftPanelContent">
-                    <!-- Visible en mode Etabli -->
-                    <div class="mb-6" id="gearWorkshop">
-                        <h3 class="text-lg font-bold text-orange-400 mb-4 text-center border-b pb-2">
-                            🔧 Mécanismes
-                        </h3>
-                        <div class="space-y-3" id="gearShopItems">
-                        </div>
+                    <div id="buyFactorBtns" class="clicker-controls" aria-label="Quantité d’achat">
+                      <button class="bulk-btn on" data-bulk="1">×1</button><button class="bulk-btn" data-bulk="10">×10</button><button class="bulk-btn" data-bulk="max">MAX</button>
                     </div>
-
-                    <div class="mb-6" id="goldExchange" style="display: none;">
-                        <h3 class="text-lg font-bold text-yellow-400 mb-4 text-center border-b pb-2">
-                            🏆 Forge Alchimique
-                        </h3>
-                        <div class="space-y-3" id="goldShopItems">
-                        </div>
+                    <div id="shopTabs" class="clicker-controls" aria-label="Rayons de la boutique">
+                      <button class="shopTab active" data-tab="gears">Engrenages</button><button class="shopTab" data-tab="artisans">Artisans</button><button class="shopTab" data-tab="structures">Structures</button><button class="shopTab" data-tab="gold">Or</button>
                     </div>
-
-                    <!-- Visible en mode Atelier -->
-                    <div class="mb-6" id="workshopArtisans" style="display: none;">
-                        <h3 class="text-lg font-bold text-purple-400 mb-4 text-center border-b pb-2">
-                            🏭 Recrutement Atelier
-                        </h3>
-                        <div class="space-y-3" id="workshopArtisanItems">
-                        </div>
-                    </div>
-
-                    <div class="mb-6" id="evolutionWorkshop" style="display: none;">
-                        <h3 class="text-lg font-bold text-cyan-400 mb-4 text-center border-b pb-2">
-                            ⬆️ Évolutions Industrielles
-                        </h3>
-                        <div class="space-y-3" id="evolutionItems">
-                        </div>
-                    </div>
+                    <div id="shopList"></div>
+                    <h3>Progression des mécanismes</h3><p id="wbEmpty">Achetez votre premier engrenage.</p><div id="gearProgress"></div>
                 </div>
             </div>
 
@@ -1230,10 +1203,10 @@
 
                 <!-- MODE SWITCH -->
                 <div class="mode-switch" id="modeSwitch">
-                    <button class="mode-button active" id="etabliMode" onclick="switchToEtabli()">
+                    <button class="mode-button active" id="etabliMode">
                         ⚙️ Établi
                     </button>
-                    <button class="mode-button locked" id="workshopMode" onclick="switchToWorkshop()">
+                    <button class="mode-button locked" id="workshopMode">
                         🏭 Atelier
                     </button>
                 </div>
@@ -1243,20 +1216,20 @@
                     <div class="boost-title">⚡ Boost Manivelle</div>
                     <div class="boost-bar">
                         <div class="boost-fill" id="boostFill"></div>
-                        <div class="boost-percentage" id="boostPercentage">0%</div>
+                        <div class="boost-percentage" id="boostPct">0%</div>
                     </div>
                 </div>
 
                 <!-- MODE ETABLI -->
-                <div class="etabli-view" id="etabliView">
+                <div class="etabli-view" id="gearView">
                     <div class="gear-container" id="gearContainer">
-                        <div class="gear-rings" id="gearRings">
+                        <div class="gear-rings" id="rings">
                         </div>
 
                         <div class="gear-chains" id="gearChains">
                         </div>
 
-                        <div class="gear-pyramids" id="gearPyramids">
+                        <div class="gear-pyramids" id="pyramids">
                         </div>
 
                         <div class="relative" style="z-index: 10;">
@@ -1267,7 +1240,7 @@
                 </div>
 
                 <!-- MODE ATELIER -->
-                <div class="workshop-view" id="workshopView">
+                <div class="workshop-view hidden" id="workshopView">
                     <div class="central-machine" id="centralMachine">
                         <div class="machine-window">
                             <div class="mini-gear gear-1"></div>
@@ -1291,40 +1264,40 @@
                         </div>
                     </div>
 
-                    <div class="workshop-artisans" id="workshopArtisansContainer">
+                    <div class="workshop-artisans" id="artisansLayer">
                         <!-- Artisans positionnés autour de la machine -->
                     </div>
                 </div>
 
-                <div class="instruction-plaque" id="instructionPlaque">
+                <div class="instruction-plaque" id="instruction">
                     <div class="text-yellow-300 font-bold" style="font-size: 1.25rem; font-family: 'Cinzel', serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">
                         🔧 Actionnez la Manivelle Maîtresse !
                     </div>
                     <div class="text-sm" style="font-family: 'Crimson Text', serif; margin-top: 8px; color: #fbbf24;">
-                        Maintenez le clic pour augmenter le boost de production !
+                        Cliquez pour produire de la vapeur et augmenter le boost !
                     </div>
                 </div>
             </div>
 
             <div class="right-panel" id="rightPanel">
                 <div class="panel-header">
-                    <button class="panel-toggle" onclick="toggleRightPanel()" id="rightToggle">▶</button>
+                    <button class="panel-toggle" id="rightToggle">▶</button>
                     <div class="panel-title" id="rightPanelTitle">📊 Statistiques</div>
                 </div>
 
                 <div class="panel-content" id="rightPanelContent">
                     <div class="mb-6">
                         <h3 class="text-lg font-bold text-cyan-400 mb-4 text-center border-b pb-2">
-                            🔐 Authentification
+                            💾 Partie locale
                         </h3>
                         <div style="background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 12px; border: 1px solid var(--brass);">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                 <span style="color: var(--parchment);">Inventeur:</span>
-                                <span id="authStatus" style="color: var(--brass-light);">Chargement...</span>
+                                <span id="authStatus" style="color: var(--brass-light);">Joueur local</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <span style="color: var(--parchment);">Système d'Or:</span>
-                                <span id="goldSystemStatus" style="color: var(--brass-light);">Initialisation...</span>
+                                <span id="goldSystemStatus" style="color: var(--brass-light);">Sauvegarde locale</span>
                             </div>
                         </div>
                     </div>
@@ -1390,19 +1363,19 @@
                             ⚡ Actions Rapides
                         </h3>
                         <div class="space-y-3">
-                            <button onclick="saveGame()" class="action-btn btn-blue">
+                            <button id="exportBtn" class="action-btn btn-blue">Exporter la sauvegarde</button><button id="importBtn" class="action-btn btn-blue">Importer une sauvegarde</button><button id="saveBtn" class="action-btn btn-blue">
                                 💾 Sauvegarder
                             </button>
-                            <button onclick="refreshAllDisplays()" class="action-btn btn-green">
+                            <button id="refreshBtn" class="action-btn btn-green">
                                 🔄 Actualiser
                             </button>
-                            <button onclick="refundAllItems()" class="action-btn btn-purple" id="refundBtn">
+                            <button class="action-btn btn-purple" id="refundBtn">
                                 💸 Remboursement Total
                             </button>
-                            <button onclick="resetGame()" class="action-btn btn-red" id="resetBtn">
+                            <button class="action-btn btn-red" id="resetBtn">
                                 🗑️ Réinitialiser Sauvegarde
                             </button>
-                            <button onclick="reconnectAuth()" id="reconnectBtn" class="action-btn btn-orange" style="display: none;">
+                            <button id="reconnectBtn" class="action-btn btn-orange" style="display: none;">
                                 🔐 Reconnecter
                             </button>
                         </div>
@@ -1413,11 +1386,11 @@
     </div>
 
     <!-- MODALS -->
-    <div id="achievementModal" class="achievement-modal hidden">
+    <div id="achievementModal" class="achievement-modal modal hidden">
         <div class="achievement-modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="font-family: 'Cinzel', serif; font-size: 2rem; color: var(--brass-light); margin: 0;">🏆 Succès de l'Inventeur</h2>
-                <button onclick="hideAchievementsModal()" style="background: var(--brass); border: 2px solid var(--copper-dark); color: var(--mahogany); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; font-weight: bold;">×</button>
+                <button id="closeAch" style="background: var(--brass); border: 2px solid var(--copper-dark); color: var(--mahogany); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; font-weight: bold;">×</button>
             </div>
             <div class="achievement-grid" id="achievementGrid">
             </div>
@@ -1426,18 +1399,18 @@
 
 
 
-    <div id="questModal" class="quest-modal hidden">
+    <div id="questModal" class="quest-modal modal hidden">
         <div class="quest-modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="font-family: 'Cinzel', serif; font-size: 2rem; color: var(--brass-light); margin: 0;">🏆 Quêtes Journalières</h2>
-                <button onclick="hideQuestModal()" style="background: var(--brass); border: 2px solid var(--copper-dark); color: var(--mahogany); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; font-weight: bold;">×</button>
+                <button id="closeQuest" style="background: var(--brass); border: 2px solid var(--copper-dark); color: var(--mahogany); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; font-weight: bold;">×</button>
             </div>
-            <div class="quest-grid" id="questGrid">
+            <div class="clicker-controls"><button class="qtab active" data-qt="daily">Journalières</button><button class="qtab" data-qt="global">Globales</button><button class="qtab" data-qt="secret">Secrètes</button></div><div class="quest-grid" id="questGrid">
             </div>
         </div>
     </div>
 
-    <div id="modalRoot"></div>
+    <div id="modalRoot"></div><input id="fileInput" type="file" accept="application/json" hidden>
 
     <script type="module" src="main.js"></script>
 </body>

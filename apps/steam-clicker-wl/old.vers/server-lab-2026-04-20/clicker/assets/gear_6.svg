@@ -1,0 +1,28 @@
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="plasmaGrad" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#ffb6c1"/>
+      <stop offset="100%" style="stop-color:#ff69b4"/>
+    </radialGradient>
+    <filter id="plasma-glow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <circle cx="12" cy="12" r="10" fill="url(#plasmaGrad)" stroke="#c71585" stroke-width="1" filter="url(#plasma-glow)"/>
+  <circle cx="12" cy="12" r="3" fill="#2c1810"/>
+
+  <!-- Dents de scie plasma -->
+  <g stroke="#c71585" stroke-width="1" fill="none">
+    <path d="M12,1 L15,7 L21,4 L18,10 L24,13 L18,16 L21,22 L15,19 L12,25 L9,19 L3,22 L6,16 L0,13 L6,10 L3,4 L9,7 Z"/>
+  </g>
+
+  <!-- Effets énergétiques -->
+  <circle cx="12" cy="12" r="7" fill="none" stroke="#ff69b4" stroke-width="0.5" opacity="0.6">
+    <animate attributeName="r" values="7;9;7" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg>

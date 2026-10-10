@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vapeur Clicker Minimal</title>
+    <!-- Style minimal pour le jeu minimaliste -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <h1 class="title">Vapeur Clicker</h1>
+        <!-- Zone centrale avec manivelle, boost et ressources -->
+        <div id="central-wrapper">
+            <!-- Gear centrale à cliquer pour générer de la vapeur -->
+            <img id="centralGear" src="../clicker/assets/main-gear.svg" alt="Gear centrale" title="Cliquez pour générer de la vapeur" class="central-gear">
+            <!-- Indicateur de puissance de la manivelle -->
+            <div id="crankDisplay" class="crank-display">🔄 0</div>
+            <!-- Indicateur de boost actuel -->
+            <div id="boostDisplay" class="boost-display">Boost : 0 %</div>
+        </div>
+        <!-- Compteurs principaux (vapeur, production, or) -->
+        <div class="stats">
+            <div class="stat-item">
+                <img src="../clicker/assets/gear_1.svg" alt="Vapeur" class="icon">
+                <span id="steamValue">0</span> vapeur
+            </div>
+            <div class="stat-item">
+                <img src="../clicker/assets/gear_2.svg" alt="Production" class="icon">
+                <span id="productionValue">0</span> /s
+            </div>
+            <div class="stat-item">
+                <img src="../clicker/assets/gear_3.svg" alt="Or" class="icon">
+                <span id="goldValue">0</span> or
+            </div>
+        </div>
+        <!-- Navigation entre les pages de boutique -->
+        <div class="nav">
+            <button data-page="gears" class="page-btn active">Engrenages</button>
+            <button data-page="artisans" class="page-btn">Artisans</button>
+            <button data-page="structures" class="page-btn">Structures</button>
+            <button data-page="gold" class="page-btn">Or</button>
+            <!-- Le bouton du facteur d'achat est ajouté dynamiquement par le script -->
+        </div>
+        <!-- Contenu des pages -->
+        <div id="pages">
+            <div id="page-gears" class="page active">
+                <ul id="gearList" class="item-list"></ul>
+                <div class="page-actions">
+                    <button id="convertAllBtn" class="action-btn">Convertir tous les engrenages</button>
+                </div>
+            </div>
+            <div id="page-artisans" class="page">
+                <ul id="artisanList" class="item-list"></ul>
+            </div>
+            <div id="page-structures" class="page">
+                <ul id="structureList" class="item-list"></ul>
+            </div>
+            <div id="page-gold" class="page">
+                <ul id="goldList" class="item-list"></ul>
+            </div>
+        </div>
+        <!-- Actions globales -->
+        <div class="actions">
+            <button id="exportBtn" class="action-btn">Exporter sauvegarde</button>
+            <button id="importBtn" class="action-btn">Importer sauvegarde</button>
+            <input type="file" id="importFileInput" style="display:none;" accept="application/json">
+            <button id="refundBtn" class="action-btn">Remboursement total</button>
+            <button id="resetBtn" class="action-btn">Réinitialiser sauvegarde</button>
+        </div>
+    </div>
+    <script src="vapeur.js"></script>
+</body>
+</html>

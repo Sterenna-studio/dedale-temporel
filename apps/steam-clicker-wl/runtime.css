@@ -1,0 +1,40 @@
+/* Controls rendered by main.js, keeping the original steampunk page layout. */
+:root { --c-gold: #ffd166; }
+.clicker-controls { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0; }
+.clicker-controls button,.pill { padding:7px 10px; border:1px solid #b8860b; border-radius:8px; background:#38251c; color:#f4e4bc; cursor:pointer; }
+.clicker-controls .active,.clicker-controls .on { background:#75531e; }
+button:disabled { opacity:.45; cursor:not-allowed; }
+.shop-item { display:flex; flex-wrap:wrap; gap:8px; padding:12px; margin-bottom:10px; }
+.shop-item .meta { flex:1; min-width:130px; }
+.shop-item .n { font-weight:bold; }
+.shop-item .d,.shop-item .s,.small { font-size:13px; }
+.shop-prog { flex-basis:100%; }
+.shop-prog-bar,.wb-bar { height:6px; background:#251810; border-radius:4px; overflow:hidden; }
+.shop-prog-fill,.wb-fill { height:100%; background:var(--gc,#b8860b); }
+.badge,.pill { display:inline-block; }
+.wb-row { padding:8px; border-bottom:1px solid #765029; }
+.left-panel.collapsed .panel-content,.right-panel.collapsed .panel-content { display:none; }
+.left-panel.collapsed,.right-panel.collapsed { width:70px; min-width:70px; }
+.ring { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); border:2px solid; border-radius:50%; pointer-events:none; }
+.ring-badge { position:absolute; top:0; left:50%; font-size:12px; background:#251810; }
+.gear-orbit-slot { position:absolute; width:10px; height:10px; border:1px solid var(--gc); border-radius:50%; transform:translate(-50%,-50%); }
+.gear-orbit-slot.active { background:var(--gc); }
+.ach-card { padding:12px; border:1px solid #b8860b; border-radius:10px; }
+.ach-card.locked { opacity:.5; }
+.artisan-group { position:relative; display:inline-block; padding:12px; background:#38251c; border:1px solid #b8860b; border-radius:10px; }
+.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:10000; padding:12px 18px; border:1px solid #b8860b; border-radius:10px; background:#251810; }
+.float-text,.coin { position:fixed; pointer-events:none; z-index:9999; }
+@media (max-width: 800px) {
+  body { overflow:auto; }
+  .hud-bar { padding:12px; }
+  .hud-content,.hud-section { flex-wrap:wrap; gap:10px; }
+  .hud-section { justify-content:center; width:100%; }
+  .stat-item { min-width:0; padding:8px; }
+  .panel-container { flex-direction:column; height:auto; width:100%; }
+  .center-area { order:-1; flex:none; width:100%; height:520px; }
+  .left-panel,.right-panel,.left-panel.collapsed,.right-panel.collapsed { width:100%; box-sizing:border-box; border:0; }
+  .left-panel .panel-content,.right-panel .panel-content { height:auto; max-height:520px; }
+  .mode-switch { left:50%; top:12px; transform:translateX(-50%); }
+  .boost-gauge { top:75px; right:12px; width:150px; }
+  .instruction-plaque { max-width:85%; box-sizing:border-box; }
+}

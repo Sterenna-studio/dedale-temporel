@@ -1,92 +1,35 @@
-# ⚙️ S.T.E.A.M. Clicker — Évolution Finale
+# S.T.E.A.M. Clicker
 
-Clicker steampunk complet en **fichier unique autonome** (`index.html`).
-Aucune dépendance externe hors Google Fonts.
+Jeu de production steampunk. La page `index.html` charge le module `main.js`,
+les styles complémentaires `runtime.css` et les images du dossier `assets`.
 
----
+## Lancement local
 
-## 🚀 Lancement
+Depuis ce dossier : `python -m http.server 8080`, puis ouvrir
+`http://localhost:8080`. Un serveur HTTP est nécessaire pour le module JavaScript.
 
-```bash
-# Option 1 — direct navigateur
-open index.html
+## Jeu et sauvegarde
 
-# Option 2 — serveur local (recommandé)
-npx serve .
-# ou
-python3 -m http.server 8080
-```
+Cliquer sur la manivelle produit de la vapeur et augmente le boost. La boutique
+permet d’acheter des engrenages et des artisans, de convertir les structures et
+d’échanger de la vapeur contre de l’or. L’atelier se débloque à 10 millions de
+vapeur totale. Les succès et les quêtes donnent aussi des récompenses.
 
----
+La sauvegarde locale utilise toujours `steamClickerSave`, automatiquement toutes
+les cinq secondes. Les actions rapides permettent de sauvegarder, exporter et
+importer un fichier JSON. L’or de cette version est local au jeu.
 
-## 🎮 Mécaniques
+Raccourcis : `A` pour les succès, `Q` pour les quêtes, `M` + molette pour le boost.
 
-| Fonctionnalité | Détail |
-|---|---|
-| Engrenages | 7 tiers (Bronze → Quantique) |
-| Anneaux orbitaux | +25% production par anneau, tier coloré |
-| Artisans | 4 tiers · Confrérie (×3) · Quartier (×5) · Conglomérat (×10) |
-| Boost manivelle | Jusqu'à 300% · décroissance automatique |
-| Or | 5 taux d'échange vapeur → or |
-| Achievements | 20 succès avec récompenses or |
-| Quêtes | Journalières / Globales / Secrètes |
-| Sauvegarde | `steamClickerSave` localStorage · auto toutes les 5s |
+## Vérification
 
----
+Depuis la racine du dépôt : `node scripts/check-steam-clicker.mjs` (Node 22+
+et Chrome installé, ou `CHROME_PATH`). Le test utilise un profil temporaire dans
+`.artifacts`, sans toucher à la sauvegarde du navigateur habituel. Il vérifie le
+démarrage, le clic, un achat, une récompense, les fenêtres, le verrouillage de
+l’atelier, la sauvegarde et le mode après rechargement, ainsi que le favicon.
+Les captures bureau/mobile sont enregistrées dans `.artifacts`.
 
-## ⌨️ Raccourcis clavier
-
-| Touche | Action |
-|---|---|
-| `B` | Ouvrir/fermer la boutique |
-| `A` | Ouvrir les succès |
-| `Q` | Ouvrir les quêtes |
-| `M` + molette ↑↓ | Contrôler le boost manivelle |
-
----
-
-## 📁 Structure
-
-```
-steam-clicker/
-├── index.html      ← jeu complet (HTML + CSS + JS inline)
-├── README.md
-├── .gitignore
-└── setup-git.sh    ← script de push initial
-```
-
----
-
-## 🔧 Intégration Lab (Sterenna)
-
-La sauvegarde utilise la clé `steamClickerSave` dans `localStorage`.
-Pour brancher le système d'or partagé du lab :
-
-```js
-// Remplacer dans index.html :
-state.gold += reward;
-
-// Par :
-import { addGold } from '../shared/economy.js';
-await addGold(reward);
-```
-
----
-
-## 📊 Valeurs de référence
-
-- Évolution engrenage : **9 gears** → 1 anneau + 1 gear tier supérieur
-- Seuil Atelier : **10 000 000 vapeur**
-- Taux or basique : **10 000 000 vapeur → 1 or**
-- Boost max : **300%** (upgradable)
-
----
-
-## 👨‍💻 Développement
-
-**Phase 1** — Engrenages + boutique  
-**Phase 2** — Mode Atelier + Artisans  
-**Phase 3** — Répliques + Quêtes  
-**Phase 4** — Finition + refactor standalone  
-
-Statut : ✅ **Jouable**
+La correction de septembre 2026 aligne les identifiants HTML sur le moteur,
+remplace les anciens appels inline à des fonctions absentes et rétablit les
+interactions des quêtes et de l’atelier, sans changer la clé de sauvegarde.

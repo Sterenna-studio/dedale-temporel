@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.T.E.A.M. Clicker - Mode Atelier Complet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Crimson Text', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #2c1810, #3e2723, #1a0d08);
+            color: #f4e4bc;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3, .panel-title {
+            font-family: 'Cinzel', 'Georgia', serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        :root {
+            --brass-dark: #8b6914;
+            --brass: #b8860b;
+            --brass-light: #d4af37;
+            --copper: #cd853f;
+            --copper-dark: #8b4513;
+            --bronze: #cd7f32;
+            --steel: #4682b4;
+            --iron: #36454f;
+            --gold: #ffd700;
+            --parchment: #f4e4bc;
+            --leather: #8b4513;
+            --mahogany: #4a0e0e;
+        }
+
+        .container { max-width: 100vw; margin: 0 auto; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .flex-1 { flex: 1; }
+        .min-h-screen { min-height: 100vh; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .fixed { position: fixed; }
+        .hidden { display: none !important; }
+
+        .panel-container {
+            display: flex;
+            height: calc(100vh - 90px);
+            width: 100vw;
+            position: relative;
+        }
+
+        .left-panel {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.95), rgba(44, 24, 16, 0.98));
+            border-right: 4px solid var(--brass);
+            position: relative;
+            width: 340px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1), 4px 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .left-panel .panel-header {
+            background: linear-gradient(135deg, var(--brass), var(--brass-light));
+            color: var(--mahogany);
+            padding: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 3px solid var(--copper-dark);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .left-panel .panel-content {
+            padding: 20px;
+            height: calc(100% - 70px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--brass) transparent;
+        }
+
+        .right-panel {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.95), rgba(44, 24, 16, 0.98));
+            border-left: 4px solid var(--brass);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            width: 340px;
+            min-width: 70px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1), -4px 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .right-panel.collapsed {
+            width: 70px;
+        }
+
+        .right-panel .panel-header {
+            background: linear-gradient(135deg, var(--brass), var(--brass-light));
+            color: var(--mahogany);
+            padding: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--copper-dark);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .right-panel .panel-content {
+            padding: 20px;
+            height: calc(100% - 70px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--brass) transparent;
+        }
+
+        .right-panel.collapsed .panel-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .panel-toggle {
+            background: linear-gradient(135deg, var(--brass-dark), var(--brass), var(--brass-light));
+            border: 2px solid var(--copper-dark);
+            color: var(--mahogany);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 22px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+            position: relative;
+            font-family: 'Cinzel', serif;
+            z-index: 100;
+        }
+
+        .panel-toggle:hover {
+            background: linear-gradient(135deg, var(--brass), var(--brass-light), var(--gold));
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 8px 16px rgba(212, 175, 55, 0.4);
+        }
+
+        .center-area {
+            flex: 1;
+            background: radial-gradient(circle at center, rgba(44, 24, 16, 0.7), rgba(26, 13, 8, 0.9));
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* MODE ETABLI */
+        .etabli-view {
+            display: flex;              /* était: block */
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .etabli-view.hidden {
+            display: none;
+        }
+
+        .gear-container {
+              position: relative;
+             display: flex;              /* <-- ajout */
+             align-items: center;        /* <-- ajout */
+             justify-content: center;    /* <-- ajout */
+             width: min(90vmin, 620px);  /* <-- ajout */
+             height: min(90vmin, 620px); /* <-- ajout */
+             margin: 0 auto;             /* <-- ajout */
+             transform-style: preserve-3d;
+             filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.3));
+        }
+
+        #mainGear {
+            width: 180px;
+            height: 180px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(205, 133, 63, 0.3);
+        }
+
+        #mainGear:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.6), 0 0 120px rgba(205, 133, 63, 0.4);
+        }
+
+        #mainGear:active {
+            transform: scale(0.9);
+        }
+
+        .gear-chains {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .gear-chain {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .gear-rings {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .gear-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid;
+            animation: rotate 8s linear infinite;
+            opacity: 0.8;
+        }
+
+        .gear-ring.tier-1 { border-color: #cd7f32; }
+        .gear-ring.tier-2 { border-color: #708090; }
+        .gear-ring.tier-3 { border-color: #4682b4; }
+        .gear-ring.tier-4 { border-color: #c0c0c0; }
+        .gear-ring.tier-5 { border-color: #9370db; }
+        .gear-ring.tier-6 { border-color: #ff69b4; }
+        .gear-ring.tier-7 { border-color: #00ffff; }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+
+        .gear-rings,
+        .gear-chains,
+        .gear-pyramids {
+             position: absolute;
+             top: 50%;
+             left: 50%;
+             transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+
+
+        .gear-pyramids {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pyramid-gear {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        /* NOUVEAU : MODE ATELIER */
+        .workshop-view {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            align-items: center;        /* <-- ajout */
+            justify-content: center;    /* <-- ajout */
+        }
+
+        .workshop-view.active {
+            display: flex;              /* était: block */  
+        }
+
+        .central-machine {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(135deg, #8b7355, #654321, #3e2723);
+            border: 4px solid var(--brass);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .machine-window {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 160px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 3px solid #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .mini-gear {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            animation: rotate 2s linear infinite;
+        }
+
+        .mini-gear.gear-1 { background-image: url('./assets/gear_1.svg'); top: 25px; left: 30px; }
+        .mini-gear.gear-2 { background-image: url('./assets/gear_2.svg'); top: 35px; left: 60px; animation-duration: 2.5s; }
+        .mini-gear.gear-3 { background-image: url('./assets/gear_3.svg'); top: 25px; left: 90px; animation-duration: 3s; }
+        .mini-gear.gear-4 { background-image: url('./assets/gear_4.svg'); top: 45px; left: 120px; animation-duration: 2.2s; }
+
+        .steam-pipe {
+            position: absolute;
+            top: 50%;
+            right: -20px;
+            width: 20px;
+            height: 8px;
+            background: #666;
+            border: 2px solid #333;
+            border-radius: 4px;
+            transform: translateY(-50%);
+        }
+
+        .steam-output {
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 4px;
+            background: #666;
+            border-radius: 2px;
+        }
+
+        .steam-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ddd;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: steamFlow 2s ease-out infinite;
+        }
+
+        @keyframes steamFlow {
+            0% { 
+                transform: translate(0, 0) scale(0.5); 
+                opacity: 0.8; 
+            }
+            50% { 
+                transform: translate(30px, -10px) scale(1); 
+                opacity: 0.6; 
+            }
+            100% { 
+                transform: translate(60px, -20px) scale(1.2); 
+                opacity: 0; 
+            }
+        }
+
+        .machine-status {
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
+            right: 20px;
+            height: 25px;
+            background: #2f2f2f;
+            border: 2px solid #1a1a1a;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .status-light {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1px solid;
+        }
+
+        .status-light.green { background: #00ff00; border-color: #008000; animation: pulse 1s infinite; }
+        .status-light.yellow { background: #ffd700; border-color: #b8860b; animation: pulse 1.5s infinite; }
+        .status-light.red { background: #ff4444; border-color: #cc0000; animation: pulse 0.8s infinite; }
+        .status-light.blue { background: #4444ff; border-color: #0000cc; animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ARTISAN POSITIONS AROUND MACHINE */
+        .workshop-artisans {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .artisan-group {
+            position: absolute;
+            pointer-events: all;
+        }
+
+        /* 8 positions autour de la machine centrale */
+        .artisan-group.pos-1 { top: 20%; left: 50%; transform: translate(-50%, -50%); }
+        .artisan-group.pos-2 { top: 35%; right: 20%; transform: translate(50%, -50%); }
+        .artisan-group.pos-3 { top: 50%; right: 10%; transform: translate(50%, -50%); }
+        .artisan-group.pos-4 { bottom: 35%; right: 20%; transform: translate(50%, 50%); }
+        .artisan-group.pos-5 { bottom: 20%; left: 50%; transform: translate(-50%, 50%); }
+        .artisan-group.pos-6 { bottom: 35%; left: 20%; transform: translate(-50%, 50%); }
+        .artisan-group.pos-7 { top: 50%; left: 10%; transform: translate(-50%, -50%); }
+        .artisan-group.pos-8 { top: 35%; left: 20%; transform: translate(-50%, -50%); }
+
+        .artisan-unit {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #dda0dd, #9370db);
+            border: 3px solid #663399;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+            margin: 5px;
+        }
+
+        .artisan-unit:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(221, 160, 221, 0.4);
+        }
+
+        .artisan-unit .count-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--gold);
+            color: var(--mahogany);
+            border: 2px solid var(--brass);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* ÉVOLUTIONS D'ARTISANS */
+        .brotherhood-unit {
+            width: 80px;
+            height: 50px;
+            background: linear-gradient(135deg, #cd853f, #8b4513);
+            border: 3px solid #654321;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin: 5px;
+        }
+
+        .district-unit {
+            width: 100px;
+            height: 60px;
+            background: linear-gradient(135deg, #708090, #2f4f4f);
+            border: 3px solid #1c3333;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            margin: 5px;
+        }
+
+        .conglomerate-unit {
+            width: 120px;
+            height: 70px;
+            background: linear-gradient(135deg, #4682b4, #191970);
+            border: 4px solid #0f0f47;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            margin: 5px;
+        }
+
+        /* TRANSPORT D'ENGRENAGES */
+        .gear-transport {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-size: cover;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: transportGear 4s ease-in-out infinite;
+            z-index: 5;
+        }
+
+        @keyframes transportGear {
+            0% { 
+                transform: scale(0.8); 
+                opacity: 0; 
+            }
+            20% { 
+                opacity: 1; 
+                transform: scale(1); 
+            }
+            80% { 
+                opacity: 1; 
+                transform: scale(1) translate(var(--target-x), var(--target-y)); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: scale(0.5) translate(var(--target-x), var(--target-y)); 
+            }
+        }
+
+        /* JAUGE DE BOOST */
+        .boost-gauge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 200px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.9), rgba(44, 24, 16, 0.9));
+            border: 3px solid var(--brass);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .boost-gauge.etabli { display: block; }
+        .boost-gauge.workshop { display: block; }
+
+        .boost-title {
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--brass-light);
+            text-align: center;
+            margin-bottom: 8px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        .boost-bar {
+            width: 100%;
+            height: 20px;
+            background: #2c1810;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--brass);
+            position: relative;
+        }
+
+        .boost-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #cd7f32, #ffd700, #ff6b35);
+            transition: width 0.1s ease;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        }
+
+        .boost-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        /* MODE SWITCH */
+        .mode-switch {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.9), rgba(44, 24, 16, 0.9));
+            border: 3px solid var(--brass);
+            border-radius: 25px;
+            padding: 4px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .mode-button {
+            padding: 10px 20px;
+            border-radius: 20px;
+            background: transparent;
+            color: var(--parchment);
+            border: none;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mode-button.active {
+            background: linear-gradient(135deg, var(--brass), var(--brass-light));
+            color: var(--mahogany);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .mode-button:hover:not(.active) {
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        .mode-button.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hud-bar {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.98), rgba(44, 24, 16, 0.98));
+            border-bottom: 4px solid var(--brass);
+            padding: 20px;
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .hud-content {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .hud-section {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+            min-width: 70px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--brass);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 2px;
+            font-family: 'Cinzel', serif;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--parchment);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .text-yellow-400 { color: var(--brass-light); }
+        .text-green-400 { color: #90EE90; }
+        .text-blue-400 { color: var(--steel); }
+        .text-orange-400 { color: var(--copper); }
+        .text-purple-400 { color: #DDA0DD; }
+        .text-gray-300 { color: var(--parchment); }
+        .text-red-400 { color: #F08080; }
+        .text-cyan-400 { color: #AFEEEE; }
+
+        .gold-display {
+            background: linear-gradient(135deg, var(--gold), var(--brass-light), var(--gold));
+            color: var(--mahogany);
+            border: 3px solid var(--brass);
+            border-radius: 15px;
+            padding: 15px 20px;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .gold-display:hover {
+            transform: translateY(-4px) scale(1.05);
+        }
+
+        .username-display {
+            background: linear-gradient(135deg, var(--copper), var(--copper-dark));
+            color: var(--parchment);
+            border: 2px solid var(--brass);
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .username-display:hover {
+            background: linear-gradient(135deg, var(--brass), var(--brass-light));
+            color: var(--mahogany);
+            transform: translateY(-2px);
+        }
+
+        .instruction-plaque {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-center;
+            background: linear-gradient(45deg, rgba(139, 69, 19, 0.9), rgba(160, 82, 45, 0.9));
+            border: 4px solid var(--brass);
+            border-radius: 12px;
+            padding: 20px 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .instruction-plaque.hidden {
+            display: none;
+        }
+
+        .auth-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #8b0000, #a0522d);
+            color: var(--parchment);
+            padding: 20px;
+            text-align: center;
+            z-index: 2000;
+            border-bottom: 4px solid var(--copper-dark);
+            font-family: 'Cinzel', serif;
+        }
+
+        .auth-warning button {
+            background: linear-gradient(135deg, var(--brass-dark), var(--brass-light));
+            border: 2px solid var(--copper-dark);
+            color: var(--mahogany);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-left: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+        }
+
+        .gold-toast {
+            position: fixed;
+            top: 120px;
+            right: 25px;
+            background: linear-gradient(135deg, var(--gold), var(--brass-light));
+            color: var(--mahogany);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 3px solid var(--brass);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.6s ease-out;
+            z-index: 1000;
+            max-width: 300px;
+            font-family: 'Crimson Text', serif;
+        }
+
+        .gold-toast.fade-out {
+            animation: slideOutRight 0.6s ease-in forwards;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideOutRight {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+
+        .coin-explosion {
+            position: fixed;
+            pointer-events: none;
+            z-index: 2000;
+        }
+
+        .coin {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffd700, #b8860b);
+            border-radius: 50%;
+            border: 2px solid #8b6914;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: coinBurst 1s ease-out forwards;
+        }
+
+        @keyframes coinBurst {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+            100% { transform: scale(0.8) rotate(360deg); opacity: 0; }
+        }
+
+        .achievement-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .achievement-modal-content {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.95), rgba(44, 24, 16, 0.98));
+            border: 4px solid var(--brass);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 80vw;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .achievement-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--brass);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(212, 175, 55, 0.3);
+        }
+
+        .achievement-card.locked {
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+
+        .achievement-card.claimed {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(212, 175, 55, 0.1));
+        }
+
+        .achievement-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .achievement-title {
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            color: var(--brass-light);
+            margin-bottom: 10px;
+        }
+
+        .achievement-description {
+            font-size: 0.9rem;
+            color: var(--parchment);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+
+
+        .quest-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .quest-modal-content {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.95), rgba(44, 24, 16, 0.98));
+            border: 4px solid var(--brass);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 80vw;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .quest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .quest-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--brass);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .quest-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(212, 175, 55, 0.3);
+        }
+
+        .quest-card.locked {
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+
+        .quest-card.claimed {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(212, 175, 55, 0.1));
+        }
+
+        .quest-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .quest-title {
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            color: var(--brass-light);
+            margin-bottom: 10px;
+        }
+
+        .quest-description {
+            font-size: 0.9rem;
+            color: var(--parchment);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+
+
+        .claim-button {
+            background: linear-gradient(135deg, var(--gold), var(--brass-light));
+            border: 2px solid var(--brass);
+            color: var(--mahogany);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+            transition: all 0.3s ease;
+        }
+
+        .claim-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .claim-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid;
+            margin-bottom: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-blue { background: #1e40af; border-color: #3b82f6; }
+        .btn-green { background: #166534; border-color: #22c55e; }
+        .btn-orange { background: #ea580c; border-color: #f97316; }
+        .btn-red { background: #dc2626; border-color: #ef4444; }
+        .btn-purple { background: #7c3aed; border-color: #8b5cf6; }
+
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .p-3 { padding: 0.75rem; }
+        .rounded { border-radius: 0.25rem; }
+        .border-b { border-bottom: 2px solid var(--brass); }
+        .pb-2 { padding-bottom: 0.5rem; }
+        .text-center { text-align: center; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .font-bold { font-weight: bold; }
+
+        /* NOUVEAU : SHOP ITEMS ADAPTÉS */
+        .shop-item {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.8), rgba(160, 82, 45, 0.8));
+            border: 2px solid var(--brass-light);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .shop-item:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(212, 175, 55, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+            border-color: var(--gold);
+        }
+
+        .shop-item.locked {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="authWarning" class="auth-warning hidden">
+        <span>⚠️ Authentification requise pour utiliser le système d'or de l'atelier</span>
+        <button onclick="window.location.href='/lab/login.html'">Se connecter</button>
+    </div>
+
+    <div class="relative min-h-screen flex flex-col">
+
+        <div class="hud-bar">
+            <div class="hud-content">
+
+                <div class="hud-section">
+                    <div class="stat-item">
+                        <div class="stat-value text-yellow-400" id="steamCounter">0</div>
+                        <div class="stat-label">Vapeur</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value text-green-400">
+                            <span id="steamRateTotal">0.0</span>/sec
+                        </div>
+                        <div class="stat-label">Production</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value text-green-400">
+                            <span id="steamPerSecondBoost">0.0</span>/sec
+                        </div>
+                        <div class="stat-label">Boosted</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value text-blue-400" id="materialCount">0</div>
+                        <div class="stat-label">Matériaux</div>
+                    </div>
+                </div>
+
+                <div class="gold-display" onclick="refreshGoldDisplay()" title="Actualiser le trésor">
+                    <span style="font-size: 1.5rem;">💰</span>
+                    <div>
+                        <span id="goldCounter">0</span>
+                        <div class="text-sm">Or</div>
+                    </div>
+                </div>
+
+                <div class="hud-section">
+                    <button onclick="showQuestModal()" class="panel-toggle" title="Ouvrir les Quêtes" style="width: 45px; height: 45px; font-size: 20px;">
+                        📜
+                    </button>
+                    <button onclick="showAchievementsModal()" class="panel-toggle" title="Ouvrir les Succès" style="width: 45px; height: 45px; font-size: 20px;">
+                        🏆
+                    </button>
+                    <div class="username-display" onclick="openPlayerShop()" id="username-display" title="Boutique du Joueur">
+                        Maître Inventeur
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-container">
+
+            <div class="left-panel" id="leftPanel">
+                <div class="panel-header">
+                    <div class="panel-title" id="leftPanelTitle">⚙️ Boutique d'Inventeur</div>
+                </div>
+
+                <div class="panel-content" id="leftPanelContent">
+                    <!-- Visible en mode Etabli -->
+                    <div class="mb-6" id="gearWorkshop">
+                        <h3 class="text-lg font-bold text-orange-400 mb-4 text-center border-b pb-2">
+                            🔧 Mécanismes
+                        </h3>
+                        <div class="space-y-3" id="gearShopItems">
+                        </div>
+                    </div>
+
+                    <div class="mb-6" id="goldExchange" style="display: none;">
+                        <h3 class="text-lg font-bold text-yellow-400 mb-4 text-center border-b pb-2">
+                            🏆 Forge Alchimique
+                        </h3>
+                        <div class="space-y-3" id="goldShopItems">
+                        </div>
+                    </div>
+
+                    <!-- Visible en mode Atelier -->
+                    <div class="mb-6" id="workshopArtisans" style="display: none;">
+                        <h3 class="text-lg font-bold text-purple-400 mb-4 text-center border-b pb-2">
+                            🏭 Recrutement Atelier
+                        </h3>
+                        <div class="space-y-3" id="workshopArtisanItems">
+                        </div>
+                    </div>
+
+                    <div class="mb-6" id="evolutionWorkshop" style="display: none;">
+                        <h3 class="text-lg font-bold text-cyan-400 mb-4 text-center border-b pb-2">
+                            ⬆️ Évolutions Industrielles
+                        </h3>
+                        <div class="space-y-3" id="evolutionItems">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center-area">
+
+                <!-- MODE SWITCH -->
+                <div class="mode-switch" id="modeSwitch">
+                    <button class="mode-button active" id="etabliMode" onclick="switchToEtabli()">
+                        ⚙️ Établi
+                    </button>
+                    <button class="mode-button locked" id="workshopMode" onclick="switchToWorkshop()">
+                        🏭 Atelier
+                    </button>
+                </div>
+
+                <!-- JAUGE DE BOOST -->
+                <div class="boost-gauge etabli" id="boostGauge">
+                    <div class="boost-title">⚡ Boost Manivelle</div>
+                    <div class="boost-bar">
+                        <div class="boost-fill" id="boostFill"></div>
+                        <div class="boost-percentage" id="boostPercentage">0%</div>
+                    </div>
+                </div>
+
+                <!-- MODE ETABLI -->
+                <div class="etabli-view" id="etabliView">
+                    <div class="gear-container" id="gearContainer">
+                        <div class="gear-rings" id="gearRings">
+                        </div>
+
+                        <div class="gear-chains" id="gearChains">
+                        </div>
+
+                        <div class="gear-pyramids" id="gearPyramids">
+                        </div>
+
+                        <div class="relative" style="z-index: 10;">
+                            <div id="mainGear" style="background-image: url('./assets/main-gear.svg');">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODE ATELIER -->
+                <div class="workshop-view" id="workshopView">
+                    <div class="central-machine" id="centralMachine">
+                        <div class="machine-window">
+                            <div class="mini-gear gear-1"></div>
+                            <div class="mini-gear gear-2"></div>
+                            <div class="mini-gear gear-3"></div>
+                            <div class="mini-gear gear-4"></div>
+                        </div>
+
+                        <div class="steam-pipe">
+                            <div class="steam-output"></div>
+                            <div class="steam-particle" style="animation-delay: 0s;"></div>
+                            <div class="steam-particle" style="animation-delay: 0.5s;"></div>
+                            <div class="steam-particle" style="animation-delay: 1s;"></div>
+                        </div>
+
+                        <div class="machine-status">
+                            <div class="status-light green"></div>
+                            <div class="status-light yellow"></div>
+                            <div class="status-light red"></div>
+                            <div class="status-light blue"></div>
+                        </div>
+                    </div>
+
+                    <div class="workshop-artisans" id="workshopArtisansContainer">
+                        <!-- Artisans positionnés autour de la machine -->
+                    </div>
+                </div>
+
+                <div class="instruction-plaque" id="instructionPlaque">
+                    <div class="text-yellow-300 font-bold" style="font-size: 1.25rem; font-family: 'Cinzel', serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">
+                        🔧 Actionnez la Manivelle Maîtresse !
+                    </div>
+                    <div class="text-sm" style="font-family: 'Crimson Text', serif; margin-top: 8px; color: #fbbf24;">
+                        Maintenez le clic pour augmenter le boost de production !
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel" id="rightPanel">
+                <div class="panel-header">
+                    <button class="panel-toggle" onclick="toggleRightPanel()" id="rightToggle">▶</button>
+                    <div class="panel-title" id="rightPanelTitle">📊 Statistiques</div>
+                </div>
+
+                <div class="panel-content" id="rightPanelContent">
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-cyan-400 mb-4 text-center border-b pb-2">
+                            🔐 Authentification
+                        </h3>
+                        <div style="background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 12px; border: 1px solid var(--brass);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="color: var(--parchment);">Inventeur:</span>
+                                <span id="authStatus" style="color: var(--brass-light);">Chargement...</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: var(--parchment);">Système d'Or:</span>
+                                <span id="goldSystemStatus" style="color: var(--brass-light);">Initialisation...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-green-400 mb-4 text-center border-b pb-2">
+                            ⚡ Production
+                        </h3>
+                        <div style="background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 12px; border: 1px solid var(--brass);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: var(--parchment);">Vapeur Totale:</span>
+                                <span class="text-green-400 font-bold" id="steamTotalDisplay">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: var(--parchment);">Mécanismes:</span>
+                                <span class="text-blue-400" id="gearCount">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: var(--parchment);">Artisans:</span>
+                                <span class="text-purple-400" id="artisanCount">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: var(--parchment);">Anneaux:</span>
+                                <span class="text-purple-400" id="ringCountDisplay">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: var(--parchment);">Boost Actuel:</span>
+                                <span class="text-red-400" id="currentBoostDisplay">+0%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--parchment);">Or Total:</span>
+                                <span class="text-yellow-400 font-bold" id="goldTotalDisplay">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-yellow-400 mb-4 text-center border-b pb-2">
+                            🎯 Progression
+                        </h3>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 4px;">
+                                <span style="color: var(--parchment);">Prochain Objectif</span>
+                                <span class="text-yellow-400" id="nextMilestone">1K</span>
+                            </div>
+                            <div style="width: 100%; background: #374151; border-radius: 9999px; height: 16px; overflow: hidden; border: 1px solid var(--brass);">
+                                <div style="background: linear-gradient(to right, #d97706, #f59e0b, #d97706); height: 16px; border-radius: 9999px; transition: all 0.5s ease; width: 0%; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);" id="milestoneProgress"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-orange-400 mb-4 text-center border-b pb-2">
+                            🏆 Succès Récents
+                        </h3>
+                        <div style="background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 12px; max-height: 160px; overflow-y: auto; border: 1px solid var(--brass);" id="recentAchievements">
+                            <div style="font-size: 0.875rem; color: #9ca3af; text-align: center;">Aucun succès récent</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-bold text-red-400 mb-4 text-center border-b pb-2">
+                            ⚡ Actions Rapides
+                        </h3>
+                        <div class="space-y-3">
+                            <button onclick="saveGame()" class="action-btn btn-blue">
+                                💾 Sauvegarder
+                            </button>
+                            <button onclick="refreshAllDisplays()" class="action-btn btn-green">
+                                🔄 Actualiser
+                            </button>
+                            <button onclick="refundAllItems()" class="action-btn btn-purple" id="refundBtn">
+                                💸 Remboursement Total
+                            </button>
+                            <button onclick="resetGame()" class="action-btn btn-red" id="resetBtn">
+                                🗑️ Réinitialiser Sauvegarde
+                            </button>
+                            <button onclick="reconnectAuth()" id="reconnectBtn" class="action-btn btn-orange" style="display: none;">
+                                🔐 Reconnecter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div id="achievementModal" class="achievement-modal hidden">
+        <div class="achievement-modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-family: 'Cinzel', serif; font-size: 2rem; color: var(--brass-light); margin: 0;">🏆 Succès de l'Inventeur</h2>
+                <button onclick="hideAchievementsModal()" style="background: var(--brass); border: 2px solid var(--copper-dark); color: var(--mahogany); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; font-weight: bold;">×</button>
+            </div>
+            <div class="achievement-grid" id="achievementGrid">
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="questModal" class="quest-modal hidden">
+        <div class="quest-modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-family: 'Cinzel', serif; font-size: 2rem; color: var(--brass-light); margin: 0;">🏆 Quêtes Journalières</h2>
+                <button onclick="hideQuestModal()" style="background: var(--brass); border: 2px solid var(--copper-dark); color: var(--mahogany); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; font-weight: bold;">×</button>
+            </div>
+            <div class="quest-grid" id="questGrid">
+            </div>
+        </div>
+    </div>
+
+    <div id="modalRoot"></div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

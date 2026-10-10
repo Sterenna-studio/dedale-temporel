@@ -1,2 +1,3 @@
 # Keep historical snapshots byte-for-byte (except documented credential redactions).
 archive/atelier-2026-09-28/source/** -text
+apps/steam-clicker-wl/old.vers/server-lab-2026-04-20/** -text
