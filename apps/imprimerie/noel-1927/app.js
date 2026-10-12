@@ -9,6 +9,7 @@ function init(level) {
   const resetBtn = document.getElementById('reset');
 
   let letters = level.rectangles.map(r => r.letter);
+  let draggedPiece = null;
 
   function shuffle(arr) {
     return arr.sort(() => Math.random() - 0.5);
@@ -22,15 +23,21 @@ function init(level) {
       d.textContent = l;
       d.draggable = true;
       d.addEventListener('dragstart', e => {
-        e.dataTransfer.setData('text', l);
+        draggedPiece = d;
+        e.dataTransfer.setData('text', d.textContent);
+      });
+      d.addEventListener('dragend', () => {
+        draggedPiece = null;
       });
       d.addEventListener('dragover', e => e.preventDefault());
       d.addEventListener('drop', e => {
         e.preventDefault();
-        const from = e.dataTransfer.getData('text');
+        if (!draggedPiece || draggedPiece === d) return;
+        const from = draggedPiece.textContent;
         const to = d.textContent;
+        draggedPiece.textContent = to;
         d.textContent = from;
-        e.target.textContent = to;
+        draggedPiece = null;
         check();
       });
       workspace.appendChild(d);
