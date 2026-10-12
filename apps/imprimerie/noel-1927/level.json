@@ -1,0 +1,37 @@
+{
+  "finalCode": "FETESXAR",
+  "rectangles": [
+    {
+      "id": "R1",
+      "letter": "F"
+    },
+    {
+      "id": "R2",
+      "letter": "E"
+    },
+    {
+      "id": "R3",
+      "letter": "T"
+    },
+    {
+      "id": "R4",
+      "letter": "E"
+    },
+    {
+      "id": "R5",
+      "letter": "S"
+    },
+    {
+      "id": "R6",
+      "letter": "X"
+    },
+    {
+      "id": "R7",
+      "letter": "A"
+    },
+    {
+      "id": "R8",
+      "letter": "R"
+    }
+  ]
+}

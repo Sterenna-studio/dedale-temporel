@@ -572,3 +572,18 @@ body.theme-dark .rulesList{
 @media (max-width: 920px){
   .volSlider{ width: 96px; }
 }
+
+/* Intake v7.8.1: atelier background */
+.playArea{ position: relative; }
+.playArea::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("assets/background.png") center / cover no-repeat;
+  opacity: .38;
+  filter: blur(2px);
+  transform: scale(1.02);
+  pointer-events:none;
+  z-index: 0;
+}
+.playArea > *{ position: relative; z-index: 1; }

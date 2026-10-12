@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <script>window.DEDALE_ROOM_ID = "porte-reliques";</script>
+  <script src="/dedale/js/corridor-guard.js"></script>
+  <title>S.T.E.A.M — Imprimerie Médicale 1927</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <h1>Imprimerie Médicale — Tirage de Noël 1927</h1>
+    <p class="intro">
+      Les agents d’Hadès Corp ont saboté les formes d’impression.
+      Reconstituez les plaques et remettez-les dans le bon ordre
+      pour valider le tirage spécial de Noël.
+    </p>
+
+    <div id="workspace"></div>
+
+    <div id="result" class="hidden">
+      <h2>Impression validée</h2>
+      <p>Code final :</p>
+      <div id="code"></div>
+    </div>
+
+    <button id="reset">Réinitialiser</button>
+  </div>
+
+  <script src="/dedale/js/dedale-state.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
