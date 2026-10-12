@@ -33,3 +33,8 @@ Les captures bureau/mobile sont enregistrées dans `.artifacts`.
 La correction de septembre 2026 aligne les identifiants HTML sur le moteur,
 remplace les anciens appels inline à des fonctions absentes et rétablit les
 interactions des quêtes et de l’atelier, sans changer la clé de sauvegarde.
+
+La variante fonctionnelle importée de `clicker_unifie` est accessible depuis
+le lien « Version unifiée » et sera publiée à `/dedale/steam-clicker/unifie/`.
+Elle garde son économie et sa sauvegarde `steamClickerSave` séparées de la
+version active (`steam_clicker_v6`).

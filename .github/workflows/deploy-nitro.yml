@@ -90,6 +90,7 @@ jobs:
           rsync -a \
             --exclude='.gitignore' \
             --exclude='README*' \
+            --exclude='SHA256SUMS' \
             --exclude='old.vers/' \
             "$STEAMCLICKER_SRC/" _site/steam-clicker/
 
