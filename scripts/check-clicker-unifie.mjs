@@ -93,11 +93,12 @@ try {
   await send('Network.enable');
   await send('Network.setBlockedURLs', { urls: ['https://*'] });
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
-  await send('Page.navigate', { url: origin + '/steam-clicker/unifie/' });
+  await send('Page.navigate', { url: origin + '/steam-clicker/' });
   await waitFor('document.querySelector("#gearContainer") && document.querySelector("#mainGear")');
-  await evaluate("(() => { const state = JSON.parse(localStorage.getItem('steamClickerSave') || '{}'); state.gears = Object.fromEntries(Array.from({length: 7}, (_, i) => [i + 1, 3])); state.rings = Object.fromEntries(Array.from({length: 7}, (_, i) => [i + 1, 1])); state.mode = 'etabli'; localStorage.setItem('steamClickerSave', JSON.stringify(state)); })()");
+  await evaluate("(() => { const state = JSON.parse(localStorage.getItem('steamClickerSave') || '{}'); state.steam = 123456; state.steamTotal = 987654; state.gears = Object.fromEntries(Array.from({length: 7}, (_, i) => [i + 1, 3])); state.rings = Object.fromEntries(Array.from({length: 7}, (_, i) => [i + 1, 1])); state.mode = 'etabli'; localStorage.setItem('steamClickerSave', JSON.stringify(state)); })()");
   await send('Page.reload');
   await waitFor('document.querySelectorAll("#gearPyramids .pyramid-gear").length === 21');
+  assert.ok(await evaluate("JSON.parse(localStorage.getItem('steamClickerSave')).steam >= 123456 && JSON.parse(localStorage.getItem('steamClickerSave')).steamTotal >= 987654"), 'Progression vapeur existante conservee');
 
   async function assertGearBounds(label) {
     const geometry = await evaluate("(() => { const stage = document.querySelector('#gearContainer').getBoundingClientRect(); const gears = [...document.querySelectorAll('#gearPyramids .pyramid-gear')].map(el => el.getBoundingClientRect()); const rings = [...document.querySelectorAll('#gearRings .gear-ring')].map(el => el.getBoundingClientRect()); const tolerance = 1; return {stage: {left: stage.left, top: stage.top, right: stage.right, bottom: stage.bottom}, gearBounds: {left: Math.min(...gears.map(r => r.left)), top: Math.min(...gears.map(r => r.top)), right: Math.max(...gears.map(r => r.right)), bottom: Math.max(...gears.map(r => r.bottom))}, gears: gears.length, rings: rings.length, gearsInside: gears.every(r => r.left >= stage.left - tolerance && r.right <= stage.right + tolerance && r.top >= stage.top - tolerance && r.bottom <= stage.bottom + tolerance), ringsInside: rings.every(r => r.left >= stage.left - tolerance && r.right <= stage.right + tolerance && r.top >= stage.top - tolerance && r.bottom <= stage.bottom + tolerance)}; })()");
@@ -116,7 +117,7 @@ try {
   const keys = await evaluate('Object.keys(localStorage).sort()');
   assert.ok(keys.includes('steamClickerSave'), 'Sauvegarde propre à la variante');
   assert.deepEqual(exceptions, []);
-  console.log('PASS: route unifiee, placement bureau/mobile, sauvegarde separee, aucune exception JavaScript.');
+  console.log('PASS: version unifiee par defaut, placement bureau/mobile, sauvegarde separee, aucune exception JavaScript.');
 } finally {
   socket?.close();
   child.kill();

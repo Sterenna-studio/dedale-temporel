@@ -18,9 +18,10 @@ for (const candidate of candidates) {
 assert.ok(executable, 'Chrome requis : renseigner CHROME_PATH');
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
-  const relative = path.replace(/^\/steam-clicker\//, '') || 'index.html';
-  const file = resolve(root, 'apps/steam-clicker-wl', relative);
-  if (!path.startsWith('/steam-clicker/') || !file.startsWith(resolve(root, 'apps/steam-clicker-wl') + '/'.replace('/', process.platform === 'win32' ? '\\' : '/'))) {
+  const relative = path.replace(/^\/steam-clicker\/backup\//, '') || 'index.html';
+  const backupRoot = resolve(root, 'apps/steam-clicker-wl/backup/current-active-2026-10-12');
+  const file = resolve(backupRoot, relative);
+  if (!path.startsWith('/steam-clicker/backup/') || !file.startsWith(backupRoot + (process.platform === 'win32' ? '\\' : '/'))) {
     res.writeHead(404).end(); return;
   }
   try {
@@ -94,7 +95,7 @@ try {
   await send('Network.enable');
   await send('Network.setBlockedURLs', { urls: ['https://*'] });
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
-  await send('Page.navigate', { url: `${origin}/steam-clicker/` });
+  await send('Page.navigate', { url: `${origin}/steam-clicker/backup/` });
   await waitFor('document.querySelectorAll("#shopList [data-buy]").length === 7');
   const click = id => evaluate(`document.getElementById(${JSON.stringify(id)}).click()`);
   const saved = async () => { await click('saveBtn'); return evaluate('JSON.parse(localStorage.getItem("steamClickerSave"))'); };
@@ -123,7 +124,7 @@ try {
   assert.equal(await evaluate('document.getElementById("workshopView").classList.contains("hidden")'), false, 'Mode restaure');
   await click('etabliMode');
   assert.equal(await evaluate('document.getElementById("gearView").classList.contains("hidden")'), false);
-  assert.equal((await fetch(`${origin}/steam-clicker/favicon.svg`)).status, 200);
+  assert.equal((await fetch(`${origin}/steam-clicker/backup/favicon.svg`)).status, 200);
   const desktop = await send('Page.captureScreenshot', { format: 'png' });
   await writeFile(join(artifacts, 'steam-desktop.png'), Buffer.from(desktop.data, 'base64'));
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });

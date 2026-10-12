@@ -1,0 +1,43 @@
+<svg width="80" height="50" viewBox="0 0 80 50" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="brotherhoodGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#cd853f"/>
+      <stop offset="100%" style="stop-color:#8b4513"/>
+    </linearGradient>
+    <filter id="workshop-glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Confrérie - Bâtiment artisanal -->
+  <rect x="5" y="15" width="70" height="30" fill="url(#brotherhoodGrad)" stroke="#654321" stroke-width="2" rx="4" filter="url(#workshop-glow)"/>
+
+  <!-- Fenêtres d'atelier -->
+  <rect x="12" y="22" width="12" height="8" fill="#4a4a4a" stroke="#333" stroke-width="1" rx="1"/>
+  <rect x="30" y="22" width="12" height="8" fill="#4a4a4a" stroke="#333" stroke-width="1" rx="1"/>
+  <rect x="48" y="22" width="12" height="8" fill="#4a4a4a" stroke="#333" stroke-width="1" rx="1"/>
+
+  <!-- Fenêtres supérieures -->
+  <rect x="18" y="32" width="10" height="6" fill="#4a4a4a" stroke="#333" stroke-width="1" rx="1"/>
+  <rect x="34" y="32" width="10" height="6" fill="#4a4a4a" stroke="#333" stroke-width="1" rx="1"/>
+
+  <!-- Toit -->
+  <polygon points="5,15 40,5 75,15" fill="#654321" stroke="#4a2c17" stroke-width="2"/>
+
+  <!-- Cheminée -->
+  <rect x="35" y="2" width="4" height="8" fill="#4a2c17"/>
+  <rect x="33" y="1" width="8" height="2" fill="#654321"/>
+
+  <!-- Fumée -->
+  <circle cx="37" cy="0" r="2" fill="#ccc" opacity="0.6">
+    <animate attributeName="cy" values="0;-3;0" dur="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Panneau -->
+  <rect x="25" y="40" width="30" height="8" fill="rgba(139,69,19,0.8)" stroke="#8b4513" stroke-width="1" rx="2"/>
+  <text x="40" y="46" text-anchor="middle" font-size="6" fill="#f4e4bc" font-family="serif">CONFRÉRIE</text>
+</svg>

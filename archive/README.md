@@ -14,8 +14,9 @@ sources actives). Aucun fichier n'a été perdu — déplacé ici plutôt que su
 - **`dedale_sfx_pack_cuivre_vapeur/`** — variante du pack sonore (contient un
   `dedale_sfx_pack/` imbriqué). Le pack actif est `../dedale_sfx_pack/`.
 - **`clicker-unifie-2026-10-12/`** — copie source intacte de la variante du clicker
-  unifié intégrée séparément dans `../apps/steam-clicker-wl/unifie/`. Les sommes
-  SHA-256 sont conservées dans le dossier.
+  unifié devenue la version active sous `../apps/steam-clicker-wl/`. L’ancienne
+  version active est conservée sous `../apps/steam-clicker-wl/backup/`. Les
+  sommes SHA-256 des sources reçues sont conservées dans le dossier.
 
 ## Restaurer un élément
 

@@ -14,7 +14,7 @@ name: Deploy to Nitro
 #   /dedale/observatoire/ <- apps/salles/observatoire
 #   /dedale/archive/      <- apps/salles/archive
 #   /dedale/condamnee/    <- apps/salles/condamnee
-#   /dedale/steam-clicker/<- apps/steam-clicker-wl  (version whitelist)
+#   /dedale/steam-clicker/<- apps/steam-clicker-wl  (version active; backup exclu)
 #   /dedale/workplate/    <- apps/WORKPLATE
 #   /dedale/dispersion/   <- apps/dispersion  (version active : index.html uniquement)
 #   /dedale/panini/       <- apps/panini/steam_panini_hub_v2
@@ -91,6 +91,7 @@ jobs:
             --exclude='.gitignore' \
             --exclude='README*' \
             --exclude='SHA256SUMS' \
+            --exclude='backup/' \
             --exclude='old.vers/' \
             "$STEAMCLICKER_SRC/" _site/steam-clicker/
 

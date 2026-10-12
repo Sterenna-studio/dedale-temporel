@@ -1,40 +1,25 @@
 # S.T.E.A.M. Clicker
 
-Jeu de production steampunk. La page `index.html` charge le module `main.js`,
-les styles complémentaires `runtime.css` et les images du dossier `assets`.
+La version unifiée est la version servie par défaut à `/dedale/steam-clicker/`.
+Elle reprend le moteur et le placement des engrenages de `clicker_unifie`, avec
+une sauvegarde locale `steamClickerSave`.
+
+## Sauvegarde de l’ancienne version
+
+La version qui était active avant l’unifiée est conservée dans
+`backup/current-active-2026-10-12/`. Le workflow Nitro exclut tout le dossier
+`backup/` et `old.vers/` du site publié.
 
 ## Lancement local
 
-Depuis ce dossier : `python -m http.server 8080`, puis ouvrir
-`http://localhost:8080`. Un serveur HTTP est nécessaire pour le module JavaScript.
-
-## Jeu et sauvegarde
-
-Cliquer sur la manivelle produit de la vapeur et augmente le boost. La boutique
-permet d’acheter des engrenages et des artisans, de convertir les structures et
-d’échanger de la vapeur contre de l’or. L’atelier se débloque à 10 millions de
-vapeur totale. Les succès et les quêtes donnent aussi des récompenses.
-
-La sauvegarde locale utilise toujours `steamClickerSave`, automatiquement toutes
-les cinq secondes. Les actions rapides permettent de sauvegarder, exporter et
-importer un fichier JSON. L’or de cette version est local au jeu.
-
-Raccourcis : `A` pour les succès, `Q` pour les quêtes, `M` + molette pour le boost.
+Depuis la racine du dépôt : `python -m http.server 8080`, puis ouvrir
+`http://localhost:8080/apps/steam-clicker-wl/`.
 
 ## Vérification
 
-Depuis la racine du dépôt : `node scripts/check-steam-clicker.mjs` (Node 22+
-et Chrome installé, ou `CHROME_PATH`). Le test utilise un profil temporaire dans
-`.artifacts`, sans toucher à la sauvegarde du navigateur habituel. Il vérifie le
-démarrage, le clic, un achat, une récompense, les fenêtres, le verrouillage de
-l’atelier, la sauvegarde et le mode après rechargement, ainsi que le favicon.
-Les captures bureau/mobile sont enregistrées dans `.artifacts`.
+- `node scripts/check-clicker-unifie.mjs` vérifie la version par défaut et le
+  placement des engrenages/anneaux à taille bureau et mobile.
+- `node scripts/check-steam-clicker.mjs` vérifie l’ancienne version sauvegardée
+  à travers la route locale de test `/steam-clicker/backup/`.
 
-La correction de septembre 2026 aligne les identifiants HTML sur le moteur,
-remplace les anciens appels inline à des fonctions absentes et rétablit les
-interactions des quêtes et de l’atelier, sans changer la clé de sauvegarde.
-
-La variante fonctionnelle importée de `clicker_unifie` est accessible depuis
-le lien « Version unifiée » et sera publiée à `/dedale/steam-clicker/unifie/`.
-Elle garde son économie et sa sauvegarde `steamClickerSave` séparées de la
-version active (`steam_clicker_v6`).
+Les tests utilisent Chrome headless et un profil temporaire dans `.artifacts`.
